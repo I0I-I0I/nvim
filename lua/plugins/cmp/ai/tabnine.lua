@@ -8,16 +8,16 @@ require("tabnine").setup({
 	log_file_path = nil, -- absolute path to Tabnine log file
 })
 
-local tabnine = require("cmp_tabnine.config")
-
-tabnine:setup({
-	max_lines = 1000,
-	max_num_results = 20,
-	sort = true,
-	run_on_every_keystroke = true,
-	snippet_placeholder = "..",
-	ignored_file_types = {
-		lua = false,
-	},
-	show_prediction_strength = true,
-})
+-- local tabnine = require("cmp_tabnine.config")
+--
+-- tabnine:setup({
+-- 	max_lines = 1000,
+-- 	max_num_results = 20,
+-- 	sort = true,
+-- 	run_on_every_keystroke = true,
+-- 	snippet_placeholder = "..",
+-- 	ignored_file_types = {
+-- 		lua = false,
+-- 	},
+-- 	show_prediction_strength = true,
+-- })

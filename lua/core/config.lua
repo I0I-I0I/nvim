@@ -3,6 +3,16 @@ vim.scriptencoding = "utf-8"
 vim.opt.encoding = "utf-8"
 vim.opt.fileencoding = "utf-8"
 
+-- Spell
+vim.opt.spelllang = "en_us"
+vim.opt.spell = true
+
+-- Explorer
+vim.cmd("let g:netrw_banner = 0")
+vim.cmd("let g:netrw_liststyle = 3")
+vim.cmd("let g:netrw_browse_split = 0")
+vim.cmd("let g:netrw_winsize = 20")
+
 -- Tabs
 vim.opt.autoindent = true
 vim.opt.smartindent = true
@@ -43,8 +53,6 @@ vim.wo.linebreak = true
 
 -- Shell
 vim.opt.shell = "/bin/zsh"
-
-vim.opt.clipboard = "unnamedplus"
 
 vim.opt.hidden = true
 

@@ -1,3 +1,5 @@
+vim.loader.enable()
+
 -- Basic
 require("core.plugins")
 require("core.mappings")
@@ -15,13 +17,14 @@ require("plugins.move.hop")
 require("plugins.lsp.lsp")
 require("plugins.lsp.lsp-colors")
 require("plugins.lsp.lspsaga")
-require("plugins.lsp.cmp")
 require("plugins.lsp.mason")
-require("plugins.lsp.null-ls")
-require("plugins.lsp.fidget")
+-- CMP
+require("plugins.cmp.cmp")
+require("plugins.cmp.null-ls")
+require("plugins.cmp.trouble")
 -- AI
-require("plugins.ai.tabnine")
-require("plugins.ai.codeium")
+require("plugins.cmp.ai.tabnine")
+require("plugins.cmp.ai.codeium")
 -- Icons
 require("plugins.icons.icons")
 require("plugins.icons.lspkind")
@@ -30,8 +33,10 @@ require("plugins.auto_close.autopairs")
 require("plugins.auto_close.autotag")
 -- Git
 require("plugins.git.git")
-require("plugins.git.conform")
 -- Other
 require("plugins.other.treesitter")
 require("plugins.other.comments")
 require("plugins.other.noice")
+require("plugins.other.toggleterm")
+require("plugins.other.treejs")
+require("plugins.other.veil")

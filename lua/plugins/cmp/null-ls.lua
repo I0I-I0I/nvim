@@ -11,6 +11,7 @@ null_ls.setup({
 		-- 		"javascriptreact",
 		-- 	},
 		-- }),
+		null_ls.builtins.completion.spell,
 		null_ls.builtins.diagnostics.eslint_d.with({
 			filetypes = {
 				"typescript",

@@ -12,11 +12,22 @@ end
 vim.opt.rtp:prepend(lazypath)
 
 require("lazy").setup({
-	-- Treesitter
-	{ "nvim-treesitter/nvim-treesitter" },
+	-- Start screen
+	{
+		"willothy/veil.nvim",
+		lazy = true,
+		dependencies = {
+			-- All optional, only required for the default setup.
+			-- If you customize your config, these aren't necessary.
+			"nvim-telescope/telescope.nvim",
+			"nvim-lua/plenary.nvim",
+			"nvim-telescope/telescope-file-browser.nvim",
+		},
+		confing = true,
+	},
 
-	-- Surround
-	{ "tpope/vim-surround" },
+	-- Tree sitter
+	{ "nvim-treesitter/nvim-treesitter" },
 
 	-- Tree
 	{
@@ -28,8 +39,63 @@ require("lazy").setup({
 			"MunifTanjim/nui.nvim",
 		},
 	},
+
+	-- LSP
+	{ "neovim/nvim-lspconfig" },
+
+	-- Format
+	{ "jose-elias-alvarez/null-ls.nvim" },
+	-- JS
+	{ "Wansmer/treesj" },
+
+	-- Saga
+	{ "nvimdev/lspsaga.nvim" },
+
+	-- Icons
+	{ "kyazdani42/nvim-web-devicons" },
+	{ "onsails/lspkind.nvim" },
+
+	-- CMP
+	{ "hrsh7th/cmp-nvim-lsp" },
+	{ "hrsh7th/cmp-buffer" },
+	{ "hrsh7th/cmp-path" },
+	{ "hrsh7th/cmp-cmdline" },
+	{ "hrsh7th/nvim-cmp" },
+	{ "hrsh7th/cmp-nvim-lua" },
+
+	-- Snipets
+	{
+		"L3MON4D3/LuaSnip",
+		-- follow latest release.
+		version = "v2.*", -- Replace <CurrentMajor> by the latest released major (first number of latest release)
+		-- install jsregexp (optional!).
+		build = "make install_jsregexp",
+		dependencies = { "rafamadriz/friendly-snippets" },
+	},
+	{ "saadparwaiz1/cmp_luasnip" },
+	-- Emmet
+	{ "olrtg/nvim-emmet" },
+
+	-- Mason
+	{ "williamboman/mason.nvim" },
+	{ "williamboman/mason-lspconfig.nvim" },
+
+	-- AI
+	{ "codota/tabnine-nvim", build = "./dl_binaries.sh" },
+	{
+		"Exafunction/codeium.nvim",
+		event = "BufEnter",
+		dependencies = {
+			"nvim-lua/plenary.nvim",
+			"hrsh7th/nvim-cmp",
+		},
+	},
+
 	-- Tabs
 	{ "akinsho/bufferline.nvim", version = "*", dependencies = "nvim-tree/nvim-web-devicons" },
+
+	-- Toggle term
+	{ "akinsho/toggleterm.nvim", version = "*", config = true },
 
 	-- Themes
 	{ "folke/lsp-colors.nvim" },
@@ -46,15 +112,8 @@ require("lazy").setup({
 	},
 	{ "nobbmaestro/nvim-andromeda" },
 	{ "tjdevries/colorbuddy.nvim", branch = "dev" },
-	-- Emmet
-	{ "olrtg/nvim-emmet" },
 
-	-- Icons
-	{ "kyazdani42/nvim-web-devicons" },
-	{ "onsails/lspkind.nvim" },
-
-	--
-	-- lazy.nvim
+	-- CmdLine, Notify, Nui
 	{
 		"folke/noice.nvim",
 		event = "VeryLazy",
@@ -65,64 +124,12 @@ require("lazy").setup({
 		},
 	},
 
-	-- LSP
-	{ "neovim/nvim-lspconfig" },
-	{ "hrsh7th/cmp-nvim-lsp" },
-	{ "hrsh7th/cmp-buffer" },
-	{ "hrsh7th/cmp-path" },
-	{ "hrsh7th/cmp-cmdline" },
-	{ "hrsh7th/nvim-cmp" },
-
-	-- Snipets
-	{
-		"L3MON4D3/LuaSnip",
-		-- follow latest release.
-		version = "v2.*", -- Replace <CurrentMajor> by the latest released major (first number of latest release)
-		-- install jsregexp (optional!).
-		build = "make install_jsregexp",
-		dependencies = { "rafamadriz/friendly-snippets" },
-	},
-	{ "saadparwaiz1/cmp_luasnip" },
-
-	{ "nvimdev/lspsaga.nvim" },
-
-	-- AI
-	{ "codota/tabnine-nvim", build = "./dl_binaries.sh" },
-	{
-		"tzachar/cmp-tabnine",
-		build = "./install.sh",
-		dependencies = "hrsh7th/nvim-cmp",
-	},
-	{
-		"Exafunction/codeium.nvim",
-		event = "BufEnter",
-		dependencies = {
-			"nvim-lua/plenary.nvim",
-			"hrsh7th/nvim-cmp",
-		},
-	},
-	-- Notifications
-	{
-		"j-hui/fidget.nvim",
-		opts = {},
-	},
-	-- Conform
-	{
-		"stevearc/conform.nvim",
-		opts = {},
-	},
-	-- Mason
-	{ "williamboman/mason.nvim" },
-	{ "williamboman/mason-lspconfig.nvim" },
-
 	-- Search
 	{
 		"nvim-telescope/telescope.nvim",
 		tag = "0.1.4",
 		dependencies = { "nvim-lua/plenary.nvim" },
 	},
-	-- Format
-	{ "jose-elias-alvarez/null-ls.nvim" },
 
 	-- Auto close
 	{ "windwp/nvim-autopairs" },
@@ -138,6 +145,9 @@ require("lazy").setup({
 	-- Moving
 	{ "phaazon/hop.nvim" },
 	{ "ThePrimeagen/harpoon" },
+
+	-- Surround
+	{ "tpope/vim-surround" },
 
 	--- History file change
 	-- { "mbbill/undotree" },
