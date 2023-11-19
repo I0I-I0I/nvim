@@ -8,7 +8,7 @@ require("core.config")
 
 -- Plugins
 -- Move
-require("plugins.move.neotree")
+require("plugins.move.tree")
 require("plugins.move.harpoon")
 require("plugins.move.telescope")
 require("plugins.move.bufferline")

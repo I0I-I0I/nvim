@@ -28,9 +28,6 @@ vim.api.nvim_create_autocmd("InsertEnter", {
 	command = "set noexpandtab",
 })
 
-vim.cmd("hi! NonText ctermbg=NONE guibg=NONE")
-vim.cmd("hi! Normal ctermbg=NONE guibg=NONE")
-
 -- Color column
 vim.opt.colorcolumn = "80"
 
@@ -47,10 +44,11 @@ vim.opt.updatetime = 100
 vim.opt.list = true
 
 -- Wrap
-vim.opt.wrap = true
 vim.opt.linebreak = true
 vim.wo.linebreak = true
-
+vim.api.nvim_create_autocmd("BufEnter", {
+	command = [[ set wrap ]],
+})
 -- Shell
 vim.opt.shell = "/bin/zsh"
 
@@ -104,7 +102,7 @@ vim.opt.foldmethod = "indent"
 vim.opt.foldcolumn = "0"
 vim.opt.foldlevel = 999
 
-vim.opt.laststatus = 2
+vim.opt.laststatus = 0
 
 local function git_branch()
 	local branch = vim.fn.system("git rev-parse --abbrev-ref HEAD 2>/dev/null | tr -d '\n'")

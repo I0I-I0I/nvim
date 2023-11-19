@@ -9,10 +9,21 @@ vim.keymap.set("n", "gd", builtin.lsp_definitions, { noremap = true, silent = tr
 
 require("telescope").setup({
 	defaults = {
+		vimgrep_arguments = {
+			"rg",
+			"--color=never",
+			"--no-heading",
+			"--with-filename",
+			"--line-number",
+			"--column",
+			"--smart-case",
+			"--ignore-file",
+			"/home/i0i/.config/nvim/ignore.files",
+		},
 		file_ignore_patterns = {
+			"package-lock.json",
 			"node_modules",
 			".git",
-			"package-lock.json",
 			"dist",
 		},
 	},

@@ -3,13 +3,13 @@
 ## LSP servers for nvim
 
 css-lsp cssls\
-emmet-language-server\
+emmet-language-server emmet_language_server\
 eslint_d\
-html-lsp\
-lua-language-server\
+html-lsp html\
+lua-language-server lua_ls\
 prettierd\
 pyright\
 stylelint\
 stylua\
-typescript-language-server\
+typescript-language-server tsserver\
 vtsls

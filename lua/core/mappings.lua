@@ -44,8 +44,8 @@ vim.cmd("cnoreabbrev save wa<cr>:mksession! session.vim<cr>:qa<cr>")
 vim.cmd("cnoreabbrev ss source session.vim<cr>")
 
 -- Split
-vim.keymap.set("n", "<C-w>s", ":split<cr><C-w>j:Veil<cr>", { silent = true })
-vim.keymap.set("n", "<C-w>v", ":vsplit<cr><C-w>l:Veil<cr>", { silent = true })
+vim.keymap.set("n", "<C-w>s", ":split<cr><C-w>j:Neotree float toggle<cr>", { silent = true })
+vim.keymap.set("n", "<C-w>v", ":vsplit<cr><C-w>l:Neotree float toggle<cr>", { silent = true })
 vim.keymap.set("n", "<C-w>S", ":split ")
 vim.keymap.set("n", "<C-w>V", ":vsplit ")
 -- Moving to tabs
