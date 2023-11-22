@@ -12,41 +12,41 @@ end
 vim.opt.rtp:prepend(lazypath)
 
 require("lazy").setup({
+	{ "nvim-lua/plenary.nvim" },
+	{ "nvim-tree/nvim-web-devicons" },
+	{ "MunifTanjim/nui.nvim" },
+
 	-- Start screen
 	{
 		"willothy/veil.nvim",
 		lazy = true,
-		dependencies = {
-			-- All optional, only required for the default setup.
-			-- If you customize your config, these aren't necessary.
-			"nvim-telescope/telescope.nvim",
-			"nvim-lua/plenary.nvim",
-			"nvim-telescope/telescope-file-browser.nvim",
-		},
+		dependencies = { "nvim-telescope/telescope-file-browser.nvim" },
 		confing = true,
 	},
 
 	-- Tree sitter
-	{ "nvim-treesitter/nvim-treesitter" },
+	{
+		"nvim-treesitter/nvim-treesitter",
+		dependencies = {
+			"nvim-treesitter/nvim-treesitter-textobjects",
+			"windwp/nvim-ts-autotag",
+			"windwp/nvim-autopairs",
+		},
+	},
 
 	-- Tree
 	{
 		"nvim-neo-tree/neo-tree.nvim",
 		branch = "v3.x",
-		dependencies = {
-			"nvim-lua/plenary.nvim",
-			"nvim-tree/nvim-web-devicons",
-			"MunifTanjim/nui.nvim",
-		},
 	},
 
 	-- LSP
 	{ "neovim/nvim-lspconfig" },
+	{ "j-hui/fidget.nvim" },
 
 	-- Format
 	{ "jose-elias-alvarez/null-ls.nvim" },
-	-- JS
-	{ "Wansmer/treesj" },
+	{ "folke/trouble.nvim" },
 
 	-- Saga
 	{ "nvimdev/lspsaga.nvim" },
@@ -54,106 +54,69 @@ require("lazy").setup({
 	-- Icons
 	{ "kyazdani42/nvim-web-devicons" },
 	{ "onsails/lspkind.nvim" },
-
 	-- CMP
+	{ "hrsh7th/nvim-cmp" },
 	{ "hrsh7th/cmp-nvim-lsp" },
 	{ "hrsh7th/cmp-buffer" },
 	{ "hrsh7th/cmp-path" },
 	{ "hrsh7th/cmp-cmdline" },
-	{ "hrsh7th/nvim-cmp" },
-	{ "hrsh7th/cmp-nvim-lua" },
+	{ "hrsh7th/cmp-nvim-lsp-signature-help" },
 
 	-- Snipets
 	{
 		"L3MON4D3/LuaSnip",
-		-- follow latest release.
-		version = "v2.*", -- Replace <CurrentMajor> by the latest released major (first number of latest release)
-		-- install jsregexp (optional!).
+		version = "v2.*",
 		build = "make install_jsregexp",
 		dependencies = { "rafamadriz/friendly-snippets" },
 	},
 	{ "saadparwaiz1/cmp_luasnip" },
-	-- Emmet
-	{ "olrtg/nvim-emmet" },
 
 	-- Mason
 	{ "williamboman/mason.nvim" },
-	{ "williamboman/mason-lspconfig.nvim" },
 
 	-- AI
 	{ "codota/tabnine-nvim", build = "./dl_binaries.sh" },
-	{
-		"Exafunction/codeium.nvim",
-		event = "BufEnter",
-		dependencies = {
-			"nvim-lua/plenary.nvim",
-			"hrsh7th/nvim-cmp",
-		},
-	},
+	{ "Exafunction/codeium.nvim", event = "BufEnter" },
+
+	-- JS
+	{ "Wansmer/treesj" },
 
 	-- Tabs
-	{ "akinsho/bufferline.nvim", version = "*", dependencies = "nvim-tree/nvim-web-devicons" },
+	{ "akinsho/bufferline.nvim", version = "*" },
 
-	-- Toggle term
-	{ "akinsho/toggleterm.nvim", version = "*", config = true },
-
-	-- Themes
-	{ "folke/lsp-colors.nvim" },
-	{ "catppuccin/nvim", name = "catppuccin", priority = 1000 },
-	{ "akinsho/horizon.nvim", version = "*" },
-	{ "joshdick/onedark.vim" },
-	{ "rebelot/kanagawa.nvim" },
-	{ "mhartington/oceanic-next" },
-	{
-		"folke/tokyonight.nvim",
-		lazy = false,
-		priority = 1000,
-		opts = {},
-	},
-	{ "nobbmaestro/nvim-andromeda" },
-	{ "tjdevries/colorbuddy.nvim", branch = "dev" },
+	-- Buffers
+	{ "moll/vim-bbye" },
 
 	-- CmdLine, Notify, Nui
-	{
-		"folke/noice.nvim",
-		event = "VeryLazy",
-		opts = {},
-		dependencies = {
-			"MunifTanjim/nui.nvim",
-			"rcarriga/nvim-notify",
-		},
-	},
+	{ "folke/noice.nvim", event = "VeryLazy" },
+
+	{ "rcarriga/nvim-notify" },
 
 	-- Search
-	{
-		"nvim-telescope/telescope.nvim",
-		tag = "0.1.4",
-		dependencies = { "nvim-lua/plenary.nvim" },
-	},
-
-	-- Auto close
-	{ "windwp/nvim-autopairs" },
-	{ "windwp/nvim-ts-autotag" },
+	{ "nvim-telescope/telescope.nvim", tag = "0.1.4" },
 
 	-- Comments
 	{ "terrortylor/nvim-comment" },
 
 	-- Git
-	{ "tpope/vim-fugitive" },
 	{ "lewis6991/gitsigns.nvim" },
 
-	-- Moving
+	-- Move
 	{ "phaazon/hop.nvim" },
+	{ "ggandor/leap.nvim" },
 	{ "ThePrimeagen/harpoon" },
+	{ "ghillb/cybu.nvim", branch = "main" },
 
 	-- Surround
 	{ "tpope/vim-surround" },
 
-	--- History file change
-	-- { "mbbill/undotree" },
+	-- Time
+	{ "wakatime/vim-wakatime" },
 
-	{
-		"folke/trouble.nvim",
-		dependencies = { "nvim-tree/nvim-web-devicons" },
-	},
+	-- Smooth
+	{ "yuttie/comfortable-motion.vim" },
+
+	-- Themes
+	{ "lunacookies/vim-substrata" },
+	{ "rebelot/kanagawa.nvim" },
 })

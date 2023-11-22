@@ -1,10 +1,11 @@
 require("noice").setup({
 	lsp = {
-		-- override markdown rendering so that **cmp** and other plugins use **Treesitter**
-		override = {
-			["vim.lsp.util.convert_input_to_markdown_lines"] = true,
-			["vim.lsp.util.stylize_markdown"] = true,
-			["cmp.entry.get_documentation"] = true,
+		progress = {
+			enabled = false,
+			format = "",
+			format_done = "",
+			throttle = 1000 / 30, -- frequency to update lsp progress message
+			view = "mini",
 		},
 	},
 	-- you can enable a preset for easier configuration
@@ -18,5 +19,5 @@ require("noice").setup({
 })
 
 require("notify").setup({
-	background_colour = "#000000",
+	background_colour = "#ffffff",
 })

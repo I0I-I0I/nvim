@@ -9,8 +9,8 @@ local default = {
 		}),
 		builtin.sections.buttons({
 			{
-				icon = "󰘁",
-				text = "Source session",
+				icon = "",
+				text = "Continue",
 				shortcut = "s",
 				callback = function()
 					vim.cmd("source session.vim")
@@ -25,19 +25,19 @@ local default = {
 				end,
 			},
 			{
-				icon = "󰱽",
-				text = "Find files",
-				shortcut = "f",
+				icon = "",
+				text = "Config",
+				shortcut = "i",
 				callback = function()
-					require("telescope.builtin").find_files()
+					vim.cmd("Neotree float /home/i0i/.config/nvim/")
 				end,
 			},
 			{
-				icon = "󱎸",
-				text = "Find word",
-				shortcut = "w",
+				icon = "",
+				text = "Close",
+				shortcut = "q",
 				callback = function()
-					require("telescope.builtin").live_grep()
+					vim.cmd("q")
 				end,
 			},
 		}, { spacing = 5 }),

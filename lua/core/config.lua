@@ -7,6 +7,9 @@ vim.opt.fileencoding = "utf-8"
 vim.opt.spelllang = "en_us"
 vim.opt.spell = true
 
+-- Swap
+vim.opt.swapfile = false
+
 -- Explorer
 vim.cmd("let g:netrw_banner = 0")
 vim.cmd("let g:netrw_liststyle = 3")
@@ -47,7 +50,7 @@ vim.opt.list = true
 vim.opt.linebreak = true
 vim.wo.linebreak = true
 vim.api.nvim_create_autocmd("BufEnter", {
-	command = [[ set wrap ]],
+	command = "set wrap",
 })
 -- Shell
 vim.opt.shell = "/bin/zsh"
@@ -55,10 +58,6 @@ vim.opt.shell = "/bin/zsh"
 vim.opt.hidden = true
 
 vim.opt.visualbell.t_vb = false
-
--- Support lang
-vim.opt.langmap =
-	"!\\№\\;%?*ёйцукенгшщзхъфывапролджэячсмитьбюЁЙЦУКЕHГШЩЗХЪФЫВАПРОЛДЖЯЧСМИТЬБЮ;!#$%&*`qwertyuiop[]asdfghjkl\\;'zxcvbnm\\,.~QWERTYUIOP{}ASDFGHJKL:\\ZXCVBNM<>"
 
 -- Numbers
 vim.opt.ruler = true
@@ -76,13 +75,10 @@ vim.opt.smartcase = true
 
 -- Mouse
 vim.opt.mousefocus = true
-vim.opt.mouse = "a"
-
--- Cursor
---vim.opt.guicursor = "i-ci-ve:hor30"
+vim.opt.mouse = ""
 
 -- Showmode
-vim.opt.showmode = true
+vim.opt.showmode = false
 
 -- Autocomplite
 vim.cmd("filetype plugin on")

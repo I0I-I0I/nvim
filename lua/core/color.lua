@@ -1,6 +1,7 @@
 vim.opt.termguicolors = true
 
 function SetColor(color)
+	vim.opt.background = "dark"
 	if color == "andromeda" then
 		require("andromeda").setup({
 			preset = "andromeda",
@@ -19,9 +20,13 @@ function SetColor(color)
 	vim.api.nvim_set_hl(0, "ColorColumn", { bg = "none" })
 	vim.api.nvim_set_hl(0, "LineNr", { bg = "none" })
 
-	vim.api.nvim_set_hl(0, "NoiceCmdLinePopupBorder", { bg = "none" })
-	vim.api.nvim_set_hl(0, "NoiceCmdLinePopupTitle", { bg = "none" })
-	vim.api.nvim_set_hl(0, "NoiceCmdLineIcon", { bg = "none" })
+	vim.api.nvim_set_hl(0, "DiagnosticSignError", { bg = "none", fg = "#ff0000" })
+	vim.api.nvim_set_hl(0, "DiagnosticSignOk", { bg = "none", fg = "#00ff00" })
+	vim.api.nvim_set_hl(0, "DiagnosticSignHint", { bg = "none", fg = "#8a00c2" })
+	vim.api.nvim_set_hl(0, "DiagnosticSignWarn", { bg = "none", fg = "#ffa500" })
+	vim.api.nvim_set_hl(0, "DiagnosticSignInfo", { bg = "none", fg = "#235284" })
+
+	vim.api.nvim_set_hl(0, "FloatTitle", { bg = "none" })
 
 	vim.api.nvim_set_hl(0, "BufferLineFill", { bg = "none" })
 	vim.api.nvim_set_hl(0, "BufferLineBackground", { bg = "none" })
@@ -33,6 +38,12 @@ function SetColor(color)
 	vim.api.nvim_set_hl(0, "BufferLineDevIconLuaSelected", { bg = "none" })
 	vim.api.nvim_set_hl(0, "BufferLineDevIconDefault", { bg = "none" })
 	vim.api.nvim_set_hl(0, "WinSeparator", { bg = "none" })
+
+	vim.api.nvim_set_hl(0, "CybuBackground", { bg = "none" })
+	vim.api.nvim_set_hl(0, "CybuBorder", { bg = "none" })
+	vim.api.nvim_set_hl(0, "CybuFocus", { bg = "#e4e4e4", fg = "#1c1c1c" })
+
+	vim.api.nvim_set_hl(0, "Visual", { fg = "#e4e4e4", bg = "#1c1c1c" })
 end
 
 vim.api.nvim_create_autocmd("BufEnter", {
@@ -52,10 +63,14 @@ vim.api.nvim_create_autocmd("BufEnter", {
 	hi! TelescopeSelectionCaret ctermbg=NONE guibg=NONE 
 
 	hi! SignColumn ctermbg=NONE guibg=NONE
+
 	hi! GitSignsAdd ctermbg=NONE guibg=NONE
 	hi! GitSignsRemove ctermbg=NONE guibg=NONE
 	hi! GitSignsDelete ctermbg=NONE guibg=NONE
 	hi! GitSignsChange ctermbg=NONE guibg=NONE
+
+	hi! SagaBorder ctermbg=NONE guibg=NONE
+	hi! SagaTitle ctermbg=NONE guibg=NONE
 	]],
 })
 
@@ -64,10 +79,14 @@ vim.api.nvim_create_autocmd("CmdlineEnter", {
 	hi! NoiceCmdLinePopupBorder ctermbg=NONE guibg=NONE
 	hi! NoiceCmdLinePopupTitle ctermbg=NONE guibg=NONE
 	hi! NoiceCmdLineIcon ctermbg=NONE guibg=NONE
+
+	hi! NoiceCmdlineIconSearch ctermbg=NONE guibg=NONE
+	hi! NoiceCmdlinePopupBorderSearch ctermbg=NONE guibg=NONE
+	hi! NoiceCmdlineIconFilter ctermbg=NONE guibg=NONE
 	]],
 })
 
-SetColor("horizon")
+SetColor("kanagawa")
 
 -- retrobox
 -- habamax
@@ -77,3 +96,5 @@ SetColor("horizon")
 -- tokyonight
 -- horizon
 -- andromeda
+-- substrata
+-- nord

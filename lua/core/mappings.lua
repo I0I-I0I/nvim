@@ -5,11 +5,22 @@ vim.keymap.set("v", "J", ":m '>+1<cr>gv=gv", { silent = true })
 vim.keymap.set("v", "K", ":m '<-2<cr>gv=gv", { silent = true })
 
 -- Move screen
-vim.keymap.set("n", "<C-d>", "<C-d>zz")
-vim.keymap.set("n", "<C-u>", "<C-u>zz")
+-- vim.keymap.set("n", "<C-d>", "<C-d>zz")
+-- vim.keymap.set("n", "<C-u>", "<C-u>zz")
 
--- Not yank with 'x'
+-- Terminal
+vim.keymap.set("n", "<C-\\>", "<cmd>split <cr><C-w>J<cmd>resize 10<cr><cmd>term<cr>i", { silent = true })
+vim.keymap.set("t", "<C-\\>", "<cmd>Bdelete!<cr><cmd>close<cr>", { silent = true })
+
+-- Not yank with x/s
 vim.keymap.set("v", "x", '"_x')
+vim.keymap.set("v", "s", '"_s')
+
+-- Paste
+vim.keymap.set("x", "<leader>p", '"_dP')
+vim.keymap.set("n", "<F2>", ":set paste<cr>", { silent = true })
+vim.keymap.set("n", "<F3>", ":set nopaste<cr>", { silent = true })
+vim.keymap.set("i", "<F2>", "<Esc>:set paste<cr>i", { silent = true })
 
 -- Search
 vim.keymap.set("n", "n", "nzzzv")
@@ -19,14 +30,8 @@ vim.keymap.set("n", "N", "Nzzzv")
 vim.opt.clipboard:prepend({ "unnamed", "unnamedplus" })
 vim.keymap.set("v", "<C-c>", ":w !clip.exe<cr><cr>", { silent = true })
 
--- Paste
-vim.keymap.set("x", "<leader>p", '"_dP')
-vim.keymap.set("n", "<F2>", ":set paste<cr>", { silent = true })
-vim.keymap.set("n", "<F3>", ":set nopaste<cr>", { silent = true })
-vim.keymap.set("i", "<F2>", "<Esc>:set paste<cr>i", { silent = true })
-
--- Change
-vim.keymap.set("n", "<leader>s", ":%s/\\<<C-r><C-w>\\>//gI<Left><Left><Left>")
+-- Rename
+-- vim.keymap.set("n", "<leader>s", ":%s/\\<<C-r><C-w>\\>//gI<Left><Left><Left>")
 
 -- Tabs
 vim.keymap.set("v", "<", "<gv")
@@ -44,8 +49,8 @@ vim.cmd("cnoreabbrev save wa<cr>:mksession! session.vim<cr>:qa<cr>")
 vim.cmd("cnoreabbrev ss source session.vim<cr>")
 
 -- Split
-vim.keymap.set("n", "<C-w>s", ":split<cr><C-w>j:Neotree float toggle<cr>", { silent = true })
-vim.keymap.set("n", "<C-w>v", ":vsplit<cr><C-w>l:Neotree float toggle<cr>", { silent = true })
+vim.keymap.set("n", "<C-w>s", ":split<cr><C-w>j <cmd>Explore .<cr>", { silent = true })
+vim.keymap.set("n", "<C-w>v", ":vsplit<cr><C-w>l <cmd>Explore .<cr>", { silent = true })
 vim.keymap.set("n", "<C-w>S", ":split ")
 vim.keymap.set("n", "<C-w>V", ":vsplit ")
 -- Moving to tabs
@@ -67,6 +72,3 @@ vim.keymap.set("n", "<S-Tab>", "gT")
 -- Mouse
 vim.keymap.set("n", "<leader>mn", ":set mouse=a<cr>:echo ' mouse on'<cr>")
 vim.keymap.set("n", "<leader>mf", ":set mouse=<cr>:echo ' mouse off'<cr>")
-
--- Emmet
-vim.keymap.set({ "n", "v" }, "<leader>w", require("nvim-emmet").wrap_with_abbreviation)

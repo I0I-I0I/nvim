@@ -6,14 +6,13 @@ local source_mapping = {
 	buffer = "[Buffer]",
 	nvim_lsp = "[LSP]",
 	codeium = "[CDM]",
-	nvim_lua = "[Lua]",
 	cmp_tabnine = "[TN]",
 	path = "[Path]",
 }
 
 -- VSCode
-require("luasnip.loaders.from_vscode").load({ exclude = { "html", "css" } })
-
+require("luasnip.loaders.from_vscode").load()
+-- { exclude = { "html", "css" } }
 cmp.setup({
 	snippet = {
 		expand = function(args)
@@ -79,13 +78,12 @@ cmp.setup({
 		end,
 	},
 	sources = cmp.config.sources({
-		{ name = "nvim_lua" },
-		{ name = "codeium" },
-		{ name = "cmp_tabnine" },
 		{ name = "luasnip" },
+		{ name = "codeium" },
 		{ name = "buffer" },
 		{ name = "nvim_lsp" },
 		{ name = "path" },
+		{ name = "nvim_lsp_signature_help" },
 	}),
 })
 

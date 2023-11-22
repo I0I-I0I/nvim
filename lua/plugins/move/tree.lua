@@ -47,4 +47,4 @@ require("neo-tree").setup({
 })
 
 -- NeoTree
-vim.keymap.set("n", "<C-b>", ":Neotree float focus toggle<cr>", { silent = true })
+vim.keymap.set("n", "<C-n>", ":Neotree float focus toggle<cr>", { silent = true })
