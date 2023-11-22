@@ -107,6 +107,10 @@ require("lazy").setup({
 	{ "ThePrimeagen/harpoon" },
 	{ "ghillb/cybu.nvim", branch = "main" },
 
+	-- Cursor
+	{ "m-demare/hlargs.nvim" },
+	{ "ap/vim-css-color" },
+
 	-- Surround
 	{ "tpope/vim-surround" },
 
