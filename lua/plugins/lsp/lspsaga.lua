@@ -8,6 +8,10 @@ saga.setup({
 		width = 0.8,
 		height = 0.8,
 	},
+	code_action = {
+		show_server_name = true,
+		extend_gitsings = true,
+	},
 })
 
 local opts = { noremap = true, silent = true }

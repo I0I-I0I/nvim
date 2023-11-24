@@ -30,6 +30,8 @@ require("plugins.other.noice")
 require("plugins.other.treejs")
 require("plugins.other.veil")
 require("plugins.other.other")
+require("plugins.other.css-colors")
+require("plugins.other.surround")
 -- Move
 require("plugins.move.hop")
 require("plugins.move.leap")

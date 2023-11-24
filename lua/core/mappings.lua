@@ -14,7 +14,9 @@ vim.keymap.set("t", "<C-\\>", "<cmd>Bdelete!<cr><cmd>close<cr>", { silent = true
 
 -- Not yank with x/s
 vim.keymap.set("v", "x", '"_x')
+vim.keymap.set("v", "X", '"_X')
 vim.keymap.set("v", "s", '"_s')
+vim.keymap.set("v", "S", '"_s')
 
 -- Paste
 vim.keymap.set("x", "<leader>p", '"_dP')
@@ -63,7 +65,7 @@ vim.keymap.set("n", "<C-down>", ":resize -2<cr>", { silent = true })
 -- Window tabs
 vim.keymap.set("n", "<C-w>i", ":tabnew ~/.config/nvim<cr>", { silent = true })
 vim.keymap.set("n", "<C-w>c", ":tabclose<cr>", { silent = true })
-vim.keymap.set("n", "<C-w>t", ":tabnew<cr>:Veil<cr>", { silent = true })
+vim.keymap.set("n", "<C-w>t", "<cmd>tabnew<cr><cmd>Veil<cr><cmd>set nocursorline<cr>", { silent = true })
 vim.keymap.set("n", "<C-w>T", ":tabnew ")
 -- Moving to window tabs
 vim.keymap.set("n", "<Tab>", "gt")

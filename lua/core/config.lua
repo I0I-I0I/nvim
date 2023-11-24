@@ -3,12 +3,21 @@ vim.scriptencoding = "utf-8"
 vim.opt.encoding = "utf-8"
 vim.opt.fileencoding = "utf-8"
 
+-- Cursor line
+vim.api.nvim_create_autocmd("CmdlineEnter", {
+	command = [[ 
+		set cursorline
+		set cursorlineopt=line
+	]],
+})
+
 -- Spell
 vim.opt.spelllang = "en_us"
 vim.opt.spell = true
 
 -- Swap
 vim.opt.swapfile = false
+vim.cmd("set noswapfile")
 
 -- Explorer
 vim.cmd("let g:netrw_banner = 0")
@@ -16,11 +25,15 @@ vim.cmd("let g:netrw_liststyle = 3")
 vim.cmd("let g:netrw_browse_split = 0")
 vim.cmd("let g:netrw_winsize = 20")
 
+-- Colors
+vim.cmd("set termguicolors")
+
 -- Tabs
 vim.opt.autoindent = true
 vim.opt.smartindent = true
-vim.opt.tabstop = 4
 vim.opt.smarttab = true
+vim.opt.cindent = true
+vim.opt.tabstop = 4
 vim.opt.softtabstop = 4
 vim.opt.shiftwidth = 4
 vim.opt.showtabline = 1
@@ -75,7 +88,7 @@ vim.opt.smartcase = true
 
 -- Mouse
 vim.opt.mousefocus = true
-vim.opt.mouse = ""
+vim.opt.mouse = "a"
 
 -- Showmode
 vim.opt.showmode = false

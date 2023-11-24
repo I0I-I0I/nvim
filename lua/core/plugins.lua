@@ -109,10 +109,11 @@ require("lazy").setup({
 
 	-- Cursor
 	{ "m-demare/hlargs.nvim" },
-	{ "ap/vim-css-color" },
+	{ "norcalli/nvim-colorizer.lua" },
 
 	-- Surround
-	{ "tpope/vim-surround" },
+	-- { "tpope/vim-surround" },
+	{ "kylechui/nvim-surround", version = "*" },
 
 	-- Time
 	{ "wakatime/vim-wakatime" },

@@ -7,6 +7,9 @@ require("noice").setup({
 			throttle = 1000 / 30, -- frequency to update lsp progress message
 			view = "mini",
 		},
+		documentation = {
+			view = false,
+		},
 	},
 	-- you can enable a preset for easier configuration
 	presets = {
@@ -19,5 +22,5 @@ require("noice").setup({
 })
 
 require("notify").setup({
-	background_colour = "#ffffff",
+	background_colour = "#000000",
 })

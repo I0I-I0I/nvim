@@ -64,10 +64,22 @@ lspconfig.html.setup({
 	filetypes = { "html" },
 })
 
-lspconfig.vtsls.setup({
-	inlay_hints = { enabled = true },
+-- lspconfig.vtsls.setup({
+-- 	inlay_hints = { enabled = true },
+-- 	capabilities = capabilities,
+-- 	-- customize handlers for commands
+-- 	handlers = {
+-- 		source_definition = function(err, locations) end,
+-- 		file_references = function(err, locations) end,
+-- 		code_action = function(err, actions) end,
+-- 	},
+-- 	-- automatically trigger renaming of extracted symbol
+-- 	refactor_auto_rename = true,
+-- })
+
+lspconfig.tsserver.setup({
 	capabilities = capabilities,
-	-- customize handlers for commands
+	inlay_hints = { enabled = false },
 	handlers = {
 		source_definition = function(err, locations) end,
 		file_references = function(err, locations) end,
@@ -76,10 +88,6 @@ lspconfig.vtsls.setup({
 	-- automatically trigger renaming of extracted symbol
 	refactor_auto_rename = true,
 })
-
--- lspconfig.tsserver.setup({
--- 	capabilities = capabilities,
--- })
 
 -- Global mappings.
 -- See `:help vim.diagnostic.*` for documentation on any of the below functions

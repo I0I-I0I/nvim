@@ -13,6 +13,7 @@ local source_mapping = {
 -- VSCode
 require("luasnip.loaders.from_vscode").load()
 -- { exclude = { "html", "css" } }
+
 cmp.setup({
 	snippet = {
 		expand = function(args)
@@ -50,17 +51,6 @@ cmp.setup({
 		format = function(entry, vim_item)
 			vim_item.kind = lspkind.symbolic(vim_item.kind, { mode = "symbol" })
 			vim_item.menu = source_mapping[entry.source.name]
-			-- if entry.source.name == "cmp_tabnine" then
-			-- 	local detail = (entry.completion_item.labelDetails or {}).detail
-			-- 	vim_item.kind = ""
-			-- 	if detail and detail:find(".*%%.*") then
-			-- 		vim_item.kind = vim_item.kind .. " " .. detail
-			-- 	end
-			--
-			-- 	if (entry.completion_item.data or {}).multiline then
-			-- 		vim_item.kind = vim_item.kind .. " " .. "[ML]"
-			-- 	end
-			-- end
 			if entry.source.name == "codeium" then
 				local detail = (entry.completion_item.labelDetails or {}).detail
 				vim_item.kind = ""
@@ -80,8 +70,8 @@ cmp.setup({
 	sources = cmp.config.sources({
 		{ name = "luasnip" },
 		{ name = "codeium" },
-		{ name = "buffer" },
 		{ name = "nvim_lsp" },
+		{ name = "buffer" },
 		{ name = "path" },
 		{ name = "nvim_lsp_signature_help" },
 	}),

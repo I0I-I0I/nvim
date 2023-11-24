@@ -27,6 +27,7 @@ function SetColor(color)
 	vim.api.nvim_set_hl(0, "DiagnosticSignInfo", { bg = "none", fg = "#235284" })
 
 	vim.api.nvim_set_hl(0, "FloatTitle", { bg = "none" })
+	vim.api.nvim_set_hl(0, "FloatBorder", { bg = "none" })
 
 	vim.api.nvim_set_hl(0, "BufferLineFill", { bg = "none" })
 	vim.api.nvim_set_hl(0, "BufferLineBackground", { bg = "none" })
@@ -48,6 +49,7 @@ end
 
 vim.api.nvim_create_autocmd("BufEnter", {
 	command = [[
+	hi! CursorLine gui=underline cterm=underline guibg=NONE ctermfg=None guifg=None
 	hi! NeoTreeFloatBorder ctermbg=NONE guibg=NONE 
 	hi! NeoTreeFloatTitle ctermbg=NONE guibg=NONE 
 	hi! NeoTreeFloatNormal ctermbg=NONE guibg=NONE 
@@ -68,6 +70,7 @@ vim.api.nvim_create_autocmd("BufEnter", {
 	hi! GitSignsRemove ctermbg=NONE guibg=NONE
 	hi! GitSignsDelete ctermbg=NONE guibg=NONE
 	hi! GitSignsChange ctermbg=NONE guibg=NONE
+	hi! GitSignsAddPreview ctermbg=NONE guibg=NONE
 
 	hi! SagaBorder ctermbg=NONE guibg=NONE
 	hi! SagaTitle ctermbg=NONE guibg=NONE
