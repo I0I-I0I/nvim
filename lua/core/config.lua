@@ -1,14 +1,19 @@
+vim.loader.enable()
 -- Settings
 vim.scriptencoding = "utf-8"
 vim.opt.encoding = "utf-8"
 vim.opt.fileencoding = "utf-8"
 
 -- Cursor line
-vim.api.nvim_create_autocmd("CmdlineEnter", {
-	command = [[ 
-		set cursorline
-		set cursorlineopt=line
-	]],
+vim.cmd("set cursorlineopt=line")
+vim.api.nvim_create_autocmd("InsertEnter", {
+	command = "set nocursorline",
+})
+vim.api.nvim_create_autocmd("InsertLeave", {
+	command = "set cursorline",
+})
+vim.api.nvim_create_autocmd("TermEnter", {
+	command = "set nocursorline",
 })
 
 -- Spell
@@ -91,7 +96,7 @@ vim.opt.mousefocus = true
 vim.opt.mouse = "a"
 
 -- Showmode
-vim.opt.showmode = false
+-- vim.opt.showmode = false
 
 -- Autocomplite
 vim.cmd("filetype plugin on")

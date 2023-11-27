@@ -67,6 +67,10 @@ require("nvim-treesitter.configs").setup({
 
 				["ac"] = { query = "@class.outer", desc = "Select outer part of a class" },
 				["ic"] = { query = "@class.inner", desc = "Select inner part of a class" },
+
+				["in"] = { query = "@number.inner", desc = "Select inner part of a number" },
+				["ih"] = { query = "@attribute.inner", desc = "Select inner part of a attribute" },
+				["ah"] = { query = "@attribute.outer", desc = "Select inner part of a attribute" },
 			},
 		},
 
@@ -92,6 +96,11 @@ require("nvim-treesitter.configs").setup({
 
 				["]s"] = { query = "@scope", query_group = "locals", desc = "Next scope" },
 				["]z"] = { query = "@fold", query_group = "folds", desc = "Next fold" },
+
+				["]n"] = { query = "@number", desc = "Select inner part of a number" },
+
+				-- HTML
+				["]h"] = { query = "@attribute", desc = "Select inner part of a attribute" },
 			},
 			goto_next_end = {
 				["]F"] = { query = "@call.outer", desc = "Next function call start" },
@@ -109,6 +118,11 @@ require("nvim-treesitter.configs").setup({
 
 				["[s"] = { query = "@scope", query_group = "locals", desc = "Next scope" },
 				["[z"] = { query = "@fold", query_group = "folds", desc = "Next fold" },
+
+				["[n"] = { query = "@number", desc = "Select inner part of a number" },
+
+				-- HTML
+				["[h"] = { query = "@attribute", desc = "Select inner part of a attribute" },
 			},
 			goto_previous_end = {
 				["[F"] = { query = "@call.outer", desc = "Next function call end" },
@@ -123,23 +137,11 @@ require("nvim-treesitter.configs").setup({
 
 local ts_repeat_move = require("nvim-treesitter.textobjects.repeatable_move")
 
-vim.keymap.set({ "n", "x", "o" }, ";", ts_repeat_move.repeat_last_move)
-vim.keymap.set({ "n", "x", "o" }, ",", ts_repeat_move.repeat_last_move_opposite)
+vim.keymap.set({ "n" }, ">", ts_repeat_move.repeat_last_move)
+vim.keymap.set({ "n" }, "<", ts_repeat_move.repeat_last_move_opposite)
 
 -- Optionally, make builtin f, F, t, T also repeatable with ; and ,
-vim.keymap.set({ "n", "x", "o" }, "f", ts_repeat_move.builtin_f)
-vim.keymap.set({ "n", "x", "o" }, "F", ts_repeat_move.builtin_F)
-vim.keymap.set({ "n", "x", "o" }, "t", ts_repeat_move.builtin_t)
-vim.keymap.set({ "n", "x", "o" }, "T", ts_repeat_move.builtin_T)
-
--- Auto pairs
-
-local npairs = require("nvim-autopairs")
-
-npairs.setup({
-	check_ts = true,
-	ts_config = {
-		lua = { "string" }, -- it will not add a pair on that treesitter node
-		javascript = { "template_string" },
-	},
-})
+-- vim.keymap.set({ "n", "x", "o" }, "f", ts_repeat_move.builtin_f)
+-- vim.keymap.set({ "n", "x", "o" }, "F", ts_repeat_move.builtin_F)
+-- vim.keymap.set({ "n", "x", "o" }, "t", ts_repeat_move.builtin_t)
+-- vim.keymap.set({ "n", "x", "o" }, "T", ts_repeat_move.builtin_T)

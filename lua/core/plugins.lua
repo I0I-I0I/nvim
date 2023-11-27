@@ -15,6 +15,7 @@ require("lazy").setup({
 	{ "nvim-lua/plenary.nvim" },
 	{ "nvim-tree/nvim-web-devicons" },
 	{ "MunifTanjim/nui.nvim" },
+	{ "tomtom/tcomment_vim" },
 
 	-- Start screen
 	{
@@ -30,7 +31,14 @@ require("lazy").setup({
 		dependencies = {
 			"nvim-treesitter/nvim-treesitter-textobjects",
 			"windwp/nvim-ts-autotag",
-			"windwp/nvim-autopairs",
+		},
+	},
+	{
+		"altermo/ultimate-autopair.nvim",
+		event = { "InsertEnter", "CmdlineEnter" },
+		branch = "v0.6", --recomended as each new version will have breaking changes
+		opts = {
+			--Config goes here
 		},
 	},
 
@@ -46,7 +54,7 @@ require("lazy").setup({
 
 	-- Format
 	{ "jose-elias-alvarez/null-ls.nvim" },
-	{ "folke/trouble.nvim" },
+	-- { "folke/trouble.nvim" },
 
 	-- Saga
 	{ "nvimdev/lspsaga.nvim" },
@@ -89,7 +97,6 @@ require("lazy").setup({
 
 	-- CmdLine, Notify, Nui
 	{ "folke/noice.nvim", event = "VeryLazy" },
-
 	{ "rcarriga/nvim-notify" },
 
 	-- Search
@@ -101,8 +108,15 @@ require("lazy").setup({
 	-- Git
 	{ "lewis6991/gitsigns.nvim" },
 
+	-- Lab
+	{
+		"0x100101/lab.nvim",
+		build = "cd js && npm ci",
+		dependencies = { "nvim-lua/plenary.nvim" },
+	},
+
 	-- Move
-	{ "phaazon/hop.nvim" },
+	-- { "phaazon/hop.nvim" },
 	{ "ggandor/leap.nvim" },
 	{ "ThePrimeagen/harpoon" },
 	{ "ghillb/cybu.nvim", branch = "main" },
@@ -124,4 +138,8 @@ require("lazy").setup({
 	-- Themes
 	{ "lunacookies/vim-substrata" },
 	{ "rebelot/kanagawa.nvim" },
+
+	{
+		"Pocco81/true-zen.nvim",
+	},
 })

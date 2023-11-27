@@ -44,7 +44,6 @@ vim.keymap.set("n", "<leader><space>", ":nohlsearch<cr>", { silent = true })
 
 -- Folding
 vim.keymap.set("n", "<space>", "za")
-vim.keymap.set("n", "C-<space>", "zf")
 
 -- Save
 vim.cmd("cnoreabbrev save wa<cr>:mksession! session.vim<cr>:qa<cr>")

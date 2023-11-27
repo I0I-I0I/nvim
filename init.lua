@@ -1,5 +1,3 @@
-vim.loader.enable()
-
 -- Basic
 require("core.plugins")
 require("core.mappings")
@@ -14,10 +12,11 @@ require("plugins.lsp.mason")
 -- CMP
 require("plugins.cmp.cmp")
 require("plugins.cmp.null-ls")
-require("plugins.cmp.trouble")
+-- require("plugins.cmp.trouble")
+require("plugins.cmp.lab")
 -- AI
-require("plugins.cmp.ai.tabnine")
-require("plugins.cmp.ai.codeium")
+-- require("plugins.cmp.ai.tabnine")
+-- require("plugins.cmp.ai.codeium")
 -- Icons
 require("plugins.icons.icons")
 require("plugins.icons.lspkind")
@@ -26,14 +25,15 @@ require("plugins.git.git")
 -- Other
 require("plugins.other.treesitter")
 require("plugins.other.comments")
-require("plugins.other.noice")
 require("plugins.other.treejs")
-require("plugins.other.veil")
-require("plugins.other.other")
-require("plugins.other.css-colors")
 require("plugins.other.surround")
+-- Customization
+require("plugins.customization.noice")
+require("plugins.customization.veil")
+require("plugins.customization.hlargs")
+require("plugins.customization.css-colors")
+require("plugins.customization.zenMode")
 -- Move
-require("plugins.move.hop")
 require("plugins.move.leap")
 require("plugins.move.tree")
 require("plugins.move.harpoon")
