@@ -15,7 +15,6 @@ require("lazy").setup({
 	{ "nvim-lua/plenary.nvim" },
 	{ "nvim-tree/nvim-web-devicons" },
 	{ "MunifTanjim/nui.nvim" },
-	{ "tomtom/tcomment_vim" },
 
 	-- Start screen
 	{
@@ -54,7 +53,6 @@ require("lazy").setup({
 
 	-- Format
 	{ "jose-elias-alvarez/null-ls.nvim" },
-	-- { "folke/trouble.nvim" },
 
 	-- Saga
 	{ "nvimdev/lspsaga.nvim" },
@@ -66,9 +64,9 @@ require("lazy").setup({
 	{ "hrsh7th/nvim-cmp" },
 	{ "hrsh7th/cmp-nvim-lsp" },
 	{ "hrsh7th/cmp-buffer" },
-	{ "hrsh7th/cmp-path" },
 	{ "hrsh7th/cmp-cmdline" },
-	{ "hrsh7th/cmp-nvim-lsp-signature-help" },
+	-- { "hrsh7th/cmp-path" },
+	-- { "hrsh7th/cmp-nvim-lsp-signature-help" },
 
 	-- Snipets
 	{
@@ -95,15 +93,12 @@ require("lazy").setup({
 	-- Buffers
 	{ "moll/vim-bbye" },
 
-	-- CmdLine, Notify, Nui
+	-- CmdLine, Notify
 	{ "folke/noice.nvim", event = "VeryLazy" },
 	{ "rcarriga/nvim-notify" },
 
 	-- Search
 	{ "nvim-telescope/telescope.nvim", tag = "0.1.4" },
-
-	-- Comments
-	{ "terrortylor/nvim-comment" },
 
 	-- Git
 	{ "lewis6991/gitsigns.nvim" },
@@ -115,8 +110,10 @@ require("lazy").setup({
 		dependencies = { "nvim-lua/plenary.nvim" },
 	},
 
+	-- Comments
+	{ "tomtom/tcomment_vim" },
+
 	-- Move
-	-- { "phaazon/hop.nvim" },
 	{ "ggandor/leap.nvim" },
 	{ "ThePrimeagen/harpoon" },
 	{ "ghillb/cybu.nvim", branch = "main" },
@@ -126,7 +123,6 @@ require("lazy").setup({
 	{ "norcalli/nvim-colorizer.lua" },
 
 	-- Surround
-	-- { "tpope/vim-surround" },
 	{ "kylechui/nvim-surround", version = "*" },
 
 	-- Time
@@ -139,6 +135,7 @@ require("lazy").setup({
 	{ "lunacookies/vim-substrata" },
 	{ "rebelot/kanagawa.nvim" },
 
+	-- Zen mode
 	{
 		"Pocco81/true-zen.nvim",
 	},

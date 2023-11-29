@@ -21,7 +21,7 @@ local default = {
 				text = "Open tree",
 				shortcut = "t",
 				callback = function()
-					vim.cmd("Neotree float focus")
+					vim.cmd("Neotree float")
 				end,
 			},
 			{

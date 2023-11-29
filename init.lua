@@ -3,6 +3,10 @@ require("core.plugins")
 require("core.mappings")
 require("core.color")
 require("core.config")
+-- NeoVide
+if vim.g.neovide then
+	require("core.neovide")
+end
 
 -- Plugins
 -- LSP
@@ -12,7 +16,6 @@ require("plugins.lsp.mason")
 -- CMP
 require("plugins.cmp.cmp")
 require("plugins.cmp.null-ls")
--- require("plugins.cmp.trouble")
 require("plugins.cmp.lab")
 -- AI
 -- require("plugins.cmp.ai.tabnine")
@@ -24,7 +27,6 @@ require("plugins.icons.lspkind")
 require("plugins.git.git")
 -- Other
 require("plugins.other.treesitter")
-require("plugins.other.comments")
 require("plugins.other.treejs")
 require("plugins.other.surround")
 -- Customization

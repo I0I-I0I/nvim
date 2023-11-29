@@ -35,6 +35,9 @@ vim.keymap.set("v", "<C-c>", ":w !clip.exe<cr><cr>", { silent = true })
 -- Rename
 -- vim.keymap.set("n", "<leader>s", ":%s/\\<<C-r><C-w>\\>//gI<Left><Left><Left>")
 
+-- Explore
+vim.keymap.set("n", "<C-n>", "<cmd>Ex<cr>", { silent = true })
+
 -- Tabs
 vim.keymap.set("v", "<", "<gv")
 vim.keymap.set("v", ">", ">gv")

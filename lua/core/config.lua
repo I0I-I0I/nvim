@@ -4,6 +4,10 @@ vim.scriptencoding = "utf-8"
 vim.opt.encoding = "utf-8"
 vim.opt.fileencoding = "utf-8"
 
+vim.cmd([[
+	cnoreabbrev W w
+]])
+
 -- Cursor line
 vim.cmd("set cursorlineopt=line")
 vim.api.nvim_create_autocmd("InsertEnter", {
