@@ -3,6 +3,7 @@ require("core.plugins")
 require("core.mappings")
 require("core.color")
 require("core.config")
+
 -- NeoVide
 if vim.g.neovide then
 	require("core.neovide")

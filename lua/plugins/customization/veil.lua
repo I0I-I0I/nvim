@@ -37,7 +37,7 @@ local default = {
 				text = "Close",
 				shortcut = "q",
 				callback = function()
-					vim.cmd("q")
+					vim.cmd("qa")
 				end,
 			},
 		}, { spacing = 5 }),
