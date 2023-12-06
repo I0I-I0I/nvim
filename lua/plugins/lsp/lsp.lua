@@ -41,6 +41,11 @@ lspconfig.emmet_language_server.setup({
 lspconfig.pyright.setup({
 	capabilities = capabilities,
 	filetypes = { "python" },
+	handlers = {
+		source_definition = function(err, locations) end,
+		file_references = function(err, locations) end,
+		code_action = function(err, actions) end,
+	},
 })
 
 lspconfig.lua_ls.setup({
@@ -64,22 +69,10 @@ lspconfig.html.setup({
 	filetypes = { "html" },
 })
 
--- lspconfig.vtsls.setup({
--- 	inlay_hints = { enabled = true },
--- 	capabilities = capabilities,
--- 	-- customize handlers for commands
--- 	handlers = {
--- 		source_definition = function(err, locations) end,
--- 		file_references = function(err, locations) end,
--- 		code_action = function(err, actions) end,
--- 	},
--- 	-- automatically trigger renaming of extracted symbol
--- 	refactor_auto_rename = true,
--- })
-
-lspconfig.tsserver.setup({
+lspconfig.vtsls.setup({
+	inlay_hints = { enabled = true },
 	capabilities = capabilities,
-	inlay_hints = { enabled = false },
+	-- customize handlers for commands
 	handlers = {
 		source_definition = function(err, locations) end,
 		file_references = function(err, locations) end,
@@ -88,6 +81,18 @@ lspconfig.tsserver.setup({
 	-- automatically trigger renaming of extracted symbol
 	refactor_auto_rename = true,
 })
+
+-- lspconfig.tsserver.setup({
+-- 	capabilities = capabilities,
+-- 	inlay_hints = { enabled = false },
+-- 	handlers = {
+-- 		source_definition = function(err, locations) end,
+-- 		file_references = function(err, locations) end,
+-- 		code_action = function(err, actions) end,
+-- 	},
+-- 	-- automatically trigger renaming of extracted symbol
+-- 	refactor_auto_rename = true,
+-- })
 
 -- Global mappings.
 -- See `:help vim.diagnostic.*` for documentation on any of the below functions

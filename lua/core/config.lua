@@ -35,23 +35,39 @@ vim.cmd("let g:netrw_browse_split = 0")
 vim.cmd("let g:netrw_winsize = 20")
 
 -- Colors
-vim.cmd("set termguicolors")
+vim.opt.termguicolors = true
+
+vim.cmd([[
+	autocmd BufWritePre * %s/\s\+$//e
+
+	autocmd FileType python set smartindent cinwords=if,elif,else,for,while,try,except,finally,def,class,with
+	autocmd FileType javascript set smartindent cinwords=if,else,for,while,function,class
+]])
 
 -- Tabs
 vim.opt.autoindent = true
 vim.opt.smartindent = true
 vim.opt.smarttab = true
-vim.opt.cindent = true
-vim.opt.tabstop = 4
-vim.opt.softtabstop = 4
-vim.opt.shiftwidth = 4
 vim.opt.showtabline = 1
 
--- Use tabs
-vim.api.nvim_create_autocmd("InsertEnter", {
-	pattern = { "*.*" },
-	command = "set noexpandtab",
-})
+vim.cmd([[
+	set smarttab
+	set shiftwidth=4
+	set expandtab
+	set tabstop=4
+	set softtabstop=0
+]])
+
+-- vim.api.nvim_create_autocmd("BufNewFile", {
+-- 	pattern = { "*.py" },
+-- 	command = [[
+-- 		set smarttab
+-- 		set shiftwidth = 4
+-- 		set expandtab
+-- 		set tabstop=8
+-- 		set softtabstop=0
+-- 	]],
+-- })
 
 -- Color column
 vim.opt.colorcolumn = "80"

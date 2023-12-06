@@ -50,19 +50,19 @@ end
 vim.api.nvim_create_autocmd("BufEnter", {
 	command = [[
 	hi! CursorLine gui=underline cterm=underline guibg=NONE ctermfg=None guifg=None
-	hi! NeoTreeFloatBorder ctermbg=NONE guibg=NONE 
-	hi! NeoTreeFloatTitle ctermbg=NONE guibg=NONE 
-	hi! NeoTreeFloatNormal ctermbg=NONE guibg=NONE 
-	hi! NeoTreeNormal ctermbg=NONE guibg=NONE 
-	hi! NeoTreeGitRenamed ctermbg=NONE guibg=NONE 
-	hi! NeoTreeGitStage ctermbg=NONE guibg=NONE 
-	hi! NeoTreeGitConflict ctermbg=NONE guibg=NONE 
-	hi! NeoTreeGitUnstage ctermbg=NONE guibg=NONE 
-	hi! NeoTreeGitUntracked ctermbg=NONE guibg=NONE 
+	hi! NeoTreeFloatBorder ctermbg=NONE guibg=NONE
+	hi! NeoTreeFloatTitle ctermbg=NONE guibg=NONE
+	hi! NeoTreeFloatNormal ctermbg=NONE guibg=NONE
+	hi! NeoTreeNormal ctermbg=NONE guibg=NONE
+	hi! NeoTreeGitRenamed ctermbg=NONE guibg=NONE
+	hi! NeoTreeGitStage ctermbg=NONE guibg=NONE
+	hi! NeoTreeGitConflict ctermbg=NONE guibg=NONE
+	hi! NeoTreeGitUnstage ctermbg=NONE guibg=NONE
+	hi! NeoTreeGitUntracked ctermbg=NONE guibg=NONE
 
-	hi! TelescopeBorder ctermbg=NONE guibg=NONE 
-	hi! TelescopeNormal ctermbg=NONE guibg=NONE 
-	hi! TelescopeSelectionCaret ctermbg=NONE guibg=NONE 
+	hi! TelescopeBorder ctermbg=NONE guibg=NONE
+	hi! TelescopeNormal ctermbg=NONE guibg=NONE
+	hi! TelescopeSelectionCaret ctermbg=NONE guibg=NONE
 
 	hi! SignColumn ctermbg=NONE guibg=NONE
 
@@ -74,6 +74,8 @@ vim.api.nvim_create_autocmd("BufEnter", {
 
 	hi! SagaBorder ctermbg=NONE guibg=NONE
 	hi! SagaTitle ctermbg=NONE guibg=NONE
+
+	hi! Folded  ctermbg=NONE guibg=NONE
 	]],
 })
 

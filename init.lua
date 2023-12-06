@@ -19,8 +19,8 @@ require("plugins.cmp.cmp")
 require("plugins.cmp.null-ls")
 require("plugins.cmp.lab")
 -- AI
--- require("plugins.cmp.ai.tabnine")
--- require("plugins.cmp.ai.codeium")
+require("plugins.cmp.ai.codeium")
+require("plugins.cmp.ai.tabnine")
 -- Icons
 require("plugins.icons.icons")
 require("plugins.icons.lspkind")
@@ -33,9 +33,9 @@ require("plugins.other.surround")
 -- Customization
 require("plugins.customization.noice")
 require("plugins.customization.veil")
-require("plugins.customization.hlargs")
 require("plugins.customization.css-colors")
-require("plugins.customization.zenMode")
+require("plugins.customization.hlargs")
+require("plugins.customization.rainbow")
 -- Move
 require("plugins.move.leap")
 require("plugins.move.tree")

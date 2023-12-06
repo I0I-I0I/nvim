@@ -12,6 +12,10 @@ vim.keymap.set("v", "K", ":m '<-2<cr>gv=gv", { silent = true })
 vim.keymap.set("n", "<C-\\>", "<cmd>split <cr><C-w>J<cmd>resize 10<cr><cmd>term<cr>i", { silent = true })
 vim.keymap.set("t", "<C-\\>", "<cmd>Bdelete!<cr><cmd>close<cr>", { silent = true })
 
+-- $ ^
+vim.keymap.set({ "v", "n", "x" }, "H", "^")
+vim.keymap.set({ "v", "n", "x" }, "L", "$")
+
 -- Not yank with x/s
 vim.keymap.set("v", "x", '"_x')
 vim.keymap.set("v", "X", '"_X')
@@ -36,7 +40,7 @@ vim.keymap.set("v", "<C-c>", ":w !clip.exe<cr><cr>", { silent = true })
 -- vim.keymap.set("n", "<leader>s", ":%s/\\<<C-r><C-w>\\>//gI<Left><Left><Left>")
 
 -- Explore
-vim.keymap.set("n", "<C-n>", "<cmd>Ex<cr>", { silent = true })
+vim.keymap.set("n", "<C-b>", "<cmd>Ex<cr>", { silent = true })
 
 -- Tabs
 vim.keymap.set("v", "<", "<gv")

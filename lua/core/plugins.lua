@@ -16,6 +16,9 @@ require("lazy").setup({
 	{ "nvim-tree/nvim-web-devicons" },
 	{ "MunifTanjim/nui.nvim" },
 
+	-- Multi cursor
+	{ "mg979/vim-visual-multi" },
+
 	-- Start screen
 	{
 		"willothy/veil.nvim",
@@ -32,10 +35,12 @@ require("lazy").setup({
 			"windwp/nvim-ts-autotag",
 		},
 	},
+	{ "HiPhish/rainbow-delimiters.nvim" },
+	{ "m-demare/hlargs.nvim" },
 	{
 		"altermo/ultimate-autopair.nvim",
 		event = { "InsertEnter", "CmdlineEnter" },
-		branch = "v0.6", --recomended as each new version will have breaking changes
+		branch = "v0.6",
 		opts = {
 			--Config goes here
 		},
@@ -65,8 +70,6 @@ require("lazy").setup({
 	{ "hrsh7th/cmp-nvim-lsp" },
 	{ "hrsh7th/cmp-buffer" },
 	{ "hrsh7th/cmp-cmdline" },
-	-- { "hrsh7th/cmp-path" },
-	-- { "hrsh7th/cmp-nvim-lsp-signature-help" },
 
 	-- Snipets
 	{
@@ -118,8 +121,7 @@ require("lazy").setup({
 	{ "ThePrimeagen/harpoon" },
 	{ "ghillb/cybu.nvim", branch = "main" },
 
-	-- Cursor
-	{ "m-demare/hlargs.nvim" },
+	-- Color
 	{ "norcalli/nvim-colorizer.lua" },
 
 	-- Surround
@@ -134,9 +136,4 @@ require("lazy").setup({
 	-- Themes
 	{ "lunacookies/vim-substrata" },
 	{ "rebelot/kanagawa.nvim" },
-
-	-- Zen mode
-	{
-		"Pocco81/true-zen.nvim",
-	},
 })
