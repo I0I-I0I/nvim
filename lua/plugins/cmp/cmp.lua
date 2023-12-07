@@ -68,13 +68,11 @@ cmp.setup({
 		end,
 	},
 	sources = cmp.config.sources({
-		-- { name = "lab.quick_data", keyword_length = 4 },
+		{ name = "lab.quick_data", keyword_length = 4 },
 		{ name = "luasnip" },
 		{ name = "codeium" },
 		{ name = "nvim_lsp" },
 		{ name = "buffer" },
-		-- { name = "path" },
-		-- { name = "nvim_lsp_signature_help" },
 	}),
 })
 

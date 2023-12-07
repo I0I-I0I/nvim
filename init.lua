@@ -13,10 +13,9 @@ end
 -- LSP
 require("plugins.lsp.lsp")
 require("plugins.lsp.lspsaga")
-require("plugins.lsp.mason")
+require("plugins.lsp.null-ls")
 -- CMP
 require("plugins.cmp.cmp")
-require("plugins.cmp.null-ls")
 require("plugins.cmp.lab")
 -- AI
 require("plugins.cmp.ai.codeium")

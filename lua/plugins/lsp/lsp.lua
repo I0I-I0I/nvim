@@ -2,6 +2,26 @@
 local lspconfig = require("lspconfig")
 local capabilities = require("cmp_nvim_lsp").default_capabilities()
 
+require("mason").setup()
+
+require("mason-lspconfig").setup({
+	ensure_installed = {
+		"emmet_language_server",
+		"pyright",
+		"cssls",
+		"html",
+		"lua_ls",
+		"stylelint_lsp",
+
+        -- "black",
+        -- "flake8",
+        -- "eslint_d",
+        -- "prettierd",
+		-- "stylua",
+		-- "cspell",
+	},
+})
+
 lspconfig.emmet_language_server.setup({
 	filetypes = {
 		"css",
@@ -69,30 +89,23 @@ lspconfig.html.setup({
 	filetypes = { "html" },
 })
 
-lspconfig.vtsls.setup({
-	inlay_hints = { enabled = true },
-	capabilities = capabilities,
-	-- customize handlers for commands
-	handlers = {
-		source_definition = function(err, locations) end,
-		file_references = function(err, locations) end,
-		code_action = function(err, actions) end,
+require("typescript-tools").setup({
+	settings = {
+		separate_diagnostic_server = true,
+		publish_diagnostic_on = "change",
+		expose_as_code_action = {},
+		tsserver_path = nil,
+		tsserver_plugins = {},
+		tsserver_max_memory = "auto",
+		tsserver_format_options = {},
+		tsserver_file_preferences = {},
+		tsserver_locale = "en",
+		complete_function_calls = true,
+		include_completions_with_insert_text = true,
+		code_lens = "all",
+		disable_member_code_lens = false,
 	},
-	-- automatically trigger renaming of extracted symbol
-	refactor_auto_rename = true,
 })
-
--- lspconfig.tsserver.setup({
--- 	capabilities = capabilities,
--- 	inlay_hints = { enabled = false },
--- 	handlers = {
--- 		source_definition = function(err, locations) end,
--- 		file_references = function(err, locations) end,
--- 		code_action = function(err, actions) end,
--- 	},
--- 	-- automatically trigger renaming of extracted symbol
--- 	refactor_auto_rename = true,
--- })
 
 -- Global mappings.
 -- See `:help vim.diagnostic.*` for documentation on any of the below functions

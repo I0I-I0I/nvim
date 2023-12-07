@@ -19,6 +19,7 @@ function SetColor(color)
 	vim.api.nvim_set_hl(0, "NormalFloat", { bg = "none" })
 	vim.api.nvim_set_hl(0, "ColorColumn", { bg = "none" })
 	vim.api.nvim_set_hl(0, "LineNr", { bg = "none" })
+	vim.api.nvim_set_hl(0, "EndOfBuffer", { bg = "none" })
 
 	vim.api.nvim_set_hl(0, "DiagnosticSignError", { bg = "none", fg = "#ff0000" })
 	vim.api.nvim_set_hl(0, "DiagnosticSignOk", { bg = "none", fg = "#00ff00" })
@@ -28,6 +29,13 @@ function SetColor(color)
 
 	vim.api.nvim_set_hl(0, "FloatTitle", { bg = "none" })
 	vim.api.nvim_set_hl(0, "FloatBorder", { bg = "none" })
+
+	vim.api.nvim_set_hl(0, "TabLine", { bg = "none" })
+	vim.api.nvim_set_hl(0, "TabLineFill", { bg = "none" })
+	vim.api.nvim_set_hl(0, "TabLineSel", { bg = "none" })
+
+	vim.api.nvim_set_hl(0, "StatusLine", { bg = "none" })
+	vim.api.nvim_set_hl(0, "StatusLineNC", { bg = "none" })
 
 	vim.api.nvim_set_hl(0, "BufferLineFill", { bg = "none" })
 	vim.api.nvim_set_hl(0, "BufferLineBackground", { bg = "none" })

@@ -57,7 +57,10 @@ require("lazy").setup({
 	{ "j-hui/fidget.nvim" },
 
 	-- Format
-	{ "jose-elias-alvarez/null-ls.nvim" },
+	{ "nvimtools/none-ls.nvim" },
+
+	-- JS
+	{ "pmizio/typescript-tools.nvim" },
 
 	-- Saga
 	{ "nvimdev/lspsaga.nvim" },
@@ -82,6 +85,7 @@ require("lazy").setup({
 
 	-- Mason
 	{ "williamboman/mason.nvim" },
+	{ "williamboman/mason-lspconfig.nvim" },
 
 	-- AI
 	{ "codota/tabnine-nvim", build = "./dl_binaries.sh" },
@@ -136,4 +140,5 @@ require("lazy").setup({
 	-- Themes
 	{ "lunacookies/vim-substrata" },
 	{ "rebelot/kanagawa.nvim" },
+	{ "mhartington/oceanic-next" },
 })

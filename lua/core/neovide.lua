@@ -28,19 +28,19 @@ vim.o.guifont = "MesloLGS NS"
 
 function closeAllWindows(cmd)
 	if cmd == "q" then
-		vim.cmd("Bdelete")
+		vim.cmd("Bdelete!")
 	end
 
 	if cmd == "wq" then
 		vim.cmd([[
             w!
-            Bdelete
+            Bdelete!
         ]])
 	end
 
 	if cmd == "qa" then
 		vim.cmd([[
-            bufdo :Bdelete
+            bufdo :Bdelete!
             tabonly
             only
             Veil
@@ -51,7 +51,7 @@ function closeAllWindows(cmd)
 	if cmd == "wqa" then
 		vim.cmd([[
             wa!
-            bufdo :Bdelete
+            bufdo :Bdelete!
             tabonly
             only
             Veil

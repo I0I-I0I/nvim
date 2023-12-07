@@ -36,9 +36,9 @@ vim.cmd("let g:netrw_winsize = 20")
 
 -- Colors
 vim.opt.termguicolors = true
+-- autocmd BufWritePre * %s/\s\+$//e
 
 vim.cmd([[
-	autocmd BufWritePre * %s/\s\+$//e
 
 	autocmd FileType python set smartindent cinwords=if,elif,else,for,while,try,except,finally,def,class,with
 	autocmd FileType javascript set smartindent cinwords=if,else,for,while,function,class

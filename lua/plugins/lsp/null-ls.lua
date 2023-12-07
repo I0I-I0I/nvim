@@ -3,7 +3,7 @@ local augroup = vim.api.nvim_create_augroup("LspFormatting", {})
 
 null_ls.setup({
 	sources = {
-		null_ls.builtins.completion.spell,
+		-- JavaScript, CSS, HTML
 		null_ls.builtins.diagnostics.eslint_d.with({
 			filetypes = {
 				"typescript",
@@ -12,7 +12,7 @@ null_ls.setup({
 				"javascriptreact",
 			},
 		}),
-		null_ls.builtins.formatting.stylua,
+
 		null_ls.builtins.formatting.prettierd.with({
 			filetypes = {
 				"css",
@@ -30,12 +30,23 @@ null_ls.setup({
 				"typescript",
 			},
 		}),
-		null_ls.builtins.diagnostics.stylelint,
-		-- null_ls.builtins.code_actions.gitsings,
 
-		null_ls.builtins.diagnostics.flake8.with({ extra_args = { "--max-line-length", "88" } }),
+		null_ls.builtins.diagnostics.stylelint,
+
+		-- Lua
+		null_ls.builtins.formatting.stylua,
+
+		-- Python
+		null_ls.builtins.diagnostics.flake8.with({
+			extra_args = { "--max-line-length", "88" },
+		}),
+
 		null_ls.builtins.formatting.black,
+
+		-- Git
+		null_ls.builtins.code_actions.gitsigns,
 	},
+
 	on_attach = function(client, bufnr)
 		if client.supports_method("textDocument/formatting") then
 			vim.api.nvim_clear_autocmds({ group = augroup, buffer = bufnr })
