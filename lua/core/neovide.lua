@@ -83,8 +83,3 @@ vim.cmd([[
 
 vim.keymap.set("v", "<A-c>", '"+y') -- Copy
 vim.keymap.set({ "i", "v", "n" }, "<A-v>", '"+P') -- Paste
-
--- NeoTree
-vim.api.nvim_create_autocmd("NeotreeEvent_vim_win_leave", {
-	command = "set cursorline",
-})
