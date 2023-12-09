@@ -9,7 +9,7 @@ vim.keymap.set("v", "K", ":m '<-2<cr>gv=gv", { silent = true })
 -- vim.keymap.set("n", "<C-u>", "<C-u>zz")
 
 -- Terminal
-vim.keymap.set("n", "<C-\\>", "<cmd>split <cr><C-w>J<cmd>resize 10<cr><cmd>term<cr>i", { silent = true })
+vim.keymap.set("n", "<C-\\>", "<cmd>split <cr><C-w>J<cmd>resize 20<cr><cmd>term<cr>i", { silent = true })
 vim.keymap.set("t", "<C-\\>", "<cmd>Bdelete!<cr><cmd>close<cr>", { silent = true })
 
 -- $ ^
@@ -37,7 +37,7 @@ vim.opt.clipboard:prepend({ "unnamed", "unnamedplus" })
 vim.keymap.set("v", "<C-c>", ":w !clip.exe<cr><cr>", { silent = true })
 
 -- Rename
--- vim.keymap.set("n", "<leader>s", ":%s/\\<<C-r><C-w>\\>//gI<Left><Left><Left>")
+-- vim.keymap.set("n", "<leader>r", ":%s/\\<<C-r><C-w>\\>//gI<Left><Left><Left>")
 
 -- Explore
 vim.keymap.set("n", "<C-b>", "<cmd>Ex<cr>", { silent = true })
@@ -71,12 +71,23 @@ vim.keymap.set("n", "<C-down>", ":resize -2<cr>", { silent = true })
 -- Window tabs
 vim.keymap.set("n", "<C-w>i", ":tabnew ~/.config/nvim<cr>", { silent = true })
 vim.keymap.set("n", "<C-w>c", ":tabclose<cr>", { silent = true })
-vim.keymap.set("n", "<C-w>t", "<cmd>tabnew<cr><cmd>Veil<cr><cmd>set nocursorline<cr>", { silent = true })
+vim.keymap.set("n", "<C-w>t", "<cmd>tabnew<cr><cmd>Ex<cr>", { silent = true })
 vim.keymap.set("n", "<C-w>T", ":tabnew ")
 -- Moving to window tabs
 vim.keymap.set("n", "<Tab>", "gt")
 vim.keymap.set("n", "<S-Tab>", "gT")
 
 -- Mouse
-vim.keymap.set("n", "<leader>mn", ":set mouse=a<cr>:echo ' mouse on'<cr>")
-vim.keymap.set("n", "<leader>mf", ":set mouse=<cr>:echo ' mouse off'<cr>")
+local mouseMode = "a"
+function ToggleMouse()
+	if mouseMode == "a" then
+		vim.opt.mouse = ""
+		mouseMode = ""
+		print("mouse off")
+	else
+		vim.opt.mouse = "a"
+		mouseMode = "a"
+		print("mouse on")
+	end
+end
+vim.keymap.set("n", "<leader>m", "<cmd>lua ToggleMouse()<cr>")

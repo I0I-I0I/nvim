@@ -21,7 +21,7 @@ local default = {
 				text = "Open tree",
 				shortcut = "t",
 				callback = function()
-					vim.cmd("Neotree float")
+					GoToRootPath()
 				end,
 			},
 			{
@@ -29,7 +29,7 @@ local default = {
 				text = "Config",
 				shortcut = "i",
 				callback = function()
-					vim.cmd("Neotree float /home/i0i/.config/nvim/")
+					vim.cmd("Neotree float $HOME/.config/nvim/")
 				end,
 			},
 			{
@@ -37,7 +37,13 @@ local default = {
 				text = "Close",
 				shortcut = "q",
 				callback = function()
-					vim.cmd("qa")
+					vim.cmd([[
+                        try
+                            close
+                        catch
+                            quit
+                        endtry
+                    ]])
 				end,
 			},
 		}, { spacing = 5 }),
@@ -57,3 +63,28 @@ local default = {
 }
 
 require("veil").setup(default)
+
+-- Map tab
+vim.keymap.set("n", "<C-w>t", "<cmd>tabnew<cr><cmd>lua OpenVeil()<cr>", { silent = true })
+
+-- Function
+local index = 0
+function GoToRootPath()
+	if index == 0 then
+		index = index + 1
+		vim.cmd("Neotree float /mnt/d/code/")
+	else
+		vim.cmd("Neotree float")
+	end
+end
+
+function OpenVeil()
+	vim.cmd([[
+        set nocursorline
+        Veil
+    ]])
+end
+
+vim.cmd([[
+    ab veil lua OpenVeil()
+]])

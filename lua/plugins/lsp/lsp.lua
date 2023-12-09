@@ -13,10 +13,10 @@ require("mason-lspconfig").setup({
 		"lua_ls",
 		"stylelint_lsp",
 
-        -- "black",
-        -- "flake8",
-        -- "eslint_d",
-        -- "prettierd",
+		-- "black",
+		-- "flake8",
+		-- "eslint_d",
+		-- "prettierd",
 		-- "stylua",
 		-- "cspell",
 	},
@@ -70,11 +70,19 @@ lspconfig.pyright.setup({
 
 lspconfig.lua_ls.setup({
 	capabilities = capabilities,
+	filetypes = { "lua" },
 	settings = {
 		Lua = {
 			diagnostics = {
 				globals = { "vim" },
 			},
+		},
+		workspace = {
+			-- Make the server aware of Neovim runtime files
+			library = vim.api.nvim_get_runtime_file("", true),
+		},
+		telemetry = {
+			enable = false,
 		},
 	},
 })
@@ -92,7 +100,7 @@ lspconfig.html.setup({
 require("typescript-tools").setup({
 	settings = {
 		separate_diagnostic_server = true,
-		publish_diagnostic_on = "change",
+		publish_diagnostic_on = "insert_leave",
 		expose_as_code_action = {},
 		tsserver_path = nil,
 		tsserver_plugins = {},

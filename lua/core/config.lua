@@ -8,16 +8,43 @@ vim.cmd([[
 	cnoreabbrev W w
 ]])
 
+-- Disable italic
+
+vim.cmd([[
+    function! s:disable_italic()
+      let his = ''
+      redir => his
+      silent hi
+      redir END
+      let his = substitute(his, '\n\s\+', ' ', 'g')
+      for line in split(his, "\n")
+        if line !~ ' links to ' && line !~ ' cleared$'
+          exe 'hi' substitute(substitute(line, ' xxx ', ' ', ''), 'italic', 'none', 'g')
+        endif
+      endfor
+    endfunction
+
+    command! DisableItalic call s:disable_italic()
+]])
+
+vim.api.nvim_create_autocmd("VimEnter", {
+	command = "DisableItalic",
+})
+
 -- Cursor line
 vim.cmd("set cursorlineopt=line")
+
 vim.api.nvim_create_autocmd("InsertEnter", {
 	command = "set nocursorline",
 })
+
 vim.api.nvim_create_autocmd("InsertLeave", {
 	command = "set cursorline",
 })
-vim.api.nvim_create_autocmd("TermEnter", {
-	command = "set nocursorline",
+
+vim.api.nvim_create_autocmd("BufEnter", {
+	pattern = "*.*",
+	command = "set cursorline",
 })
 
 -- Spell
@@ -39,7 +66,6 @@ vim.opt.termguicolors = true
 -- autocmd BufWritePre * %s/\s\+$//e
 
 vim.cmd([[
-
 	autocmd FileType python set smartindent cinwords=if,elif,else,for,while,try,except,finally,def,class,with
 	autocmd FileType javascript set smartindent cinwords=if,else,for,while,function,class
 ]])
@@ -58,17 +84,6 @@ vim.cmd([[
 	set softtabstop=0
 ]])
 
--- vim.api.nvim_create_autocmd("BufNewFile", {
--- 	pattern = { "*.py" },
--- 	command = [[
--- 		set smarttab
--- 		set shiftwidth = 4
--- 		set expandtab
--- 		set tabstop=8
--- 		set softtabstop=0
--- 	]],
--- })
-
 -- Color column
 vim.opt.colorcolumn = "80"
 
@@ -79,7 +94,7 @@ vim.cmd("set iskeyword+=!,^34,^_")
 vim.g.formatoptions = "qrn1"
 
 -- Updatetime
-vim.opt.updatetime = 100
+vim.opt.updatetime = 300
 
 -- Display invisible characters
 vim.opt.list = true

@@ -19,6 +19,13 @@ require("lazy").setup({
 	-- Multi cursor
 	{ "mg979/vim-visual-multi" },
 
+	-- Terminal
+	{
+		"akinsho/toggleterm.nvim",
+		version = "*",
+		config = true,
+	},
+
 	-- Start screen
 	{
 		"willothy/veil.nvim",

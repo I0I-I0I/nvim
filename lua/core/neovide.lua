@@ -1,4 +1,4 @@
-vim.g.neovide_scale_factor = 1.05
+vim.g.neovide_scale_factor = 1.09
 vim.g.neovide_padding_top = 0
 vim.g.neovide_padding_bottom = 0
 vim.g.neovide_padding_right = 0
@@ -24,53 +24,67 @@ vim.g.neovide_hide_mouse_when_typing = true
 
 vim.g.neovide_fullscreen = true
 
-vim.o.guifont = "MesloLGS NS"
+vim.o.guifont = "MonaspaceKrypton Nerd Font"
 
-function closeAllWindows(cmd)
+function CloseAllWindows(cmd)
 	if cmd == "q" then
-		vim.cmd("Bdelete!")
-	end
-
-	if cmd == "wq" then
 		vim.cmd([[
-            w!
-            Bdelete!
+            Bdelete
+            try
+                close
+            catch
+                lua OpenVeil()
+            endtry
         ]])
-	end
-
-	if cmd == "qa" then
+	elseif cmd == "wq" then
 		vim.cmd([[
-            bufdo :Bdelete!
+            w
+            Bdelete
+            try
+                close
+            catch
+                lua OpenVeil()
+            endtry
+        ]])
+	elseif cmd == "qa" then
+		vim.cmd([[
+            bufdo :Bdelete
             tabonly
             only
-            Veil
-            set nocursorline
+            lua OpenVeil()
         ]])
-	end
-
-	if cmd == "wqa" then
+	elseif cmd == "wqa" then
 		vim.cmd([[
-            wa!
-            bufdo :Bdelete!
+            wa
             tabonly
             only
-            Veil
-            set nocursorline
+            try
+                bufdo :Bdelete!
+            catch
+                echo "Error :Bdelete"
+            endtry
+            lua OpenVeil()
         ]])
+	elseif cmd == "c" then
+		vim.cmd("close")
 	end
 end
 
 vim.cmd([[
-	ab q lua closeAllWindows('q')
-	ab qa lua closeAllWindows('qa')
-	ab wq lua closeAllWindows('wq')
-	ab wqa lua closeAllWindows('wqa')
+	ab q lua CloseAllWindows('q')
+	ab qa lua CloseAllWindows('qa')
+	ab wq lua CloseAllWindows('wq')
+	ab wqa lua CloseAllWindows('wqa')
+	ab c lua CloseAllWindows('c')
 
 	ab dcode /mnt/d/code/
 	ab dbot /mnt/d/code/project/learningEnglish/
 ]])
 
 vim.keymap.set("v", "<A-c>", '"+y') -- Copy
-vim.keymap.set("n", "<A-v>", '"+P') -- Paste normal mode
-vim.keymap.set("i", "<A-v>", '"+P') -- Paste normal mode
-vim.keymap.set("v", "<A-v>", '"+P') -- Paste visual mode
+vim.keymap.set({ "i", "v", "n" }, "<A-v>", '"+P') -- Paste
+
+-- NeoTree
+vim.api.nvim_create_autocmd("NeotreeEvent_vim_win_leave", {
+	command = "set cursorline",
+})

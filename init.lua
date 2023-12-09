@@ -4,11 +4,6 @@ require("core.mappings")
 require("core.color")
 require("core.config")
 
--- NeoVide
-if vim.g.neovide then
-	require("core.neovide")
-end
-
 -- Plugins
 -- LSP
 require("plugins.lsp.lsp")
@@ -18,8 +13,8 @@ require("plugins.lsp.null-ls")
 require("plugins.cmp.cmp")
 require("plugins.cmp.lab")
 -- AI
-require("plugins.cmp.ai.codeium")
-require("plugins.cmp.ai.tabnine")
+-- require("plugins.cmp.ai.codeium")
+-- require("plugins.cmp.ai.tabnine")
 -- Icons
 require("plugins.icons.icons")
 require("plugins.icons.lspkind")
@@ -29,6 +24,7 @@ require("plugins.git.git")
 require("plugins.other.treesitter")
 require("plugins.other.treejs")
 require("plugins.other.surround")
+require("plugins.other.toggleterm")
 -- Customization
 require("plugins.customization.noice")
 require("plugins.customization.veil")
@@ -43,3 +39,8 @@ require("plugins.move.telescope")
 require("plugins.move.bufferline")
 require("plugins.move.cybu")
 require("plugins.move.bbye")
+
+-- NeoVide
+if vim.g.neovide then
+	require("core.neovide")
+end

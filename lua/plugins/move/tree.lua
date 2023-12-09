@@ -20,7 +20,7 @@ require("neo-tree").setup({
 		},
 	},
 
-	close_if_last_window = false,
+	close_if_last_window = true,
 	popup_border_style = "rounded",
 	modified = {
 		symbol = "✚",
@@ -50,4 +50,4 @@ require("neo-tree").setup({
 })
 
 -- NeoTree
-vim.keymap.set("n", "<C-b>", ":Neotree float focus toggle<cr>", { silent = true })
+vim.keymap.set("n", "<C-b>", "<cmd>Neotree float focus toggle<cr>", { silent = true })

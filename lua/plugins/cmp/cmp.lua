@@ -15,6 +15,9 @@ require("luasnip.loaders.from_vscode").load()
 -- { exclude = { "html", "css" } }
 
 cmp.setup({
+	completion = {
+		autocomplete = false,
+	},
 	snippet = {
 		expand = function(args)
 			require("luasnip").lsp_expand(args.body) -- For `luasnip` users.
