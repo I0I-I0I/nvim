@@ -17,7 +17,7 @@ saga.setup({
 local opts = { noremap = true, silent = true }
 
 vim.keymap.set("n", "K", "<cmd>Lspsaga hover_doc<cr>", opts)
-vim.keymap.set("n", "<leader>r", "<cmd>Lspsaga rename<cr>", opts)
+vim.keymap.set("n", "<leader>R", "<cmd>Lspsaga rename<cr>", opts)
 vim.keymap.set("n", "<leader>lf", "<cmd>Lspsaga finder<cr>", opts)
 vim.keymap.set("n", "<leader>ld", "<cmd>Lspsaga peek_definition<cr>", opts)
 vim.keymap.set("n", "<leader>lo", "<cmd>Lspsaga outline<cr>", opts)

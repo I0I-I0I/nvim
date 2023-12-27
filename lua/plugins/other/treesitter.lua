@@ -47,7 +47,7 @@ require("nvim-treesitter.configs").setup({
 			keymaps = {
 				["a="] = { query = "@assignment.outer", desc = "Select outer part of an assignment" },
 				["i="] = { query = "@assignment.inner", desc = "Select inner part of an assignment" },
-				["l="] = { query = "@assignment.lhs", desc = "Select left hand side of an assignment" },
+				["v="] = { query = "@assignment.lhs", desc = "Select left hand side of an assignment" },
 				["r="] = { query = "@assignment.rhs", desc = "Select right hand side of an assignment" },
 
 				["aa"] = { query = "@parameter.outer", desc = "Select outer part of a parameter/argument" },
@@ -137,8 +137,8 @@ require("nvim-treesitter.configs").setup({
 
 local ts_repeat_move = require("nvim-treesitter.textobjects.repeatable_move")
 
-vim.keymap.set({ "n" }, ">", ts_repeat_move.repeat_last_move)
-vim.keymap.set({ "n" }, "<", ts_repeat_move.repeat_last_move_opposite)
+vim.keymap.set("n", ">", ts_repeat_move.repeat_last_move)
+vim.keymap.set("n", "<", ts_repeat_move.repeat_last_move_opposite)
 
 -- Optionally, make builtin f, F, t, T also repeatable with ; and ,
 -- vim.keymap.set({ "n", "x", "o" }, "f", ts_repeat_move.builtin_f)

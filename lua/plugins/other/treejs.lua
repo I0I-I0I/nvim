@@ -5,6 +5,7 @@ tsj.setup({
 	join = {
 		space_in_brackets = true,
 		space_separator = false,
+		force_insert = "",
 	},
 })
 

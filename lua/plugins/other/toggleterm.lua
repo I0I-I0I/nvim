@@ -19,9 +19,24 @@ require("toggleterm").setup({
 		zindex = 100,
 	},
 	winbar = {
-		enabled = true,
+		enabled = false,
 		name_formatter = function(term)
 			return term.name
 		end,
 	},
 })
+
+function TransparentToggleTerm()
+	local args = {
+		"ToggleTerm1Normal",
+		"ToggleTerm1WinBar",
+		"ToggleTerm1WinBarNC",
+	}
+	for _, name in ipairs(args) do
+		vim.api.nvim_set_hl(0, name, { bg = "none" })
+	end
+end
+
+vim.api.nvim_create_user_command("TransparentToggleTerm", TransparentToggleTerm, {})
+
+vim.keymap.set("n", "<C-\\>", "<cmd>ToggleTerm<cr><cmd>TransparentToggleTerm<cr>")

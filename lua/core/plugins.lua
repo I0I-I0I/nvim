@@ -16,6 +16,9 @@ require("lazy").setup({
 	{ "nvim-tree/nvim-web-devicons" },
 	{ "MunifTanjim/nui.nvim" },
 
+	-- Delete
+	{ "VonHeikemen/lsp-zero.nvim", branch = "v3.x" },
+
 	-- Multi cursor
 	{ "mg979/vim-visual-multi" },
 
@@ -80,6 +83,7 @@ require("lazy").setup({
 	{ "hrsh7th/cmp-nvim-lsp" },
 	{ "hrsh7th/cmp-buffer" },
 	{ "hrsh7th/cmp-cmdline" },
+	{ "hrsh7th/cmp-path" },
 
 	-- Snipets
 	{
@@ -148,4 +152,5 @@ require("lazy").setup({
 	{ "lunacookies/vim-substrata" },
 	{ "rebelot/kanagawa.nvim" },
 	{ "mhartington/oceanic-next" },
+	{ "sainnhe/everforest" },
 })

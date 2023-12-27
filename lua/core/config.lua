@@ -2,34 +2,34 @@ vim.loader.enable()
 -- Settings
 vim.scriptencoding = "utf-8"
 vim.opt.encoding = "utf-8"
-vim.opt.fileencoding = "utf-8"
 
 vim.cmd([[
 	cnoreabbrev W w
+	cnoreabbrev W! w!
+	cnoreabbrev Q q
+	cnoreabbrev Q! q!
+    cnoreabbrev Wq wq
+	cnoreabbrev Wa wa
+	cnoreabbrev Qa qa
 ]])
 
--- Disable italic
+-- Open Veil after edit
+function Edit(path)
+	vim.cmd.edit(path)
+	vim.cmd("vsplit")
+	vim.cmd("OpenVeil")
+	vim.cmd("only")
+	vim.cmd("set nocursorline")
+end
 
-vim.cmd([[
-    function! s:disable_italic()
-      let his = ''
-      redir => his
-      silent hi
-      redir END
-      let his = substitute(his, '\n\s\+', ' ', 'g')
-      for line in split(his, "\n")
-        if line !~ ' links to ' && line !~ ' cleared$'
-          exe 'hi' substitute(substitute(line, ' xxx ', ' ', ''), 'italic', 'none', 'g')
-        endif
-      endfor
-    endfunction
-
-    command! DisableItalic call s:disable_italic()
-]])
-
-vim.api.nvim_create_autocmd("VimEnter", {
-	command = "DisableItalic",
+vim.api.nvim_create_user_command("Edit", function(input)
+	local path = input.fargs[1]
+	Edit(path)
+end, {
+	nargs = 1,
 })
+
+vim.cmd("ab edit Edit")
 
 -- Cursor line
 vim.cmd("set cursorlineopt=line")
@@ -47,6 +47,14 @@ vim.api.nvim_create_autocmd("BufEnter", {
 	command = "set cursorline",
 })
 
+-- Source
+function Source()
+	vim.cmd("w | source")
+end
+
+vim.api.nvim_create_user_command("Source", Source, {})
+vim.cmd("ab so Source")
+
 -- Spell
 vim.opt.spelllang = "en_us"
 vim.opt.spell = true
@@ -63,12 +71,21 @@ vim.cmd("let g:netrw_winsize = 20")
 
 -- Colors
 vim.opt.termguicolors = true
--- autocmd BufWritePre * %s/\s\+$//e
+
+vim.api.nvim_create_autocmd("BufWritePre", {
+	callback = function()
+		vim.cmd([[ keeppatterns %s/\s\+$//e ]])
+	end,
+})
 
 vim.cmd([[
 	autocmd FileType python set smartindent cinwords=if,elif,else,for,while,try,except,finally,def,class,with
 	autocmd FileType javascript set smartindent cinwords=if,else,for,while,function,class
 ]])
+
+--
+vim.opt.autoread = true
+vim.bo.autoread = true
 
 -- Tabs
 vim.opt.autoindent = true
@@ -77,7 +94,6 @@ vim.opt.smarttab = true
 vim.opt.showtabline = 1
 
 vim.cmd([[
-	set smarttab
 	set shiftwidth=4
 	set expandtab
 	set tabstop=4
@@ -93,7 +109,7 @@ vim.cmd("set iskeyword+=!,^34,^_")
 -- Format options
 vim.g.formatoptions = "qrn1"
 
--- Updatetime
+-- Update time
 vim.opt.updatetime = 300
 
 -- Display invisible characters
@@ -113,7 +129,6 @@ vim.opt.hidden = true
 vim.opt.visualbell.t_vb = false
 
 -- Numbers
-vim.opt.ruler = true
 vim.opt.number = true
 vim.opt.relativenumber = true
 
@@ -126,25 +141,22 @@ vim.opt.incsearch = true
 vim.opt.ignorecase = true
 vim.opt.smartcase = true
 
--- Mouse
-vim.opt.mousefocus = true
-vim.opt.mouse = "a"
-
 -- Showmode
--- vim.opt.showmode = false
+vim.opt.showmode = false
 
 -- Autocomplite
 vim.cmd("filetype plugin on")
-vim.api.nvim_create_autocmd("InsertEnter", {
-	pattern = { "*.js" },
-	command = "set omnifunc=javascriptcomplete#CompleteJS",
+vim.api.nvim_create_autocmd("FileType", {
+	pattern = "javascript",
+	callback = function()
+		vim.cmd("set omnifunc=javascriptcomplete#CompleteJS")
+		print("JavaScript")
+	end,
 })
 
--- Paste
-vim.api.nvim_create_autocmd("InsertLeave", {
-	pattern = "*",
-	command = "set nopaste",
-})
+-- Mouse
+vim.opt.mousefocus = true
+vim.opt.mouse = "a"
 
 -- Folding
 vim.opt.foldmethod = "indent"
@@ -162,7 +174,7 @@ local function git_branch()
 	end
 end
 
-local function statusline()
+function statusline()
 	local set_color_1 = "%#PmenuSel#"
 	local branch = git_branch()
 	local set_color_2 = "%#LineNr#"

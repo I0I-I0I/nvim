@@ -1,82 +1,83 @@
--- Set up nvim-cmp.
 local cmp = require("cmp")
 local lspkind = require("lspkind")
-
-local source_mapping = {
-	buffer = "[Buffer]",
-	nvim_lsp = "[LSP]",
-	codeium = "[CDM]",
-	cmp_tabnine = "[TN]",
-	path = "[Path]",
-}
+local cmp_action = require("lsp-zero").cmp_action()
 
 -- VSCode
 require("luasnip.loaders.from_vscode").load()
--- { exclude = { "html", "css" } }
 
 cmp.setup({
+	preselect = "item",
 	completion = {
-		autocomplete = false,
+		-- autocomplete = false,
+		completeopt = "menu,menuone,noinsert",
 	},
+
 	snippet = {
 		expand = function(args)
-			require("luasnip").lsp_expand(args.body) -- For `luasnip` users.
+			require("luasnip").lsp_expand(args.body)
 		end,
 	},
+
+	sources = cmp.config.sources({
+		-- { name = "lab.quick_data", keyword_length = 4 },
+		{ name = "luasnip" },
+		-- { name = "codeium" },
+		{ name = "nvim_lsp" },
+	}, {
+		{ name = "buffer" },
+		{ name = "path" },
+	}),
 
 	window = {
 		completion = cmp.config.window.bordered(),
 		documentation = cmp.config.window.bordered(),
 	},
+
 	mapping = cmp.mapping.preset.insert({
 		["<C-b>"] = cmp.mapping.scroll_docs(-4),
 		["<C-f>"] = cmp.mapping.scroll_docs(4),
 		["<C-Space>"] = cmp.mapping.complete(),
 		["<C-e>"] = cmp.mapping.abort(),
-		["<cr>"] = cmp.mapping.confirm({ select = true }), -- Accept currently selected item. Set `select` to `false` to only confirm explicitly selected items.
-		["<Tab>"] = cmp.mapping(function(fallback)
-			if cmp.visible() then
-				cmp.select_next_item()
-			else
-				fallback()
-			end
-		end, { "i", "s" }),
-		["<S-Tab>"] = cmp.mapping(function(fallback)
-			if cmp.visible() then
-				cmp.select_prev_item()
-			else
-				fallback()
-			end
-		end, { "i", "s" }),
+		["<cr>"] = cmp.mapping.confirm({ select = true }),
+		["<Tab>"] = cmp_action.luasnip_supertab(),
+		["<S-Tab>"] = cmp_action.luasnip_shift_supertab(),
 	}),
+
 	formatting = {
 		fields = { "kind", "abbr", "menu" },
-		format = function(entry, vim_item)
-			vim_item.kind = lspkind.symbolic(vim_item.kind, { mode = "symbol" })
-			vim_item.menu = source_mapping[entry.source.name]
+		-- fields = { "menu", "abbr", "kind" },
+
+		format = function(entry, item)
+			local menu_icon = {
+				codeium = "[CDM]",
+				cmp_tabnine = "[TN]",
+				nvim_lsp = "λ",
+				luasnip = "⋗",
+				buffer = "Ω",
+				path = "🖫",
+				nvim_lua = "Π",
+			}
+
+			item.kind = lspkind.symbolic(item.kind, { mode = "symbol" })
+			item.menu = menu_icon[entry.source.name]
+
 			if entry.source.name == "codeium" then
 				local detail = (entry.completion_item.labelDetails or {}).detail
-				vim_item.kind = ""
+				item.kind = ""
 				if detail and detail:find(".*%%.*") then
-					vim_item.kind = vim_item.kind .. " " .. detail
+					item.kind = item.kind .. " " .. detail
 				end
 
 				if (entry.completion_item.data or {}).multiline then
-					vim_item.kind = vim_item.kind .. " " .. "[ML]"
+					item.kind = item.kind .. " " .. "[ML]"
 				end
 			end
+
 			local maxwidth = 80
-			vim_item.abbr = string.sub(vim_item.abbr, 1, maxwidth)
-			return vim_item
+			item.abbr = string.sub(item.abbr, 1, maxwidth)
+			return item
 		end,
 	},
-	sources = cmp.config.sources({
-		{ name = "lab.quick_data", keyword_length = 4 },
-		{ name = "luasnip" },
-		{ name = "codeium" },
-		{ name = "nvim_lsp" },
-		{ name = "buffer" },
-	}),
 })
 
 -- Set configuration for specific filetype.
@@ -93,6 +94,7 @@ cmp.setup.cmdline({ "/", "?" }, {
 	mapping = cmp.mapping.preset.cmdline(),
 	sources = {
 		{ name = "buffer" },
+		{ name = "path" },
 	},
 })
 

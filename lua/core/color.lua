@@ -1,113 +1,253 @@
 vim.opt.termguicolors = true
 
-function SetColor(color)
-	vim.opt.background = "dark"
-	if color == "andromeda" then
-		require("andromeda").setup({
-			preset = "andromeda",
-			transparent_bg = true,
-			styles = {
-				italic = true,
-			},
-		})
-	else
-		color = color or "habamax"
-		vim.cmd.colorscheme(color)
+function string_to_array(string)
+	local words = {}
+	for w in string:gmatch("%w+") do
+		table.insert(words, w)
 	end
-
-	vim.api.nvim_set_hl(0, "Normal", { bg = "none" })
-	vim.api.nvim_set_hl(0, "NormalFloat", { bg = "none" })
-	vim.api.nvim_set_hl(0, "ColorColumn", { bg = "none" })
-	vim.api.nvim_set_hl(0, "LineNr", { bg = "none" })
-	vim.api.nvim_set_hl(0, "EndOfBuffer", { bg = "none", fg = "#000000" })
-
-	vim.api.nvim_set_hl(0, "DiagnosticSignError", { bg = "none", fg = "#ff0000" })
-	vim.api.nvim_set_hl(0, "DiagnosticSignOk", { bg = "none", fg = "#00ff00" })
-	vim.api.nvim_set_hl(0, "DiagnosticSignHint", { bg = "none", fg = "#8a00c2" })
-	vim.api.nvim_set_hl(0, "DiagnosticSignWarn", { bg = "none", fg = "#ffa500" })
-	vim.api.nvim_set_hl(0, "DiagnosticSignInfo", { bg = "none", fg = "#235284" })
-
-	vim.api.nvim_set_hl(0, "FloatTitle", { bg = "none" })
-	vim.api.nvim_set_hl(0, "FloatBorder", { bg = "none" })
-
-	vim.api.nvim_set_hl(0, "TabLine", { bg = "none" })
-	vim.api.nvim_set_hl(0, "TabLineFill", { bg = "none" })
-	vim.api.nvim_set_hl(0, "TabLineSel", { bg = "none" })
-
-	vim.api.nvim_set_hl(0, "StatusLine", { bg = "none" })
-	vim.api.nvim_set_hl(0, "StatusLineNC", { bg = "none" })
-
-	vim.api.nvim_set_hl(0, "BufferLineFill", { bg = "none" })
-	vim.api.nvim_set_hl(0, "BufferLineBackground", { bg = "none" })
-	vim.api.nvim_set_hl(0, "BufferLinePick", { bg = "none" })
-	vim.api.nvim_set_hl(0, "BufferLineBufferSelected", { bg = "none" })
-	vim.api.nvim_set_hl(0, "BufferLineSeparatorSelected", { bg = "none" })
-	vim.api.nvim_set_hl(0, "BufferLineSeparator", { bg = "none" })
-	vim.api.nvim_set_hl(0, "BufferLineDevIconLua", { bg = "none" })
-	vim.api.nvim_set_hl(0, "BufferLineDevIconLuaSelected", { bg = "none" })
-	vim.api.nvim_set_hl(0, "BufferLineDevIconDefault", { bg = "none" })
-	vim.api.nvim_set_hl(0, "WinSeparator", { bg = "none" })
-
-	vim.api.nvim_set_hl(0, "CybuBackground", { bg = "none" })
-	vim.api.nvim_set_hl(0, "CybuBorder", { bg = "none" })
-	vim.api.nvim_set_hl(0, "CybuFocus", { bg = "#e4e4e4", fg = "#1c1c1c" })
-
-	vim.api.nvim_set_hl(0, "Visual", { fg = "#e4e4e4", bg = "#1c1c1c" })
+	return words
 end
 
-vim.api.nvim_create_autocmd("BufEnter", {
-	command = [[
-	hi! CursorLine gui=underline cterm=underline guibg=NONE ctermfg=None guifg=None
-	hi! NeoTreeFloatBorder ctermbg=NONE guibg=NONE
-	hi! NeoTreeFloatTitle ctermbg=NONE guibg=NONE
-	hi! NeoTreeFloatNormal ctermbg=NONE guibg=NONE
-	hi! NeoTreeNormal ctermbg=NONE guibg=NONE
-	hi! NeoTreeGitRenamed ctermbg=NONE guibg=NONE
-	hi! NeoTreeGitStage ctermbg=NONE guibg=NONE
-	hi! NeoTreeGitConflict ctermbg=NONE guibg=NONE
-	hi! NeoTreeGitUnstage ctermbg=NONE guibg=NONE
-	hi! NeoTreeGitUntracked ctermbg=NONE guibg=NONE
+vim.api.nvim_set_hl(0, "StatusLine", { fg = "#235284" })
 
-	hi! TelescopeBorder ctermbg=NONE guibg=NONE
-	hi! TelescopeNormal ctermbg=NONE guibg=NONE
-	hi! TelescopeSelectionCaret ctermbg=NONE guibg=NONE
+vim.g.everforest_diagnostic_line_highlight = 1
 
-	hi! SignColumn ctermbg=NONE guibg=NONE
+-- Disable italic
+vim.cmd([[
+    function! s:disable_italic()
+      let his = ''
+      redir => his
+      silent hi
+      redir END
+      let his = substitute(his, '\n\s\+', ' ', 'g')
+      for line in split(his, "\n")
+        if line !~ ' links to ' && line !~ ' cleared$'
+          exe 'hi' substitute(substitute(line, ' xxx ', ' ', ''), 'italic', 'none', 'g')
+        endif
+      endfor
+    endfunction
 
-	hi! GitSignsAdd ctermbg=NONE guibg=NONE
-	hi! GitSignsRemove ctermbg=NONE guibg=NONE
-	hi! GitSignsDelete ctermbg=NONE guibg=NONE
-	hi! GitSignsChange ctermbg=NONE guibg=NONE
-	hi! GitSignsAddPreview ctermbg=NONE guibg=NONE
+    command! DisableItalic call s:disable_italic()
+]])
 
-	hi! SagaBorder ctermbg=NONE guibg=NONE
-	hi! SagaTitle ctermbg=NONE guibg=NONE
+vim.api.nvim_create_autocmd("VimEnter", {
+	command = "DisableItalic",
+})
+function BackgroundTransparent(array)
+	for _, el in ipairs(array) do
+		vim.api.nvim_set_hl(0, el, { bg = "none" })
+	end
+end
 
-	hi! Folded  ctermbg=NONE guibg=NONE
-	]],
+function SetColor(color, transparent)
+	vim.opt.background = "dark"
+	vim.cmd("hi clear")
+	vim.cmd.colorscheme(color)
+
+	if transparent ~= 1 then
+		if vim.g.neovide then
+			local alpha = function()
+				return string.format("%x", math.floor((255 * vim.g.transparency) or 0.8))
+			end
+			vim.g.neovide_transparency = transparent
+			vim.g.transparency = 0.0
+			vim.g.neovide_background_color = "#0f1117" .. alpha()
+		end
+
+		BackgroundTransparent({
+			"Normal",
+			"NormalNC",
+			"NormalFloat",
+			"ColorColumn",
+			"LineNr",
+			"TabLine",
+			"TabLineFill",
+			"TabLineSel",
+			"SignColumn",
+			"Folded",
+			"FoldColumn",
+			"FloatTitle",
+			"FloatBorder",
+			"StatusLine",
+			"StatusLineNC",
+			"WinSeparator",
+
+			"BufferLineFill",
+			"BufferLineBackground",
+			"BufferLinePick",
+			"BufferLineBufferSelected",
+			"BufferLineSeparatorSelected",
+			"BufferLineSeparator",
+
+			"BufferLineDevIconDefault",
+			"BufferLineIndicatorSelected",
+			"BufferLineModified",
+			"BufferLineModifiedSelected",
+			"BufferLineError",
+			"BufferLineErrorSelected",
+			"BufferLineWarning",
+			"BufferLineWarningSelected",
+
+			"DiagnosticSignError",
+			"DiagnosticSignOk",
+			"DiagnosticSignHint",
+			"DiagnosticSignWarn",
+			"DiagnosticSignInfo",
+
+			"NeoTreeFloatBorder",
+			"NeoTreeFloatTitle",
+			"NeoTreeFloatNormal",
+			"NeoTreeNormal",
+			"NeoTreeGitRenamed",
+			"NeoTreeGitStage",
+			"NeoTreeGitConflict",
+			"NeoTreeGitUnstage",
+			"NeoTreeGitUntracked",
+			"NeoTreeEndOfBuffer",
+
+			"TelescopeBorder",
+			"TelescopeNormal",
+			"TelescopeSelectionCaret",
+
+			"GitSignsAdd",
+			"GitSignsRemove",
+			"GitSignsDelete",
+			"GitSignsChange",
+			"GitSignsAddPreview",
+
+			"SagaBorder",
+			"SagaTitle",
+
+			"NoiceCmdLinePopupBorder",
+			"NoiceCmdLinePopupTitle",
+			"NoiceCmdLineIcon",
+			"NoiceCmdlineIconSearch",
+			"NoiceCmdlinePopupBorderSearch",
+			"NoiceCmdlineIconFilter",
+
+			"CybuBackground",
+			"CybuBorder",
+		})
+
+		vim.api.nvim_create_autocmd("BufEnter", {
+			callback = function()
+				BackgroundTransparent({
+					"SignColumn",
+					"Folded",
+
+					"BufferLineFill",
+					"BufferLineBackground",
+					"BufferLinePick",
+					"BufferLineBufferSelected",
+					"BufferLineSeparatorSelected",
+					"BufferLineSeparator",
+
+					"NeoTreeFloatBorder",
+					"NeoTreeFloatTitle",
+					"NeoTreeFloatNormal",
+					"NeoTreeNormal",
+					"NeoTreeGitRenamed",
+					"NeoTreeGitStage",
+					"NeoTreeGitConflict",
+					"NeoTreeGitUnstage",
+					"NeoTreeGitUntracked",
+
+					"TelescopeBorder",
+					"TelescopeNormal",
+					"TelescopeSelectionCaret",
+
+					"SagaBorder",
+					"SagaTitle",
+				})
+			end,
+		})
+
+		vim.api.nvim_create_autocmd("CmdlineEnter", {
+			callback = function()
+				BackgroundTransparent({
+					"NoiceCmdLinePopupBorder",
+					"NoiceCmdLinePopupTitle",
+					"NoiceCmdLineIcon",
+					"NoiceCmdlineIconSearch",
+					"NoiceCmdlinePopupBorderSearch",
+					"NoiceCmdlineIconFilter",
+				})
+			end,
+		})
+	else
+		if vim.g.neovide then
+			vim.g.neovide_transparency = transparent
+		end
+	end
+
+	vim.cmd("hi! CursorLine gui=underline cterm=underline guibg=NONE ctermfg=None guifg=None")
+
+	vim.api.nvim_set_hl(0, "GitSignsAdd", { fg = "#6d9571" })
+	vim.api.nvim_set_hl(0, "GitSignsDelete", { fg = "#ff0000" })
+	vim.api.nvim_set_hl(0, "GitSignsChange", { fg = "#eed26e" })
+	vim.api.nvim_set_hl(0, "GitSigns", { fg = "#ff0000" })
+
+	vim.api.nvim_set_hl(0, "BufferLineModified", { fg = "#6d9571" })
+	vim.api.nvim_set_hl(0, "BufferLineModifiedSelected", { fg = "#6d9571" })
+	vim.api.nvim_set_hl(0, "BufferLineError", { fg = "#ff0000" })
+	vim.api.nvim_set_hl(0, "BufferLineErrorSelected", { fg = "#ff0000" })
+	vim.api.nvim_set_hl(0, "BufferLineWarning", { fg = "#eed26e" })
+	vim.api.nvim_set_hl(0, "BufferLineWarningSelected", { fg = "#eed26e" })
+
+	vim.api.nvim_set_hl(0, "BufferLineDevIconLuaSelected", { fg = "#51a0cf" })
+	vim.api.nvim_set_hl(0, "BufferLineDevIconLua", { fg = "#51a0cf" })
+	vim.api.nvim_set_hl(0, "BufferLineDevIconJsSelected", { fg = "#cbcb41" })
+	vim.api.nvim_set_hl(0, "BufferLineDevIconJs", { fg = "#cbcb41" })
+	vim.api.nvim_set_hl(0, "BufferLineDevIconTestJsSelected", { fg = "#cbcb41" })
+	vim.api.nvim_set_hl(0, "BufferLineDevIconTestJs", { fg = "#cbcb41" })
+	vim.api.nvim_set_hl(0, "BufferLineDevIconDefault", { fg = "#4f5a5f" })
+	vim.api.nvim_set_hl(0, "BufferLineDevIconDefaultSelected", { fg = "#4f5a5f" })
+	vim.api.nvim_set_hl(0, "BufferLineDevIconGitIgnore", { fg = "#4f5a5f" })
+	vim.api.nvim_set_hl(0, "BufferLineDevIconGitIgnoreSelected", { fg = "#4f5a5f" })
+
+	vim.api.nvim_set_hl(0, "DiagnosticSignError", { fg = "#ff0000" })
+	vim.api.nvim_set_hl(0, "DiagnosticSignOk", { fg = "#00ff00" })
+	vim.api.nvim_set_hl(0, "DiagnosticSignHint", { fg = "#8a00c2" })
+	vim.api.nvim_set_hl(0, "DiagnosticSignWarn", { fg = "#ffa500" })
+	vim.api.nvim_set_hl(0, "DiagnosticSignInfo", { fg = "#235284" })
+
+	vim.api.nvim_set_hl(0, "LineNr", { fg = "#747474" })
+	vim.api.nvim_set_hl(0, "EndOfBuffer", { fg = "#000000" })
+	vim.api.nvim_set_hl(0, "StatusLine", { fg = "#235284" })
+	vim.api.nvim_set_hl(0, "StatusLineNC", { fg = "#235284" })
+
+	vim.api.nvim_set_hl(0, "CybuFocus", { bg = "#e4e4e4", fg = "#1c1c1c" })
+end
+
+vim.api.nvim_create_user_command("Setcolor", function(input)
+	local color = input.fargs[1]
+	local transparent = tonumber(input.fargs[2])
+	if not transparent then
+		transparent = 0.7
+	end
+	SetColor(color, transparent)
+	if input.fargs[3] ~= "italic" then
+		vim.cmd("DisableItalic")
+	end
+end, {
+	nargs = "*",
+	complete = function(ArgLead, CmdLine, CursorPos)
+		local colors = {
+			"kanagawa",
+			"substrata",
+			"OceanicNext",
+			"retrobox",
+			"everforest",
+		}
+
+		local CmdLineArray = table.getn(string_to_array(CmdLine))
+
+		if CmdLineArray == 1 then
+			return colors
+		elseif CmdLineArray == 3 then
+			return { "italic" }
+		end
+	end,
 })
 
-vim.api.nvim_create_autocmd("CmdlineEnter", {
-	command = [[
-	hi! NoiceCmdLinePopupBorder ctermbg=NONE guibg=NONE
-	hi! NoiceCmdLinePopupTitle ctermbg=NONE guibg=NONE
-	hi! NoiceCmdLineIcon ctermbg=NONE guibg=NONE
-
-	hi! NoiceCmdlineIconSearch ctermbg=NONE guibg=NONE
-	hi! NoiceCmdlinePopupBorderSearch ctermbg=NONE guibg=NONE
-	hi! NoiceCmdlineIconFilter ctermbg=NONE guibg=NONE
-	]],
-})
-
-SetColor("kanagawa")
-
--- retrobox
--- habamax
--- onedark
--- kanagawa
--- OceanicNext
--- tokyonight
--- horizon
--- andromeda
--- substrata
--- nord
+SetColor("everforest", 0.7)

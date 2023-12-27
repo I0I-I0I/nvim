@@ -13,7 +13,7 @@ local default = {
 				text = "Continue",
 				shortcut = "s",
 				callback = function()
-					vim.cmd("source session.vim")
+					vim.cmd("Telescope projects")
 				end,
 			},
 			{
@@ -65,26 +65,20 @@ local default = {
 require("veil").setup(default)
 
 -- Map tab
-vim.keymap.set("n", "<C-w>t", "<cmd>tabnew<cr><cmd>lua OpenVeil()<cr>", { silent = true })
+vim.keymap.set("n", "<C-w>t", "<cmd>tabnew<cr><cmd>OpenVeil<cr>", { silent = true })
 
 -- Function
-local index = 0
 function GoToRootPath()
-	if index == 0 then
-		index = index + 1
-		vim.cmd("Neotree float /mnt/d/code/")
-	else
-		vim.cmd("Neotree float")
-	end
+	vim.cmd("Neotree float")
 end
 
 function OpenVeil()
-	vim.cmd([[
-        set nocursorline
-        Veil
-    ]])
+	vim.cmd("set nocursorline")
+	vim.cmd("Veil")
 end
 
+vim.api.nvim_create_user_command("OpenVeil", OpenVeil, {})
+
 vim.cmd([[
-    ab veil lua OpenVeil()
+    ab veil OpenVeil
 ]])
