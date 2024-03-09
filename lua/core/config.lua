@@ -1,5 +1,7 @@
 vim.loader.enable()
 -- Settings
+vim.g.mapleader = ","
+vim.opt.termguicolors = true
 vim.scriptencoding = "utf-8"
 vim.opt.encoding = "utf-8"
 
@@ -13,23 +15,10 @@ vim.cmd([[
 	cnoreabbrev Qa qa
 ]])
 
--- Open Veil after edit
-function Edit(path)
-	vim.cmd.edit(path)
-	vim.cmd("vsplit")
-	vim.cmd("OpenVeil")
-	vim.cmd("only")
-	vim.cmd("set nocursorline")
-end
-
-vim.api.nvim_create_user_command("Edit", function(input)
-	local path = input.fargs[1]
-	Edit(path)
-end, {
-	nargs = 1,
-})
-
-vim.cmd("ab edit Edit")
+vim.cmd([[
+    cnoreabbrev drevo /mnt/d/code/project/site_revo/app/
+    cnoreabbrev dtravel /mnt/d/code/project/site_travel/app/
+]])
 
 -- Cursor line
 vim.cmd("set cursorlineopt=line")
@@ -68,9 +57,6 @@ vim.cmd("let g:netrw_banner = 0")
 vim.cmd("let g:netrw_liststyle = 3")
 vim.cmd("let g:netrw_browse_split = 0")
 vim.cmd("let g:netrw_winsize = 20")
-
--- Colors
-vim.opt.termguicolors = true
 
 vim.api.nvim_create_autocmd("BufWritePre", {
 	callback = function()

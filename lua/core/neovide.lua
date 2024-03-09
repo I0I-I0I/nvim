@@ -82,9 +82,6 @@ vim.cmd([[
 	cnoreabbrev dbot /mnt/d/code/project/learningEnglish/
 ]])
 
-vim.keymap.set("v", "<A-c>", '"+y') -- Copy
-vim.keymap.set({ "i", "v", "n" }, "<A-v>", '"+P') -- Paste
-
 vim.cmd([[
     try
         OpenVeil

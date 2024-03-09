@@ -1,5 +1,3 @@
-vim.g.mapleader = ","
-
 -- Move string
 vim.keymap.set("v", "J", ":m '>+1<cr>gv=gv", { silent = true })
 vim.keymap.set("v", "K", ":m '<-2<cr>gv=gv", { silent = true })
@@ -34,16 +32,16 @@ vim.keymap.set({ "v", "n", "x" }, "L", "$")
 -- Insert Enter
 vim.keymap.set("i", "<C-Enter>", "<Esc>o")
 vim.keymap.set("i", "<S-Enter>", "<Esc>O")
--- Normal Enter
-vim.keymap.set("n", "<C-Enter>", "o<Esc>")
-vim.keymap.set("n", "<S-Enter>", "O<Esc>")
+-- Normal/Insert Enter
+vim.keymap.set("n", "<C-Enter>", "<cmd>norm o<cr>")
+vim.keymap.set("n", "<S-Enter>", "<cmd>norm O<cr>")
 
 -- Insert left, right
 vim.keymap.set("i", "<C-h>", "<left>")
 vim.keymap.set("i", "<C-l>", "<right>")
 
 -- Save
-vim.keymap.set({ "n", "i" }, "<C-s>", "<cmd>w<cr>")
+vim.keymap.set({ "v", "n", "i" }, "<C-s>", "<cmd>w<cr><Esc>")
 
 -- Not yank with x/s
 vim.keymap.set("v", "x", '"_x')
@@ -56,7 +54,7 @@ vim.keymap.set({ "n", "v" }, "S", '"_S')
 vim.keymap.set("x", "<leader>p", '"_dP')
 
 local index = false
-function TogglePast()
+function TogglePaste()
 	if index == false then
 		vim.cmd("set paste")
 		index = true
@@ -68,7 +66,7 @@ function TogglePast()
 	end
 end
 
-vim.api.nvim_create_user_command("TogglePaste", TogglePast, {})
+vim.api.nvim_create_user_command("TogglePaste", TogglePaste, {})
 vim.keymap.set({ "n", "i" }, "<F2>", "<cmd>TogglePaste<cr>")
 
 -- Search
@@ -83,7 +81,7 @@ vim.keymap.set("v", "<C-c>", ":w !clip.exe<cr>", { silent = true })
 vim.keymap.set("n", "<leader>r", ":%s/\\<<C-r><C-w>\\>//gI<Left><Left><Left>")
 
 -- Explore
--- vim.keymap.set("n", "<C-b>", "<cmd>Ex<cr>", { silent = true })
+vim.keymap.set("n", "<C-b>", "<cmd>Ex<cr>", { silent = true })
 
 -- Tabs
 vim.keymap.set("v", "<", "<gv")

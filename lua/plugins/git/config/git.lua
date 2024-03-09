@@ -8,6 +8,7 @@ require("gitsigns").setup({
 		untracked = { text = "|" },
 	},
 })
+
 vim.keymap.set("n", "<leader>gs", vim.cmd.Git)
 vim.keymap.set("n", "<leader>gn", ":Gitsigns next_hunk<cr>")
 vim.keymap.set("n", "<leader>gp", ":Gitsigns prev_hunk<cr>")

@@ -1,6 +1,4 @@
-vim.opt.termguicolors = true
-
-function string_to_array(string)
+local function string_to_array(string)
 	local words = {}
 	for w in string:gmatch("%w+") do
 		table.insert(words, w)
@@ -8,7 +6,7 @@ function string_to_array(string)
 	return words
 end
 
-vim.api.nvim_set_hl(0, "StatusLine", { fg = "#235284" })
+-- vim.api.nvim_set_hl(0, "StatusLine", { fg = "#235284" })
 
 vim.g.everforest_diagnostic_line_highlight = 1
 
@@ -56,6 +54,8 @@ function SetColor(color, transparent)
 
 		BackgroundTransparent({
 			"Normal",
+			"WinBar",
+			"WinBarNC",
 			"NormalNC",
 			"NormalFloat",
 			"ColorColumn",
@@ -194,6 +194,8 @@ function SetColor(color, transparent)
 	vim.api.nvim_set_hl(0, "BufferLineWarning", { fg = "#eed26e" })
 	vim.api.nvim_set_hl(0, "BufferLineWarningSelected", { fg = "#eed26e" })
 
+	vim.api.nvim_set_hl(0, "Visual", { fg = "#1c1c1c", bg = "#e4e4e4" })
+
 	vim.api.nvim_set_hl(0, "BufferLineDevIconLuaSelected", { fg = "#51a0cf" })
 	vim.api.nvim_set_hl(0, "BufferLineDevIconLua", { fg = "#51a0cf" })
 	vim.api.nvim_set_hl(0, "BufferLineDevIconJsSelected", { fg = "#cbcb41" })
@@ -204,6 +206,24 @@ function SetColor(color, transparent)
 	vim.api.nvim_set_hl(0, "BufferLineDevIconDefaultSelected", { fg = "#4f5a5f" })
 	vim.api.nvim_set_hl(0, "BufferLineDevIconGitIgnore", { fg = "#4f5a5f" })
 	vim.api.nvim_set_hl(0, "BufferLineDevIconGitIgnoreSelected", { fg = "#4f5a5f" })
+	vim.api.nvim_set_hl(0, "BufferLineDevIconTxt", { fg = "#89e051" })
+	vim.api.nvim_set_hl(0, "BufferLineDevIconTxtSelected", { fg = "#89e051" })
+	vim.api.nvim_set_hl(0, "BufferLineDevIconMd", { fg = "#ffffff" })
+	vim.api.nvim_set_hl(0, "BufferLineDevIconMdSelected", { fg = "#ffffff" })
+	vim.api.nvim_set_hl(0, "BufferLineDevIconCss", { fg = "#42a5f5" })
+	vim.api.nvim_set_hl(0, "BufferLineDevIconCssSelected", { fg = "#42a5f5" })
+	vim.api.nvim_set_hl(0, "BufferLineDevIconEditorConfig", { fg = "#ffffff" })
+	vim.api.nvim_set_hl(0, "BufferLineDevIconEditorConfigSelected", { fg = "#ffffff" })
+	vim.api.nvim_set_hl(0, "BufferLineDevIconCjs", { fg = "#cbcb41" })
+	vim.api.nvim_set_hl(0, "BufferLineDevIconCjsSelected", { fg = "#cbcb41" })
+	vim.api.nvim_set_hl(0, "BufferLineDevIconHtml", { fg = "#e44d26" })
+	vim.api.nvim_set_hl(0, "BufferLineDevIconHtmlSelected", { fg = "#e44d26" })
+	vim.api.nvim_set_hl(0, "BufferLineDevIconPackageJson", { fg = "#e8274b" })
+	vim.api.nvim_set_hl(0, "BufferLineDevIconPackageJsonSelected", { fg = "#e8274b" })
+	vim.api.nvim_set_hl(0, "BufferLineDevIconJson", { fg = "#cbcb41" })
+	vim.api.nvim_set_hl(0, "BufferLineDevIconJsonSelected", { fg = "#cbcb41" })
+	vim.api.nvim_set_hl(0, "BufferLineDevIconSvg", { fg = "#ffb13b" })
+	vim.api.nvim_set_hl(0, "BufferLineDevIconSvgSelected", { fg = "#ffb13b" })
 
 	vim.api.nvim_set_hl(0, "DiagnosticSignError", { fg = "#ff0000" })
 	vim.api.nvim_set_hl(0, "DiagnosticSignOk", { fg = "#00ff00" })
@@ -241,7 +261,6 @@ end, {
 		}
 
 		local CmdLineArray = table.getn(string_to_array(CmdLine))
-
 		if CmdLineArray == 1 then
 			return colors
 		elseif CmdLineArray == 3 then

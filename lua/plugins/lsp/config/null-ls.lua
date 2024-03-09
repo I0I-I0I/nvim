@@ -4,7 +4,7 @@ local augroup = vim.api.nvim_create_augroup("LspFormatting", {})
 null_ls.setup({
 	sources = {
 		-- JavaScript, CSS, HTML
-		null_ls.builtins.diagnostics.eslint_d.with({
+		null_ls.builtins.diagnostics.eslint.with({
 			filetypes = {
 				"typescript",
 				"javascript",
@@ -37,9 +37,7 @@ null_ls.setup({
 		null_ls.builtins.formatting.stylua,
 
 		-- Python
-		null_ls.builtins.diagnostics.flake8.with({
-			extra_args = { "--max-line-length", "88" },
-		}),
+		null_ls.builtins.diagnostics.ruff,
 
 		null_ls.builtins.formatting.black,
 

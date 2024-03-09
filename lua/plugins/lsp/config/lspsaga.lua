@@ -1,6 +1,4 @@
-local saga = require("lspsaga")
-
-saga.setup({
+require("lspsaga").setup({
 	lightbulb = {
 		enable = false,
 	},
@@ -11,6 +9,9 @@ saga.setup({
 	code_action = {
 		show_server_name = true,
 		extend_gitsings = true,
+	},
+	symbol_in_winbar = {
+		enable = false,
 	},
 })
 

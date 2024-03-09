@@ -20,8 +20,8 @@ cmp.setup({
 
 	sources = cmp.config.sources({
 		-- { name = "lab.quick_data", keyword_length = 4 },
+		{ name = "codeium" },
 		{ name = "luasnip" },
-		-- { name = "codeium" },
 		{ name = "nvim_lsp" },
 	}, {
 		{ name = "buffer" },

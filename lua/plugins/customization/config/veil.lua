@@ -13,7 +13,10 @@ local default = {
 				text = "Continue",
 				shortcut = "s",
 				callback = function()
-					vim.cmd("Telescope projects")
+					vim.cmd([[
+                        Edit /mnt/d/code/project/site_car/app/
+                        Neotree float
+                    ]])
 				end,
 			},
 			{
@@ -21,7 +24,7 @@ local default = {
 				text = "Open tree",
 				shortcut = "t",
 				callback = function()
-					GoToRootPath()
+					vim.cmd("Neotree float")
 				end,
 			},
 			{
@@ -68,10 +71,6 @@ require("veil").setup(default)
 vim.keymap.set("n", "<C-w>t", "<cmd>tabnew<cr><cmd>OpenVeil<cr>", { silent = true })
 
 -- Function
-function GoToRootPath()
-	vim.cmd("Neotree float")
-end
-
 function OpenVeil()
 	vim.cmd("set nocursorline")
 	vim.cmd("Veil")
@@ -82,3 +81,31 @@ vim.api.nvim_create_user_command("OpenVeil", OpenVeil, {})
 vim.cmd([[
     ab veil OpenVeil
 ]])
+
+-- Open Veil after edit
+function Edit(path)
+	vim.cmd.edit(path)
+	vim.cmd("vsplit")
+	vim.cmd("OpenVeil")
+	vim.cmd("only")
+	vim.cmd("set nocursorline")
+end
+
+vim.api.nvim_create_user_command("Edit", function(input)
+	local path = input.fargs[1]
+	Edit(path)
+end, {
+	nargs = 1,
+	complete = function(ArgLead, CmdLine, CursorPos)
+		local projects = {
+			"drevo",
+			"dtravel",
+		}
+		local CmdLineArray = table.getn(string_to_array(CmdLine))
+		if CmdLineArray == 1 then
+			return projects
+		end
+	end,
+})
+
+vim.cmd("ab edit Edit")
