@@ -2,9 +2,8 @@
 require("core.vscode-config")
 
 -- Plugins
-require("plugins.manager")
 
-require("lazy").setup({
+Plugins = {
 	{ "nvim-lua/plenary.nvim" },
 	{ "MunifTanjim/nui.nvim" },
 
@@ -32,4 +31,6 @@ require("lazy").setup({
 
 	-- Time
 	{ "wakatime/vim-wakatime" },
-})
+}
+
+require("plugins.manager")

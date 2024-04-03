@@ -10,6 +10,7 @@ return {
 	},
 	{
 		"ThePrimeagen/harpoon",
+		event = "BufEnter",
 		config = function()
 			require("plugins.move.config.harpoon")
 		end,
@@ -17,6 +18,7 @@ return {
 	{
 		"ghillb/cybu.nvim",
 		branch = "main",
+		event = "BufEnter",
 		config = function()
 			require("plugins.move.config.cybu")
 		end,

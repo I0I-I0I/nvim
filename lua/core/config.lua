@@ -99,7 +99,7 @@ vim.g.formatoptions = "qrn1"
 vim.opt.updatetime = 300
 
 -- Display invisible characters
-vim.opt.list = true
+vim.opt.list = false
 
 -- Wrap
 vim.opt.linebreak = true

@@ -18,33 +18,37 @@ return {
 			"neovim/nvim-lspconfig",
 		},
 		branch = "v3.x",
+		lazy = true,
 		config = function()
-			require("plugins.lsp.config.lsp-zero")
+			require("plugins.lsp.config.lspzero")
 		end,
 	},
 
 	-- CMP
 	{
 		"hrsh7th/nvim-cmp",
+		dependencies = {
+			{ "hrsh7th/cmp-nvim-lsp" },
+			{ "hrsh7th/cmp-buffer" },
+			{ "hrsh7th/cmp-cmdline" },
+			{ "hrsh7th/cmp-path" },
+			{ "lukas-reineke/cmp-under-comparator" },
+		},
+		event = "InsertEnter",
 		config = function()
 			require("plugins.lsp.config.cmp")
 		end,
 	},
-	{ "hrsh7th/cmp-nvim-lsp" },
-	{ "hrsh7th/cmp-buffer" },
-	{ "hrsh7th/cmp-cmdline" },
-	{ "hrsh7th/cmp-path" },
 
 	-- Snipets
 	{
 		"L3MON4D3/LuaSnip",
+		lazy = true,
 		version = "v2.*",
 		build = "make install_jsregexp",
 		dependencies = { "rafamadriz/friendly-snippets" },
 	},
-	{
-		"saadparwaiz1/cmp_luasnip",
-	},
+	{ "saadparwaiz1/cmp_luasnip" },
 
 	-- AI
 	-- {
@@ -56,6 +60,7 @@ return {
 	-- },
 	{
 		"Exafunction/codeium.nvim",
+		lazy = true,
 		config = function()
 			require("plugins.lsp.config.ai.codeium")
 		end,
@@ -81,6 +86,7 @@ return {
 	-- Tools
 	{
 		"nvimdev/lspsaga.nvim",
+		event = "BufEnter",
 		config = function()
 			require("plugins.lsp.config.lspsaga")
 		end,
@@ -97,8 +103,19 @@ return {
 	-- TypeScript
 	{
 		"pmizio/typescript-tools.nvim",
+		ft = { "typescript", "typescriptreact", "typescript.tsx", "javascript", "javascriptreact", "javascript.tsx" },
 		config = function()
 			require("plugins.lsp.config.typescript")
 		end,
+	},
+
+	-- Optimization
+	{
+		"zeioth/garbage-day.nvim",
+		dependencies = "neovim/nvim-lspconfig",
+		lazy = true,
+		opts = {
+			notification = true,
+		},
 	},
 }
