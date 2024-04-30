@@ -22,7 +22,7 @@ vim.cmd("set noswapfile")
 vim.opt.colorcolumn = "80"
 
 -- word separators
--- vim.cmd("set iskeyword+=!,^34,^_")
+vim.cmd("set iskeyword+=!,^34,^_")
 
 -- Shell
 vim.opt.shell = "/bin/zsh"

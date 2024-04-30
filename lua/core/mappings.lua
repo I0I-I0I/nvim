@@ -40,18 +40,31 @@ vim.keymap.set("n", "<S-Enter>", "<cmd>norm O<cr>")
 vim.keymap.set("i", "<C-h>", "<left>")
 vim.keymap.set("i", "<C-l>", "<right>")
 
--- Save
-vim.keymap.set({ "v", "n", "i" }, "<C-s>", "<cmd>w<cr><Esc>")
+-- yank and paste
+vim.keymap.set("v", "1y", '"1y')
+vim.keymap.set("v", "2y", '"2y')
+vim.keymap.set("v", "3y", '"3y')
+vim.keymap.set("v", "4y", '"4y')
+vim.keymap.set("v", "5y", '"5y')
+vim.keymap.set({ "v", "n" }, "1p", '"1p')
+vim.keymap.set({ "v", "n" }, "2p", '"2p')
+vim.keymap.set({ "v", "n" }, "3p", '"3p')
+vim.keymap.set({ "v", "n" }, "4p", '"4p')
+vim.keymap.set({ "v", "n" }, "5p", '"5p')
+
+-- Paste
+vim.keymap.set("x", "p", '"_dP')
+vim.keymap.set("x", "<leader>p", "p")
 
 -- Not yank with x/s
 vim.keymap.set("v", "x", '"_x')
-vim.keymap.set("v", "X", '"_X')
+vim.keymap.set({ "v", "n" }, "X", '"_X')
 
 vim.keymap.set({ "n", "v" }, "s", '"_s')
 vim.keymap.set({ "n", "v" }, "S", '"_S')
 
--- Paste
-vim.keymap.set("x", "<leader>p", '"_dP')
+-- Save
+vim.keymap.set({ "v", "n", "i" }, "<C-s>", "<cmd>w<cr><Esc>")
 
 local index = false
 function TogglePaste()
@@ -72,10 +85,6 @@ vim.keymap.set({ "n", "i" }, "<F2>", "<cmd>TogglePaste<cr>")
 -- Search
 vim.keymap.set("n", "n", "nzzzv")
 vim.keymap.set("n", "N", "Nzzzv")
-
--- Clipboard
-vim.opt.clipboard:prepend({ "unnamed", "unnamedplus" })
-vim.keymap.set("v", "<C-c>", ":w !clip.exe<cr>", { silent = true })
 
 -- Rename
 vim.keymap.set("n", "<leader>r", ":%s/\\<<C-r><C-w>\\>//gI<Left><Left><Left>")

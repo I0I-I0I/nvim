@@ -1,9 +1,21 @@
 vim.loader.enable()
+
 -- Settings
 vim.g.mapleader = ","
 vim.opt.termguicolors = true
 vim.scriptencoding = "utf-8"
 vim.opt.encoding = "utf-8"
+
+-- WSL yank support
+vim.cmd([[
+    let s:clip = '/mnt/c/Windows/System32/clip.exe'
+    if executable(s:clip)
+        augroup WSLYank
+            autocmd!
+            autocmd TextYankPost * if v:event.operator ==# 'y' | call system(s:clip, @0) | endif
+        augroup END
+    endif
+]])
 
 vim.cmd([[
 	cnoreabbrev W w
@@ -115,8 +127,8 @@ vim.opt.hidden = true
 vim.opt.visualbell.t_vb = false
 
 -- Numbers
-vim.opt.number = true
-vim.opt.relativenumber = true
+vim.opt.number = false
+vim.opt.relativenumber = false
 
 -- Scroll
 vim.opt.scrolloff = 7
