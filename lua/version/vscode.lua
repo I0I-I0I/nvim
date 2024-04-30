@@ -33,4 +33,4 @@ Plugins = {
 	{ "wakatime/vim-wakatime" },
 }
 
-require("plugins.manager")
+require("plugins.lazy")

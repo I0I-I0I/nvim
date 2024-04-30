@@ -13,7 +13,7 @@ Plugins = {
 	{ import = "plugins.util.setup" },
 }
 
-require("plugins.manager")
+require("plugins.lazy")
 
 -- Themes
 require("themes.config")

@@ -58,9 +58,11 @@ return {
 				})
 			end
 
-			function pyright()
-				lspconfig.pyright.setup({
+			function python()
+				lspconfig.py_lsp.setup({
 					filetypes = { "python" },
+					language_server = "pylsp",
+					source_strategies = { "poetry", "default", "system" },
 					handlers = {
 						source_definition = function(err, locations) end,
 						file_references = function(err, locations) end,
@@ -68,12 +70,6 @@ return {
 					},
 				})
 			end
-
-			-- function tsserver()
-			-- 	lspconfig.tsserver.setup({
-			-- 		filetypes = { "javascriptreact", "typescriptreact", "javascript", "typescript" },
-			-- 	})
-			-- end
 
 			function html()
 				lspconfig.html.setup({
@@ -92,7 +88,7 @@ return {
 					lua_ls = lua_ls,
 					cssls = cssls,
 					emmet_language_server = emmet_ls,
-					pyright = pyright,
+					python = python,
 					html = html,
 				},
 			})

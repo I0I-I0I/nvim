@@ -127,8 +127,8 @@ vim.opt.hidden = true
 vim.opt.visualbell.t_vb = false
 
 -- Numbers
-vim.opt.number = false
-vim.opt.relativenumber = false
+vim.opt.number = true
+vim.opt.relativenumber = true
 
 -- Scroll
 vim.opt.scrolloff = 7

@@ -5,6 +5,7 @@ return {
 		build = "make install_jsregexp",
 		dependencies = { "rafamadriz/friendly-snippets" },
 	},
+
 	{
 		"hrsh7th/nvim-cmp",
 		dependencies = {
@@ -25,10 +26,6 @@ return {
 			require("luasnip.loaders.from_vscode").load()
 
 			cmp.setup({
-				-- completion = {
-				-- 	completeopt = "menu,menuone,noinsert",
-				-- },
-
 				snippet = {
 					expand = function(args)
 						require("luasnip").lsp_expand(args.body)
@@ -60,8 +57,7 @@ return {
 				}),
 
 				formatting = {
-					fields = { "kind", "abbr" },
-					-- fields = { "menu", "abbr", "kind" },
+					fields = { "kind", "abbr", "menu" },
 
 					format = function(entry, item)
 						local menu_icon = {
