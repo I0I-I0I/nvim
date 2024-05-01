@@ -18,73 +18,16 @@ vim.g.neovide_fullscreen = true
 
 vim.o.guifont = "MonaspaceKrypton Nerd Font"
 
-function CloseAllWindows(cmd)
-	if cmd == "q" then
-		vim.cmd([[
-            Bdelete
-            try
-                close
-            catch
-                OpenVeil
-            endtry
-        ]])
-	elseif cmd == "wq" then
-		vim.cmd([[
-            w
-            Bdelete
-            try
-                close
-            catch
-                OpenVeil
-            endtry
-        ]])
-	elseif cmd == "qa" then
-		vim.cmd([[
-            bufdo :Bdelete
-            tabonly
-            only
-            OpenVeil
-        ]])
-	elseif cmd == "wqa" then
-		vim.cmd([[
-            wa
-            tabonly
-            only
-            try
-                bufdo :Bdelete!
-            catch
-                echo "Error :Bdelete"
-            endtry
-            OpenVeil
-        ]])
-	elseif cmd == "c" then
-		vim.cmd("close")
-	end
-end
+-- if vim.g.neovide then
+-- 	local alpha = function()
+-- 		return string.format("%x", math.floor((255 * vim.g.transparency) or 0.8))
+-- 	end
+-- 	vim.g.neovide_transparency = transparent
+-- 	vim.g.transparency = 0.0
+-- 	vim.g.neovide_background_color = "#0f1117" .. alpha()
+-- end
 
-vim.cmd([[
-	cnoreabbrev q lua CloseAllWindows('q')
-    cnoreabbrev Q lua CloseAllWindows('q')
-
-	cnoreabbrev qa lua CloseAllWindows('qa')
-    cnoreabbrev Qa lua CloseAllWindows('qa')
-
-	cnoreabbrev wq lua CloseAllWindows('wq')
-    cnoreabbrev Wq lua CloseAllWindows('wq')
-    cnoreabbrev WQ lua CloseAllWindows('wq')
-
-	cnoreabbrev wqa lua CloseAllWindows('wqa')
-	cnoreabbrev Wqa lua CloseAllWindows('wqa')
-
-	cnoreabbrev c lua CloseAllWindows('c')
-
-	cnoreabbrev dcode /mnt/d/code/
-	cnoreabbrev dbot /mnt/d/code/project/learningEnglish/
-]])
-
-vim.cmd([[
-    try
-        OpenVeil
-    catch
-    endtry
-]])
+-- else
+-- 	if vim.g.neovide then
+-- 		vim.g.neovide_transparency = transparent
+-- 	end

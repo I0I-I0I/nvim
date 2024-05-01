@@ -17,8 +17,8 @@
 
 <ul>
     <li>black</li>
-    <li>pyright</li>
-    <li>flake8</li>
+    <li>pylint</li>
+    <li>python-lsp-server</li>
 </ul>
 
 <h3>Lua</h3>

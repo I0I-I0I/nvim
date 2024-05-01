@@ -1,7 +1,5 @@
-if vim.g.neovide then
-	require("version.neovide")
-elseif vim.g.vscode then
-	require("version.vscode")
+if vim.g.vscode then
+	require("vscode.vscode")
 else
-	require("version.terminal")
+	require("i0i")
 end

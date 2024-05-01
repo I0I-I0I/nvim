@@ -7,14 +7,14 @@ vim.keymap.set("v", "K", ":m '<-2<cr>gv=gv", { silent = true })
 -- vim.keymap.set("n", "<C-u>", "<C-u>zz")
 
 -- Run
-vim.api.nvim_create_autocmd("BufEnter", {
+vim.api.nvim_create_autocmd("BufRead", {
 	pattern = "*.js",
 	callback = function()
 		vim.keymap.set("n", "<F8>", "<cmd>w<cr><cmd>exec '!node' shellescape(@%, 1)<cr>", { silent = true })
 	end,
 })
 
-vim.api.nvim_create_autocmd("BufEnter", {
+vim.api.nvim_create_autocmd("BufRead", {
 	pattern = "*.py",
 	callback = function()
 		vim.keymap.set("n", "<F8>", "<cmd>w<cr><cmd>exec '!python3.11' shellescape(@%, 1)<cr>", { silent = true })
