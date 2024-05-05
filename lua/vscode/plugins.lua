@@ -1,9 +1,9 @@
 -- Plugins
 
 Plugins = {
-	{ import = "plugins.move.leap" },
-	{ import = "plugins.util.surround" },
-	{ import = "plugins.util.comments" },
+	{ import = "main.plugins.move.leap" },
+	{ import = "main.plugins.util.surround" },
+	{ import = "main.plugins.util.comments" },
 }
 
-require("plugins.lazy")
+require("main.plugins.lazy")

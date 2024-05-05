@@ -1,5 +1,7 @@
 if vim.g.vscode then
-	require("vscode.vscode")
+	require("vscode")
+elseif vim.g.neovide then
+	require("neovide")
 else
-	require("i0i")
+	require("main")
 end
