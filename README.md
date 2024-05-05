@@ -30,5 +30,5 @@
 
 <h2>.zshrc</h2>
 
-alias nvim="nvim -u ~/.config/nvim/lua/main/init.lua"
+alias nvim="nvim -u ~/.config/nvim/lua/main/init.lua" \
 alias mvim="nvim -u ~/.config/nvim/lua/mini/init.lua"
