@@ -33,7 +33,8 @@ vim.keymap.set("n", "N", "Nzzzv")
 vim.keymap.set("n", "<leader>r", ":%s/\\<<C-r><C-w>\\>//gI<Left><Left><Left>")
 
 -- Explore
-vim.keymap.set("n", "<C-b>", ":Ex<Enter>", { silent = true })
+vim.keymap.set("n", "<C-n>", "<cmd>Ex<cr>", { silent = true })
+vim.keymap.set("n", "<C-b>", "<cmd>Lex<cr>", { silent = true })
 
 -- Tabs
 vim.keymap.set("v", "<", "<gv")

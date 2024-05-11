@@ -1,4 +1,7 @@
 function SetColorscheme(color, transparent)
+	if not transparent then
+		transparent = 0.6
+	end
 	local function setColor(item, color)
 		if color == nil then
 			color = { bg = "none" }
@@ -14,14 +17,14 @@ function SetColorscheme(color, transparent)
 
 	if transparent ~= 1 then
 		if vim.g.neovide then
-			vim.g.neovide_transparency = 0.6
+			vim.g.neovide_transparency = transparent
 		end
 
 		for _, item in ipairs(colors.default) do
 			setColor(item)
 		end
 
-		vim.api.nvim_create_autocmd("BufEnter", {
+		autocmd("BufEnter", {
 			callback = function()
 				for _, item in ipairs(colors.forBuf) do
 					setColor(item)
@@ -29,7 +32,7 @@ function SetColorscheme(color, transparent)
 			end,
 		})
 
-		vim.api.nvim_create_autocmd("CmdlineEnter", {
+		autocmd("CmdlineEnter", {
 			callback = function()
 				for _, item in ipairs(colors.forCmd) do
 					setColor(item)
@@ -100,7 +103,6 @@ function SetColorscheme(color, transparent)
 	setColor("DiagnosticVirtualTextWarn", { fg = WarnColor })
 	setColor("DiagnosticVirtualTextInfo", { fg = InfoColor })
 	setColor("LineNr", { fg = "#747474" })
-	setColor("EndOfBuffer", { fg = "#000000" })
 	setColor("StatusLine", { fg = "#235284" })
 	setColor("StatusLineNC", { fg = "#235284" })
 	setColor("NotifyERRORBorder", { fg = ErrorColor })
@@ -123,6 +125,9 @@ function SetColorscheme(color, transparent)
 	setColor("NotifyDEBUGIcon", { fg = HintColor })
 	setColor("NotifyDEBUGTitle", { fg = HintColor })
 	setColor("NotifyDEBUGBody", { fg = HintColor })
+
+	setColor("EndOfBuffer", { fg = "#111111" })
+	setColor("WinSeparator", { fg = "#555555" })
 
 	vim.cmd("hi IlluminatedWord gui=underline guibg=none")
 	vim.cmd("hi IlluminatedWordRead gui=underline guibg=none")

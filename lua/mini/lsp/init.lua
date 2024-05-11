@@ -1,16 +1,18 @@
+-- Capabilities
 capabilities = require("cmp_nvim_lsp").default_capabilities()
 
 -- Local variables
 local lsp = "mini.lsp."
 local config = lsp .. "config."
-local server = lsp .. "servers."
+local servers = lsp .. "servers."
 
--- Server connection
-require(server .. "lua_ls")
-require(server .. "tsserver")
-require(server .. "pyright")
+-- lsp servers
+require(servers .. "pyright")
+require(servers .. "tsserver")
+require(servers .. "lua_ls")
 
 -- Config
 require(config .. "diagnostic")
 require(config .. "mappings")
 require(config .. "cmp")
+require(config .. "linter")

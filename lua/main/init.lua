@@ -5,7 +5,7 @@ require(core .. "utils")
 require(core .. "mappings")
 
 -- Colorscheme
-local colorscheme = "tokyonight-moon" -- "kanagawa", "everforest", "tokyonight-moon", "nord"
+local colorscheme = "everforest" -- "kanagawa", "everforest", "tokyonight-moon", "nord"
 
 -- Plugins
 local custom = "main.plugins.customization."
@@ -37,7 +37,7 @@ Plugins = {
 	{ import = move .. "cybu" },
 	{ import = move .. "tree" },
 	{ import = move .. "leap" },
-	-- { import = move .. "harpoon" },
+	{ import = move .. "harpoon" },
 
 	-- Utils
 	{ import = util .. "surround" },
@@ -50,6 +50,7 @@ Plugins = {
 	{ import = util .. "illuminate" },
 	{ import = util .. "spectre" },
 	{ import = util .. "wakatime" },
+	{ import = util .. "undotree" },
 
 	-- LSP
 	{ import = lsp .. "lspzero" },
@@ -63,7 +64,7 @@ Plugins = {
 	{ import = lsp .. "trouble" },
 
 	-- AI
-	{ import = ai .. "codeium" },
+	-- { import = ai .. "codeium" },
 
 	-- Git
 	{ import = git .. "git" },

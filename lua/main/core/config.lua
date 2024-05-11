@@ -1,10 +1,17 @@
 vim.loader.enable()
 
+autocmd = vim.api.nvim_create_autocmd
+augroup = vim.api.nvim_create_augroup
+
 -- Settings
 vim.g.mapleader = ","
 vim.opt.termguicolors = true
 vim.scriptencoding = "utf-8"
 vim.opt.encoding = "utf-8"
+
+-- Undo
+vim.opt.undodir = os.getenv("HOME") .. "/.vim/undodir"
+vim.opt.undofile = true
 
 -- WSL yank support
 vim.cmd([[
@@ -30,15 +37,15 @@ vim.cmd([[
 -- Cursor line
 vim.cmd("set cursorlineopt=line")
 
-vim.api.nvim_create_autocmd("InsertEnter", {
+autocmd("InsertEnter", {
 	command = "set nocursorline",
 })
 
-vim.api.nvim_create_autocmd("InsertLeave", {
+autocmd("InsertLeave", {
 	command = "set cursorline",
 })
 
-vim.api.nvim_create_autocmd("BufEnter", {
+autocmd("BufEnter", {
 	pattern = "*.*",
 	command = "set cursorline",
 })
@@ -55,9 +62,9 @@ vim.cmd("ab so Source")
 vim.opt.spelllang = "en_us"
 vim.opt.spell = true
 
--- Swap
+-- swapfile/backup
 vim.opt.swapfile = false
-vim.cmd("set noswapfile")
+vim.opt.backup = false
 
 -- Explorer
 vim.cmd("let g:netrw_banner = 0")
@@ -65,18 +72,6 @@ vim.cmd("let g:netrw_liststyle = 3")
 vim.cmd("let g:netrw_browse_split = 0")
 vim.cmd("let g:netrw_winsize = 20")
 
--- vim.api.nvim_create_autocmd("BufWritePre", {
--- 	callback = function()
--- 		vim.cmd([[ keeppatterns %s/\s\+$//e ]])
--- 	end,
--- })
-
--- vim.cmd([[
--- 	autocmd FileType python set smartindent cinwords=if,elif,else,for,while,try,except,finally,def,class,with
--- 	autocmd FileType javascript set smartindent cinwords=if,else,for,while,function,class
--- ]])
-
---
 vim.opt.autoread = true
 vim.bo.autoread = true
 
@@ -108,7 +103,7 @@ vim.opt.list = false
 -- Wrap
 vim.opt.linebreak = true
 vim.wo.linebreak = true
-vim.api.nvim_create_autocmd("BufRead", {
+autocmd("BufRead", {
 	command = "set wrap",
 })
 
@@ -145,3 +140,14 @@ vim.opt.foldcolumn = "0"
 vim.opt.foldlevel = 99
 
 vim.opt.laststatus = 0
+
+-- Yank
+autocmd("TextYankPost", {
+	pattern = "*",
+	callback = function()
+		vim.highlight.on_yank({
+			higroup = "IncSearch",
+			timeout = 100,
+		})
+	end,
+})

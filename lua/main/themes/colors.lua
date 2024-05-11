@@ -90,6 +90,7 @@ local colors = {
 		"NeoTreeGitConflict",
 		"NeoTreeGitUnstage",
 		"NeoTreeGitUntracked",
+		"NeoTreeEndOfBuffer",
 		"TelescopeBorder",
 		"TelescopeNormal",
 		"TelescopeSelectionCaret",

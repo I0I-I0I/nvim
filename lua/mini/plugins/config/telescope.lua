@@ -55,7 +55,7 @@ local opts = {
         },
         grep_string = {
             theme = "ivy",
-            border = false
+            border = false,
         },
         find_files = {
             theme = "dropdown",
@@ -108,3 +108,4 @@ local opts = {
 }
 
 require("telescope").setup(opts)
+

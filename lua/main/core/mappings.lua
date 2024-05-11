@@ -2,39 +2,28 @@
 vim.keymap.set("v", "K", ":m '<-2<cr>gv=gv", { silent = true })
 vim.keymap.set("v", "J", ":m '>+1<cr>gv=gv", { silent = true })
 
--- Run
-vim.api.nvim_create_autocmd("BufRead", {
-	pattern = "*.js",
-	callback = function()
-		vim.keymap.set("n", "<F8>", "<cmd>w<cr><cmd>exec '!node' shellescape(@%, 1)<cr>", { silent = true })
-	end,
-})
-
-vim.api.nvim_create_autocmd("BufRead", {
-	pattern = "*.py",
-	callback = function()
-		vim.keymap.set("n", "<F8>", "<cmd>w<cr><cmd>exec '!python3.11' shellescape(@%, 1)<cr>", { silent = true })
-	end,
-})
-
--- Terminal
--- vim.keymap.set("n", "<C-\\>", "<cmd>split <cr><C-w>J<cmd>resize 20<cr><cmd>term<cr>i", { silent = true })
--- vim.keymap.set("t", "<C-\\>", "<cmd>Bdelete!<cr><cmd>close<cr>", { silent = true })
+-- Quick fix list
+vim.keymap.set("n", "<C-n>", "<cmd>cnext<cr>", { silent = true, noremap = true })
+vim.keymap.set("n", "<C-p>", "<cmd>cprevious<cr>", { silent = true, noremap = true })
 
 -- $ ^
 vim.keymap.set({ "v", "n", "x" }, "H", "^")
-vim.keymap.set({ "n", "x" }, "L", "$")
-vim.keymap.set("v", "L", "$<left>")
+vim.keymap.set({ "n", "x", "v" }, "L", "g_")
+
+-- leave from insert mode
+vim.keymap.set("i", "jk", "<Esc>")
 
 -- Insert Enter
 vim.keymap.set("i", "<C-j>", "<cmd>norm o<cr>", { silent = true, noremap = true })
 vim.keymap.set("i", "<C-k>", "<cmd>norm O<cr>", { silent = true, noremap = true })
 
--- Insert left, right
 vim.keymap.set("i", "<A-h>", "<left>")
 vim.keymap.set("i", "<A-l>", "<right>")
 vim.keymap.set("i", "<A-k>", "<up>")
 vim.keymap.set("i", "<A-j>", "<down>")
+
+vim.keymap.set("i", "<C-l>", "<cmd>norm w<cr>", { silent = true, noremap = true })
+vim.keymap.set("i", "<C-h>", "<cmd>norm b<cr>", { silent = true, noremap = true })
 
 -- yank and paste
 vim.keymap.set("v", "1y", '"zy', { noremap = true })
@@ -70,7 +59,7 @@ vim.keymap.set({ "n", "v" }, "S", '"_S')
 vim.keymap.set({ "v", "n", "i" }, "<C-s>", "<cmd>w<cr><Esc>")
 
 -- Rename
--- vim.keymap.set("n", "<leader>r", ":%s/\\<<C-r><C-w>\\>//gI<Left><Left><Left>")
+vim.keymap.set("n", "<leader>r", ":%s/\\<<C-r><C-w>\\>/<C-r><C-w>/gI<Left><Left><Left>")
 
 -- Explore
 vim.keymap.set("n", "<C-b>", "<cmd>Ex<cr>", { silent = true })
@@ -109,3 +98,18 @@ vim.keymap.set("n", "<C-w>T", "<cmd>tabnew ")
 -- Moving to window tabs
 vim.keymap.set("n", "<Tab>", "gt")
 vim.keymap.set("n", "<S-Tab>", "gT")
+
+-- Run
+autocmd("BufRead", {
+	pattern = "*.js",
+	callback = function()
+		vim.keymap.set("n", "<F8>", "<cmd>w<cr><cmd>exec '!node' shellescape(@%, 1)<cr>", { silent = true })
+	end,
+})
+
+autocmd("BufRead", {
+	pattern = "*.py",
+	callback = function()
+		vim.keymap.set("n", "<F8>", "<cmd>w<cr><cmd>exec '!python3.11' shellescape(@%, 1)<cr>", { silent = true })
+	end,
+})

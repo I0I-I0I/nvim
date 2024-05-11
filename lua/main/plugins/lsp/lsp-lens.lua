@@ -1,5 +1,6 @@
 local Lens = {
 	"VidocqH/lsp-lens.nvim",
+	event = "BufRead",
 }
 
 function Lens.config()

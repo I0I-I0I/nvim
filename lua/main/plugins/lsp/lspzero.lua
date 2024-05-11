@@ -72,6 +72,21 @@ function lspzero.config()
 		},
 	})
 
+	-- Diagnostic
+	vim.diagnostic.config({
+		virtual_text = false,
+		sighns = true,
+		underline = true,
+		severity_sort = true,
+		update_in_insert = false,
+		float = {
+			focusable = false,
+			border = "rounded",
+			header = "",
+			prefix = "",
+		},
+	})
+
 	-- Mappings
 
 	vim.keymap.set("n", "<leader>e", vim.diagnostic.open_float)
@@ -79,8 +94,8 @@ function lspzero.config()
 	vim.keymap.set("n", "]d", vim.diagnostic.goto_next)
 	vim.keymap.set("n", "<leader>Q", vim.diagnostic.setloclist)
 
-	vim.api.nvim_create_autocmd("LspAttach", {
-		group = vim.api.nvim_create_augroup("UserLspConfig", {}),
+	autocmd("LspAttach", {
+		group = augroup("UserLspConfig", {}),
 		callback = function(ev)
 			local client = vim.lsp.get_client_by_id(ev.data.client_id)
 			if client.server_capabilities.inlayHintProvider then
@@ -95,6 +110,7 @@ function lspzero.config()
 			-- vim.keymap.set("n", "gd", vim.lsp.buf.definition, opts)
 			-- vim.keymap.set("n", "gr", vim.lsp.buf.references, opts)
 			-- vim.keymap.set({ "n", "v" }, "<leader>ca", vim.lsp.buf.code_action, opts)
+			-- vim.keymap.set("n", "<leader>R", "vim.lsp.rename", opts)
 			vim.keymap.set("n", "gD", vim.lsp.buf.declaration, opts)
 			vim.keymap.set("n", "gI", vim.lsp.buf.implementation, opts)
 			vim.keymap.set("n", "<leader>wa", vim.lsp.buf.add_workspace_folder, opts)

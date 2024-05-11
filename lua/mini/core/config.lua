@@ -3,11 +3,39 @@ vim.loader.enable()
 autocmd = vim.api.nvim_create_autocmd
 augroup = vim.api.nvim_create_augroup
 
+function _G.check_back_space()
+    local col = vim.fn.col('.') - 1
+    return col == 0 or vim.fn.getline('.'):sub(col, col):match('%s') ~= nil
+end
+
 -- Settings
 vim.g.mapleader = ","
 vim.opt.termguicolors = true
 vim.scriptencoding = "utf-8"
 vim.opt.encoding = "utf-8"
+
+-- vim.cmd([[
+    -- set filetype=on
+    -- set omnifunc=v:lua.vim.lua_omnifunc
+-- ]])
+--
+-- autocmd("Filetype", {
+	-- pattern = {
+		-- "javascript",
+		-- "javascriptreact",
+		-- "javascript.jsx",
+		-- "typescript",
+		-- "typescriptreact",
+		-- "typescript.tsx",
+	-- },
+    -- callback = function()
+        -- vim.cmd("set omnifunc=javascriptcomplete#CompleteJS")
+    -- end
+-- })
+
+-- Undo
+vim.opt.undodir = os.getenv("HOME") .. "/.vim/undodir"
+vim.opt.undofile = true
 
 -- WSL yank support
 vim.cmd([[
@@ -38,7 +66,7 @@ vim.cmd([[
 
 -- Source
 function Source()
-    vim.cmd("w | source")
+	vim.cmd("w | source")
 end
 
 vim.api.nvim_create_user_command("Source", Source, {})
@@ -48,20 +76,21 @@ vim.cmd("ab so Source")
 vim.opt.spelllang = "en_us"
 vim.opt.spell = true
 
--- Swap
+-- swapfile/backup
 vim.opt.swapfile = false
-vim.cmd("set noswapfile")
+vim.opt.backup = false
 
 -- Explorer
 vim.cmd("let g:netrw_banner = 0")
 vim.cmd("let g:netrw_liststyle = 3")
 vim.cmd("let g:netrw_browse_split = 0")
 vim.cmd("let g:netrw_winsize = 20")
+vim.cmd("let g:netrw_preview = 1")
 
 autocmd("BufWritePre", {
-    callback = function()
-        vim.cmd([[ keeppatterns %s/\s\+$//e ]])
-    end,
+	callback = function()
+		vim.cmd([[ keeppatterns %s/\s\+$//e ]])
+	end,
 })
 
 vim.cmd([[
@@ -93,7 +122,7 @@ vim.cmd("set iskeyword+=!,^34,^_")
 vim.g.formatoptions = "qrn1"
 
 -- Update time
-vim.opt.updatetime = 300
+vim.opt.updatetime = 50
 
 -- Display invisible characters
 vim.opt.list = true
@@ -103,7 +132,7 @@ vim.opt.linebreak = true
 vim.wo.linebreak = true
 
 autocmd("BufRead", {
-    command = "set wrap",
+	command = "set wrap",
 })
 
 -- Shell
@@ -141,50 +170,50 @@ vim.opt.foldlevel = 99
 vim.opt.laststatus = 2
 
 local function git_branch()
-    local branch = vim.fn.system("git rev-parse --abbrev-ref HEAD 2>/dev/null | tr -d '\n'")
-    if string.len(branch) > 0 then
-        return branch
-    else
-        return ":"
-    end
+	local branch = vim.fn.system("git rev-parse --abbrev-ref HEAD 2>/dev/null | tr -d '\n'")
+	if string.len(branch) > 0 then
+		return branch
+	else
+		return ":"
+	end
 end
 
 local function statusline()
-    local set_color = "%#StatusLine#"
-    local branch = git_branch()
-    local space = " "
-    local file_name = " %t"
-    local modified = "%m"
-    local paste = " %{&paste?'[paste] ':''}"
-    local align_right = "%="
-    local fileencoding = " %{&fileencoding?&fileencoding:&encoding}"
-    local fileformat = " [%{&fileformat}]"
-    local linecol = " %l:%c "
-    local filetype = " %y"
+	local set_color = "%#StatusLine#"
+	local branch = git_branch()
+	local space = " "
+	local file_name = " %t"
+	local modified = "%m"
+	local paste = " %{&paste?'[paste] ':''}"
+	local align_right = "%="
+	local fileencoding = " %{&fileencoding?&fileencoding:&encoding}"
+	local fileformat = " [%{&fileformat}]"
+	local linecol = " %l:%c "
+	local filetype = " %y"
 
-    return string.format(
-        "%s %s %s%s%s%s%s%s%s",
-        set_color,
-        branch,
-        set_color,
-        file_name,
-        filetype,
-        modified,
-        paste,
-        align_right,
-        linecol
-    )
+	return string.format(
+		"%s %s %s%s%s%s%s%s%s",
+		set_color,
+		branch,
+		set_color,
+		file_name,
+		filetype,
+		modified,
+		paste,
+		align_right,
+		linecol
+	)
 end
 
 vim.opt.statusline = statusline()
 
 -- Yank
 autocmd("TextYankPost", {
-    pattern = "*",
-    callback = function()
-        vim.highlight.on_yank({
-            higroup = "IncSearch",
-            timeout = 100,
-        })
-    end
+	pattern = "*",
+	callback = function()
+		vim.highlight.on_yank({
+			higroup = "IncSearch",
+			timeout = 100,
+		})
+	end,
 })

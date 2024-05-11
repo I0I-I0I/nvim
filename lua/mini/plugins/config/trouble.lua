@@ -1,5 +1,5 @@
 require("trouble").setup({
-    icons = false
+	icons = false,
 })
 
 local opts = { silent = true, noremap = true }

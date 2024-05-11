@@ -6,7 +6,11 @@ local Trouble = {
 
 function Trouble.config()
 	require("trouble").setup({})
-	vim.keymap.set("n", "<leader>t", "<cmd>TroubleToggle<cr>", { silent = true, noremap = true })
+
+	local opts = { silent = true, noremap = true }
+
+	vim.keymap.set("n", "<leader>xx", "<cmd>TroubleToggle<cr>", opts)
+	vim.keymap.set("n", "<leader>xd", "<cmd>TroubleToggle workspace_diagnostics<cr>", opts)
 end
 
 return Trouble

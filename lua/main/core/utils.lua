@@ -1,15 +1,15 @@
 -- Resize
 
-vim.api.nvim_create_autocmd("VimResized", {
-	group = vim.api.nvim_create_augroup("WinResize", { clear = true }),
+autocmd("VimResized", {
+	group = augroup("WinResize", { clear = true }),
 	pattern = "*",
 	command = "wincmd =",
 })
 
 -- Vertical help
 
-vim.api.nvim_create_autocmd("FileType", {
-	group = vim.api.nvim_create_augroup("VerticalHelp", { clear = true }),
+autocmd("FileType", {
+	group = augroup("VerticalHelp", { clear = true }),
 	pattern = "help",
 	callback = function()
 		vim.bo.bufhidden = "unload"

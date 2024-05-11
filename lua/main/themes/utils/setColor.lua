@@ -21,6 +21,7 @@ end, {
 			"everforest",
 			"tokyonight-moon",
 			"nord",
+			"catppuccin",
 		}
 
 		local CmdLineArray = table.getn(string_to_array(CmdLine))
