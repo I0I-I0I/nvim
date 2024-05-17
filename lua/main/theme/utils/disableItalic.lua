@@ -1,5 +1,4 @@
 return {
-	-- Disable italic
 	vim.cmd([[
         function! s:disable_italic()
           let his = ''

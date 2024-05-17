@@ -6,12 +6,10 @@ local Color = {
 	{ "catppuccin/nvim", name = "catppuccin", priority = 1000 },
 }
 
-Themes = "main.themes."
-local utils = Themes .. "utils."
+Theme_utils = "main.theme.utils."
 
-require(utils .. "disableItalic")
-require(utils .. "stringToArray")
-require(utils .. "setColorscheme")
-require(utils .. "setColor")
+require(Theme_utils .. "disableItalic")
+require(Theme_utils .. "setColorscheme")
+require(Theme_utils .. "setColor")
 
 return Color

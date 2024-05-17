@@ -5,7 +5,7 @@ return {
 		{ "nvim-telescope/telescope.nvim", tag = "0.1.4" },
 		{ "Shatur/neovim-session-manager" },
 	},
-	lazy = false,
+	cmd = "NeovimProjectLoadRecent",
 	opts = {
 		projects = {
 			"/mnt/d/code/project/app/*",

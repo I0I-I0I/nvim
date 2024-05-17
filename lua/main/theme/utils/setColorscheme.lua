@@ -9,7 +9,7 @@ function SetColorscheme(color, transparent)
 		vim.api.nvim_set_hl(0, item, color)
 	end
 
-	local colors = require(Themes .. "colors")
+	local colors = require(Theme_utils .. "colors")
 
 	vim.opt.background = "dark"
 	vim.cmd("hi clear")
@@ -132,6 +132,7 @@ function SetColorscheme(color, transparent)
 
 	setColor("BufferLineBackground", { fg = "#444444" })
 	setColor("BufferLineBufferSelected", { fg = "#ffffff" })
+	setColor("BufferLineOffsetSeparator", { fg = "#555555" })
 
 	setColor("BufferLineTab", { fg = "#444444" })
 	setColor("BufferLineTabSelected", { fg = "#ffffff" })
@@ -139,13 +140,13 @@ function SetColorscheme(color, transparent)
 	setColor("EndOfBuffer", { fg = "#111111" })
 	setColor("WinSeparator", { fg = "#555555" })
 
-	vim.cmd("hi IlluminatedWord gui=underline guibg=none")
-	vim.cmd("hi IlluminatedWordRead gui=underline guibg=none")
-	vim.cmd("hi IlluminatedWordWrite gui=underline guibg=none")
-	vim.cmd("hi IlluminatedWordText gui=underline guibg=none")
-
 	setColor("TelescopeSelection", { fg = "#fff000" })
 	setColor("NeoTreeCursorLine", { fg = "#fff000" })
 
 	setColor("CybuFocus", { bg = "#e4e4e4", fg = "#1c1c1c" })
+
+	vim.cmd("hi IlluminatedWord gui=underline guibg=none")
+	vim.cmd("hi IlluminatedWordRead gui=underline guibg=none")
+	vim.cmd("hi IlluminatedWordWrite gui=underline guibg=none")
+	vim.cmd("hi IlluminatedWordText gui=underline guibg=none")
 end

@@ -1,5 +1,7 @@
 -- Basic
-local core = "main.core."
+local root = "main."
+local core = root .. "core."
+local plugins = "main.plugins."
 
 require(core .. "config")
 require(core .. "utils")
@@ -9,17 +11,17 @@ require(core .. "mappings")
 local colorscheme = "everforest" -- kanagawa everforest tokyonight-moon nord
 
 -- Plugins
-local custom = "main.plugins.customization."
-local git = "main.plugins.git."
-local lsp = "main.plugins.lsp."
-local move = "main.plugins.move."
-local util = "main.plugins.util."
-local ai = "main.plugins.ai."
-local themes = "main.themes."
+local theme = root .. "theme."
+local custom = plugins .. "customization."
+local move = plugins .. "move."
+local util = plugins .. "util."
+local lsp = plugins .. "lsp."
+local ai = plugins .. "ai."
+local git = plugins .. "git."
 
 Plugins = {
-	-- Themes
-	{ import = themes .. "colorscheme" },
+	-- Theme
+	{ import = theme },
 
 	-- Customization
 	{ import = custom .. "bufferline" },
@@ -37,7 +39,6 @@ Plugins = {
 	-- Move
 	{ import = move .. "tree" },
 	{ import = move .. "leap" },
-	{ import = move .. "telescope" },
 
 	-- Utils
 	{ import = util .. "surround" },
@@ -51,6 +52,7 @@ Plugins = {
 	{ import = util .. "undotree" },
 	{ import = util .. "projects" },
 	{ import = util .. "wakatime" },
+	{ import = util .. "telescope" },
 
 	-- LSP
 	{ import = lsp .. "lsp" },
@@ -64,14 +66,14 @@ Plugins = {
 	{ import = lsp .. "garbage" },
 
 	-- AI
-	{ import = ai .. "codeium" },
+	-- { import = ai .. "codeium" },
 
 	-- Git
 	{ import = git .. "git" },
 }
 
-require("main.plugins.lazy")
+require(plugins .. "lazy")
 
 -- Themes
-require("main.themes.colorscheme")
+require(theme .. "colorscheme")
 vim.cmd("SetColor " .. colorscheme)

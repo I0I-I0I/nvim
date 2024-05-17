@@ -1,4 +1,4 @@
-vim.g.neovide_scale_factor = 1
+vim.g.neovide_scale_factor = 1.1
 vim.g.neovide_padding_top = 0
 vim.g.neovide_padding_bottom = 0
 vim.g.neovide_padding_right = 0
@@ -16,9 +16,24 @@ vim.g.neovide_hide_mouse_when_typing = true
 
 vim.g.neovide_fullscreen = true
 
-vim.o.guifont = "MonaspaceKrypton Nerd Font"
+-- vim.o.guifont = "MonaspaceKrypton Nerd Font"
+vim.o.guifont = "Monaspace Neon"
 
 vim.opt.linespace = 1
 vim.g.neovide_unlink_border_highlights = true
+
+vim.keymap.set("v", "+y", '"+y')
+vim.keymap.set("n", "+y", 'V"+y')
+vim.keymap.set({ "v", "n" }, "+p", '"+p')
+
+vim.keymap.set("n", "<C-=>", function()
+	vim.cmd([[let g:neovide_scale_factor += 0.1]])
+	print("Scale: " .. vim.g.neovide_scale_factor)
+end, { silent = true, noremap = true })
+
+vim.keymap.set("n", "<C-->", function()
+	vim.cmd([[let g:neovide_scale_factor -= 0.1]])
+	print("Scale: " .. vim.g.neovide_scale_factor)
+end, { silent = true, noremap = true })
 
 require("main")

@@ -6,9 +6,11 @@ return {
 			require("notify").setup({
 				background_colour = "#000000",
 				max_width = 50,
-				render = "wrapped-compact",
+				render = "minimal",
 				stages = "slide",
 			})
+
+			vim.keymap.set("n", "<leader>fn", "<cmd>Telescope notify", {})
 		end,
 	},
 }

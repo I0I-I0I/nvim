@@ -3,7 +3,7 @@ local Bbye = {
 	cmd = { "Bdelete" },
 	keys = {
 		{ "<leader>q", "<cmd>Bdelete<cr>", desc = "Buffer Close" },
-		{ "<leader>Q", "<cmd>Bdelete!<cr>", desc = "Buffer Close All" },
+		{ "<leader>Q", "<cmd>Bdelete!<cr>", desc = "Buffer Close without save" },
 	},
 }
 

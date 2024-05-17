@@ -139,7 +139,7 @@ function Telescope.config()
 	}
 	require("telescope").setup(opts)
 	require("telescope").load_extension("scope")
-	-- require("telescope").load_extension("projects")
+	require("telescope").load_extension("notify")
 end
 
 return Telescope

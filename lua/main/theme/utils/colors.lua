@@ -23,6 +23,8 @@ local colors = {
 		"StatusLineNC",
 		"WinSeparator",
 		"BufferLineFill",
+		"BufferLineNumbers",
+		"BufferLineNumbersSelected",
 		"BufferLinePick",
 		"BufferLineBufferSelected",
 		"BufferLineSeparatorSelected",
@@ -69,6 +71,10 @@ local colors = {
 		"Pmenu",
 		"TroubleNormal",
 		"TroubleCount",
+		"BufferLineFill",
+		"BufferLinePick",
+		"BufferLineSeparatorSelected",
+		"BufferLineSeparator",
 	},
 
 	forBuf = {

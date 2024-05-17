@@ -14,6 +14,13 @@ vim.keymap.set({ "n", "x", "v" }, "L", "g_")
 vim.keymap.set("i", "jk", "<Esc>")
 
 -- Insert Enter
+vim.keymap.set("i", "<C-w>", "<cmd>norm dwa<cr>", { noremap = true })
+vim.keymap.set("i", "<C-b>", "<cmd>norm dba<cr>", { noremap = true })
+vim.keymap.set("i", "<C-d>", "<cmd>norm X<cr>", { noremap = true })
+vim.keymap.set("i", "<C-c>", "<cmd>norm cc<cr>", { noremap = true })
+vim.keymap.set("i", "<C-u>", "<cmd>norm u<cr>", { noremap = true })
+vim.keymap.set("i", "<C-r>", "<cmd>norm <C-r><cr>", { noremap = true })
+
 vim.keymap.set("i", "<C-j>", "<cmd>norm o<cr>", { silent = true, noremap = true })
 vim.keymap.set("i", "<C-k>", "<cmd>norm O<cr>", { silent = true, noremap = true })
 

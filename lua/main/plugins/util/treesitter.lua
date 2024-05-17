@@ -5,7 +5,7 @@ return {
 			"nvim-treesitter/nvim-treesitter-textobjects",
 			"windwp/nvim-ts-autotag",
 		},
-		event = { "BufReadPre", "BufNewFile" },
+		event = { "BufRead", "BufNewFile" },
 
 		config = function()
 			require("nvim-treesitter.configs").setup({

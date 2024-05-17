@@ -9,8 +9,9 @@ local veil = {
 
 function veil.config()
 	local builtin = require("veil.builtin")
-
 	local current_day = os.date("%A")
+
+	vim.keymap.set("n", "<leader>o", "<cmd>Bdelete<cr><cmd>OpenVeil<cr>", { silent = true, noremap = true })
 
 	local default = {
 		sections = {
@@ -24,6 +25,8 @@ function veil.config()
 					shortcut = "c",
 					callback = function()
 						vim.cmd("NeovimProjectLoadRecent")
+						vim.cmd("Bdelete")
+						vim.cmd("OpenVeil")
 					end,
 				},
 				{
@@ -34,7 +37,6 @@ function veil.config()
 						vim.cmd(
 							"Telescope neovim-project discover theme=dropdown prompt_title=🗃️\\ All\\ projects"
 						)
-						-- vim.cmd("Telescope projects theme=dropdown prompt_title=🗃️\\ All\\ projects")
 					end,
 				},
 				{
@@ -84,7 +86,7 @@ function veil.config()
 	-- Create buffer
 	vim.keymap.set("n", "<C-w>b", "<cmd>OpenVeil<cr>", { silent = true })
 
-	-- Function
+	-- Open veil
 	function OpenVeil()
 		vim.cmd("set nocursorline")
 		vim.cmd("Veil")
@@ -177,10 +179,6 @@ function veil.config()
 
         cnoreabbrev c lua CloseAllWindows('c')
     ]])
-
-	vim.cmd("ab edit Edit")
-
-	vim.keymap.set("n", "<leader>o", "<cmd>Bdelete<cr><cmd>OpenVeil<cr>", { silent = true, noremap = true })
 end
 
 return veil

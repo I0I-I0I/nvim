@@ -7,12 +7,6 @@ vim.api.nvim_create_user_command("SetColor", function(input)
 	end
 
 	SetColorscheme(color, transparent)
-
-	if input.fargs[3] == "italic" then
-		print("Italic enable")
-	else
-		vim.cmd("DisableItalic")
-	end
 end, {
 	nargs = "*",
 	complete = function(ArgLead, CmdLine, CursorPos)
@@ -27,8 +21,6 @@ end, {
 		local CmdLineArray = table.getn(string_to_array(CmdLine))
 		if CmdLineArray == 1 then
 			return colors
-		elseif CmdLineArray == 3 then
-			return { "italic", "noitalic" }
 		end
 	end,
 })

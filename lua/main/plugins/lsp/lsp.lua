@@ -51,12 +51,14 @@ function lspzero.config()
 			"emmet_language_server",
 			"pylsp",
 			"stylelint_lsp",
+			"cssmodules_ls",
 
-			-- "black",
+			-- "stylua",
 			-- "eslint_d",
 			-- "prettierd",
-			-- "stylua",
+			-- "htmlhint",
 			-- "pylint",
+			-- "black",
 		},
 
 		handlers = {
@@ -112,13 +114,13 @@ function lspzero.config()
 			-- vim.keymap.set("n", "gr", vim.lsp.buf.references, opts)
 			-- vim.keymap.set({ "n", "v" }, "<leader>ca", vim.lsp.buf.code_action, opts)
 			-- vim.keymap.set("n", "<leader>R", "vim.lsp.rename", opts)
-			vim.keymap.set("n", "gD", vim.lsp.buf.declaration, opts)
-			vim.keymap.set("n", "gI", vim.lsp.buf.implementation, opts)
 			-- vim.keymap.set("n", "<leader>wa", vim.lsp.buf.add_workspace_folder, opts)
 			-- vim.keymap.set("n", "<leader>wr", vim.lsp.buf.remove_workspace_folder, opts)
 			-- vim.keymap.set("n", "<leader>wl", function()
 			-- 	print(vim.inspect(vim.lsp.buf.list_workspace_folders()))
 			-- end, opts)
+			vim.keymap.set("n", "gD", vim.lsp.buf.declaration, opts)
+			vim.keymap.set("n", "gI", vim.lsp.buf.implementation, opts)
 			vim.keymap.set("n", "<leader>D", vim.lsp.buf.type_definition, opts)
 		end,
 	})

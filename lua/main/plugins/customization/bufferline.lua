@@ -1,18 +1,14 @@
-local bufferline = {
+local Bufferline = {
 	"akinsho/bufferline.nvim",
-	event = "VeryLazy", -- BufFilePre
+	event = "VeryLazy",
 	version = "*",
 	dependencies = {
 		{ "nvim-tree/nvim-web-devicons" },
-		{
-			"tiagovla/scope.nvim",
-			lazy = false,
-			event = "VimEnter",
-		},
+		{ "tiagovla/scope.nvim" },
 	},
 }
 
-function bufferline.config()
+function Bufferline.config()
 	local bufferline = require("bufferline")
 	local scope = require("scope")
 
@@ -33,14 +29,14 @@ function bufferline.config()
 
 	-- Move by buffers
 	vim.keymap.set("n", "<Tab>", "<cmd>BufferLineCycleNext<cr>")
-	vim.keymap.set("n", "<C-Tab>", "<cmd>BufferLineCyclePrev<cr>")
+	vim.keymap.set("n", "<S-Tab>", "<cmd>BufferLineCyclePrev<cr>")
 
 	-- Create tab
 	vim.keymap.set("n", "<C-w>t", "<cmd>tabnew<cr><cmd>Bdelete<cr><cmd>OpenVeil<cr>")
 
 	-- Move by tabs
 	vim.keymap.set("n", "<leader><Tab>", "<cmd>tabnext<cr>")
-	vim.keymap.set("n", "<leader><C-Tab>", "<cmd>tabprevious<cr>")
+	vim.keymap.set("n", "<leader><S-Tab>", "<cmd>tabprevious<cr>")
 
 	scope.setup({})
 	bufferline.setup({
@@ -50,6 +46,9 @@ function bufferline.config()
 			show_buffer_close_icons = false,
 			show_close_icon = false,
 			color_icons = true,
+			indicator = {
+				style = "none",
+			},
 			offsets = {
 				{
 					filetype = "neo-tree",
@@ -61,7 +60,7 @@ function bufferline.config()
 			},
 			numbers = "ordinal",
 			separator_style = "thin",
-			style_preset = bufferline.style_preset.minimal, -- or bufferline.style_preset.minimal,
+			style_preset = bufferline.style_preset.minimal,
 			diagnostics = "nvim_lsp",
 			diagnostics_indicator = function(count, level, diagnostics_dict, context)
 				local s = " "
@@ -75,4 +74,4 @@ function bufferline.config()
 	})
 end
 
-return bufferline
+return Bufferline
