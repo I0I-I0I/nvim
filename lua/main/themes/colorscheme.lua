@@ -1,4 +1,4 @@
-local Colorschemes = {
+local Color = {
 	{ "rebelot/kanagawa.nvim", lazy = false, priority = 1000 },
 	{ "sainnhe/everforest", lazy = false, priority = 1000 },
 	{ "folke/tokyonight.nvim", lazy = false, priority = 1000 },
@@ -14,4 +14,4 @@ require(utils .. "stringToArray")
 require(utils .. "setColorscheme")
 require(utils .. "setColor")
 
-return Colorschemes
+return Color

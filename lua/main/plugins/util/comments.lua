@@ -3,7 +3,7 @@ local Comment = {
 	dependencies = {
 		"JoosepAlviste/nvim-ts-context-commentstring",
 	},
-	event = "VeryLazy",
+	event = "BufRead",
 }
 
 function Comment.config()

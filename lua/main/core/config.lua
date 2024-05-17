@@ -103,7 +103,7 @@ vim.opt.list = false
 -- Wrap
 vim.opt.linebreak = true
 vim.wo.linebreak = true
-autocmd("BufRead", {
+autocmd("VimEnter", {
 	command = "set wrap",
 })
 

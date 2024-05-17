@@ -13,6 +13,7 @@ function Lint.config()
 		typescriptreact = { "eslint_d" },
 		python = { "pylint" },
 		css = { "stylelint" },
+		html = { "htmlhint" },
 	}
 
 	local lint_augroup = augroup("lint", { clear = true })

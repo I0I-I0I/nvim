@@ -1,12 +1,8 @@
-local root = "mini."
-local core = root .. "core."
+local core = "mini.core."
 
--- Default
 require(core .. "config")
 require(core .. "mappings")
-
--- Plugins
-require(root .. "plugins")
-require(root .. "lsp")
+require(core .. "plug")
+require(core .. "lsp")
 
 vim.cmd("colorscheme tokyonight-moon")

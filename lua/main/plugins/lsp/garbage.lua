@@ -1,7 +1,7 @@
 local Garbage = {
 	"zeioth/garbage-day.nvim",
 	dependencies = "neovim/nvim-lspconfig",
-	event = "VeryLazy",
+	event = "BufRead",
 	opts = {
 		agressive_mode = true,
 		notification = true,

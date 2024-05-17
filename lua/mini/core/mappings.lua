@@ -94,8 +94,10 @@ vim.keymap.set("n", "N", "Nzzzv")
 -- Turn off search highlight
 vim.keymap.set("n", "<leader><space>", "<cmd>nohlsearch<cr>", { silent = true })
 
--- Folding
-vim.keymap.set("n", "<space>", "za")
+-- Wrap
+vim.keymap.set("n", "<leader>w", function()
+	vim.opt.wrap = not vim.opt.wrap._value
+end)
 
 -- Save
 vim.cmd("cnoreabbrev save wa<cr><cmd>mksession! session.vim<cr><cmd>qa<cr>")

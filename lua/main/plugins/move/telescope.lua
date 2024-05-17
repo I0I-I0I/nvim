@@ -15,14 +15,30 @@ function Telescope.config()
 
 	vim.keymap.set("n", "<leader>ff", builtin.find_files, {})
 	vim.keymap.set("n", "<leader>fw", builtin.live_grep, {})
+	vim.keymap.set("n", "<leader>ab", "<cmd>Telescope scope buffers<cr>", {})
 	vim.keymap.set("n", "<leader>b", builtin.buffers, {})
 	vim.keymap.set("n", "<leader>ft", builtin.colorscheme, {})
 	vim.keymap.set("n", "<leader>fr", builtin.registers, {})
+	vim.keymap.set("n", "<leader>fh", builtin.help_tags, {})
+	vim.keymap.set("n", "<leader>fk", builtin.keymaps, {})
 	vim.keymap.set("i", "<C-v>", builtin.registers, { noremap = true, silent = true })
 	vim.keymap.set("n", "z=", builtin.spell_suggest, {})
 	vim.keymap.set("n", "<leader>fs", function()
 		builtin.grep_string({ search = vim.fn.input("Grep -> ") })
 	end)
+
+	vim.keymap.set(
+		"n",
+		"<leader>ap",
+		"<cmd>Telescope neovim-project discover theme=dropdown prompt_title=🗃️\\ All\\ projects<cr>",
+		{}
+	)
+	vim.keymap.set(
+		"n",
+		"<leader>hp",
+		"<cmd>Telescope neovim-project history theme=dropdown prompt_title=🗃️\\ History\\ projects<cr>",
+		{}
+	)
 
 	local opts = {
 		defaults = {
@@ -122,6 +138,8 @@ function Telescope.config()
 		},
 	}
 	require("telescope").setup(opts)
+	require("telescope").load_extension("scope")
+	-- require("telescope").load_extension("projects")
 end
 
 return Telescope

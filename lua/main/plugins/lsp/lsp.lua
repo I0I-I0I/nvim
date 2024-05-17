@@ -69,12 +69,13 @@ function lspzero.config()
 			pylsp = importServer("pylsp"),
 			tsserver = importServer("tsserver"),
 			stylelint_lsp = importServer("stylelint_lsp"),
+			cssmodules_ls = importServer("cssmodules_ls"),
 		},
 	})
 
 	-- Diagnostic
 	vim.diagnostic.config({
-		virtual_text = false,
+		virtual_text = true,
 		sighns = true,
 		underline = true,
 		severity_sort = true,
@@ -113,11 +114,11 @@ function lspzero.config()
 			-- vim.keymap.set("n", "<leader>R", "vim.lsp.rename", opts)
 			vim.keymap.set("n", "gD", vim.lsp.buf.declaration, opts)
 			vim.keymap.set("n", "gI", vim.lsp.buf.implementation, opts)
-			vim.keymap.set("n", "<leader>wa", vim.lsp.buf.add_workspace_folder, opts)
-			vim.keymap.set("n", "<leader>wr", vim.lsp.buf.remove_workspace_folder, opts)
-			vim.keymap.set("n", "<leader>wl", function()
-				print(vim.inspect(vim.lsp.buf.list_workspace_folders()))
-			end, opts)
+			-- vim.keymap.set("n", "<leader>wa", vim.lsp.buf.add_workspace_folder, opts)
+			-- vim.keymap.set("n", "<leader>wr", vim.lsp.buf.remove_workspace_folder, opts)
+			-- vim.keymap.set("n", "<leader>wl", function()
+			-- 	print(vim.inspect(vim.lsp.buf.list_workspace_folders()))
+			-- end, opts)
 			vim.keymap.set("n", "<leader>D", vim.lsp.buf.type_definition, opts)
 		end,
 	})

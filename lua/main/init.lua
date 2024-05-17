@@ -1,11 +1,12 @@
 -- Basic
 local core = "main.core."
+
 require(core .. "config")
 require(core .. "utils")
 require(core .. "mappings")
 
 -- Colorscheme
-local colorscheme = "everforest" -- "kanagawa", "everforest", "tokyonight-moon", "nord"
+local colorscheme = "everforest" -- kanagawa everforest tokyonight-moon nord
 
 -- Plugins
 local custom = "main.plugins.customization."
@@ -18,12 +19,11 @@ local themes = "main.themes."
 
 Plugins = {
 	-- Themes
-	{ import = themes .. "colorschemes" },
+	{ import = themes .. "colorscheme" },
 
 	-- Customization
 	{ import = custom .. "bufferline" },
 	{ import = custom .. "blankline" },
-	{ import = custom .. "mini" },
 	{ import = custom .. "undo" },
 	{ import = custom .. "colorizer" },
 	{ import = custom .. "hlargs" },
@@ -32,12 +32,12 @@ Plugins = {
 	{ import = custom .. "rainbow-brackets" },
 	{ import = custom .. "veil" },
 	{ import = custom .. "icons" },
+	{ import = custom .. "mini" },
 
 	-- Move
-	{ import = move .. "cybu" },
 	{ import = move .. "tree" },
 	{ import = move .. "leap" },
-	{ import = move .. "harpoon" },
+	{ import = move .. "telescope" },
 
 	-- Utils
 	{ import = util .. "surround" },
@@ -46,25 +46,25 @@ Plugins = {
 	{ import = util .. "treesj" },
 	{ import = util .. "comments" },
 	{ import = util .. "bbye" },
-	{ import = util .. "telescope" },
 	{ import = util .. "illuminate" },
 	{ import = util .. "spectre" },
-	{ import = util .. "wakatime" },
 	{ import = util .. "undotree" },
+	{ import = util .. "projects" },
+	{ import = util .. "wakatime" },
 
 	-- LSP
-	{ import = lsp .. "lspzero" },
-	{ import = lsp .. "lspsaga" },
+	{ import = lsp .. "lsp" },
 	{ import = lsp .. "cmp" },
 	{ import = lsp .. "formatter" },
 	{ import = lsp .. "linter" },
+	{ import = lsp .. "trouble" },
+	{ import = lsp .. "lspsaga" },
 	{ import = lsp .. "lsp-lens" },
 	{ import = lsp .. "fidget" },
 	{ import = lsp .. "garbage" },
-	{ import = lsp .. "trouble" },
 
 	-- AI
-	-- { import = ai .. "codeium" },
+	{ import = ai .. "codeium" },
 
 	-- Git
 	{ import = git .. "git" },
@@ -73,5 +73,5 @@ Plugins = {
 require("main.plugins.lazy")
 
 -- Themes
-require("main.themes.colorschemes")
-SetColorscheme(colorscheme)
+require("main.themes.colorscheme")
+vim.cmd("SetColor " .. colorscheme)

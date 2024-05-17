@@ -2,7 +2,6 @@ local veil = {
 	"willothy/veil.nvim",
 	dependencies = {
 		"nvim-lua/plenary.nvim",
-		-- "nvim-telescope/telescope.nvim",
 	},
 	lazy = false,
 	priority = 1000,
@@ -22,12 +21,20 @@ function veil.config()
 				{
 					icon = "",
 					text = "Continue",
-					shortcut = "s",
-					-- callback = function()
-					-- 	vim.cmd("source session.vim ")
-					-- end,
+					shortcut = "c",
 					callback = function()
-						vim.cmd("Neotree float /mnt/d/code")
+						vim.cmd("NeovimProjectLoadRecent")
+					end,
+				},
+				{
+					icon = "",
+					text = "Sessions",
+					shortcut = "s",
+					callback = function()
+						vim.cmd(
+							"Telescope neovim-project discover theme=dropdown prompt_title=🗃️\\ All\\ projects"
+						)
+						-- vim.cmd("Telescope projects theme=dropdown prompt_title=🗃️\\ All\\ projects")
 					end,
 				},
 				{
@@ -47,25 +54,13 @@ function veil.config()
 					end,
 				},
 				{
-					icon = "",
-					text = "Config",
-					shortcut = "i",
-					callback = function()
-						vim.cmd("Neotree float $HOME/.config/nvim/")
-					end,
-				},
-				{
 					icon = "",
 					text = "Close",
 					shortcut = "q",
 					callback = function()
 						vim.cmd([[
-                        try
-                            close
-                        catch
-                            quit
-                        endtry
-                    ]])
+                                    quit
+				                ]])
 					end,
 				},
 			}, { spacing = 5 }),
@@ -86,8 +81,8 @@ function veil.config()
 
 	require("veil").setup(default)
 
-	-- Map tab
-	vim.keymap.set("n", "<C-w>t", "<cmd>tabnew<cr><cmd>OpenVeil<cr>", { silent = true })
+	-- Create buffer
+	vim.keymap.set("n", "<C-w>b", "<cmd>OpenVeil<cr>", { silent = true })
 
 	-- Function
 	function OpenVeil()
@@ -96,10 +91,6 @@ function veil.config()
 	end
 
 	vim.api.nvim_create_user_command("OpenVeil", OpenVeil, {})
-
-	vim.cmd([[
-    ab veil OpenVeil
-]])
 
 	-- Open Veil after edit
 	function Edit(path)
@@ -127,7 +118,69 @@ function veil.config()
 		end,
 	})
 
+	function CloseAllWindows(cmd)
+		if cmd == "q" then
+			vim.cmd([[
+                Bdelete
+                try
+                    close
+                catch
+                    OpenVeil
+                endtry
+            ]])
+		elseif cmd == "wq" then
+			vim.cmd([[
+                w
+                Bdelete
+                try
+                    close
+                catch
+                    OpenVeil
+                endtry
+            ]])
+		elseif cmd == "qa" then
+			vim.cmd([[
+                bufdo :Bdelete
+                tabonly
+                only
+                OpenVeil
+            ]])
+		elseif cmd == "wqa" then
+			vim.cmd([[
+                wa
+                tabonly
+                only
+                try
+                    bufdo :Bdelete!
+                catch
+                    echo "Error :Bdelete"
+                endtry
+                OpenVeil
+            ]])
+		elseif cmd == "c" then
+			vim.cmd("close")
+		end
+	end
+
+	vim.cmd([[
+        cnoreabbrev q lua CloseAllWindows('q')
+        cnoreabbrev Q lua CloseAllWindows('q')
+
+        cnoreabbrev qa lua CloseAllWindows('qa')
+        cnoreabbrev Qa lua CloseAllWindows('qa')
+
+        cnoreabbrev wq lua CloseAllWindows('wq')
+        cnoreabbrev Wq lua CloseAllWindows('wq')
+
+        cnoreabbrev wqa lua CloseAllWindows('wqa')
+        cnoreabbrev Wqa lua CloseAllWindows('wqa')
+
+        cnoreabbrev c lua CloseAllWindows('c')
+    ]])
+
 	vim.cmd("ab edit Edit")
+
+	vim.keymap.set("n", "<leader>o", "<cmd>Bdelete<cr><cmd>OpenVeil<cr>", { silent = true, noremap = true })
 end
 
 return veil

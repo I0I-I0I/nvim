@@ -126,6 +126,16 @@ function SetColorscheme(color, transparent)
 	setColor("NotifyDEBUGTitle", { fg = HintColor })
 	setColor("NotifyDEBUGBody", { fg = HintColor })
 
+	setColor("LineNr", { fg = "#ffffff" })
+	setColor("LineNrBelow", { fg = "#747474" })
+	setColor("LineNrAbove", { fg = "#747474" })
+
+	setColor("BufferLineBackground", { fg = "#444444" })
+	setColor("BufferLineBufferSelected", { fg = "#ffffff" })
+
+	setColor("BufferLineTab", { fg = "#444444" })
+	setColor("BufferLineTabSelected", { fg = "#ffffff" })
+
 	setColor("EndOfBuffer", { fg = "#111111" })
 	setColor("WinSeparator", { fg = "#555555" })
 

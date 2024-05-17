@@ -1,6 +1,6 @@
 local Fidget = {
 	"j-hui/fidget.nvim",
-	event = "VeryLazy",
+	event = "BufRead",
 }
 
 function Fidget.config()

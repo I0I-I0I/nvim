@@ -9,11 +9,8 @@ local Neotree = {
 
 function Neotree.config()
 	vim.fn.sign_define("DiagnosticSignError", { text = "- ", texthl = "DiagnosticSignError" })
-
 	vim.fn.sign_define("DiagnosticSignWarn", { text = "! ", texthl = "DiagnosticSignWarn" })
-
 	vim.fn.sign_define("DiagnosticSignInfo", { text = "i ", texthl = "DiagnosticSignInfo" })
-
 	vim.fn.sign_define("DiagnosticSignHint", { text = "? ", texthl = "DiagnosticSignHint" })
 
 	require("neo-tree").setup({
@@ -60,7 +57,7 @@ function Neotree.config()
 	})
 
 	-- NeoTree
-	vim.keymap.set("n", "<C-b>", "<cmd>Neotree float focus toggle<cr>", { silent = true })
+	vim.keymap.set("n", "<C-b>", "<cmd>Neotree left focus toggle<cr>", { silent = true })
 end
 
 return Neotree

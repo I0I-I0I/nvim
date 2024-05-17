@@ -71,8 +71,10 @@ vim.keymap.set("v", ">", ">gv")
 -- Turn off search highlight
 vim.keymap.set("n", "<leader><space>", "<cmd>nohlsearch<cr>", { silent = true })
 
--- Folding
-vim.keymap.set("n", "<space>", "za")
+-- Wrap
+vim.keymap.set("n", "<leader>w", function()
+	vim.opt.wrap = not vim.opt.wrap._value
+end)
 
 -- Save
 vim.cmd("cnoreabbrev save wa<cr><cmd>mksession! session.vim<cr><cmd>qa<cr>")
@@ -83,21 +85,11 @@ vim.keymap.set("n", "<C-w>s", "<cmd>split<cr><C-w>j <cmd>Explore .<cr>", { silen
 vim.keymap.set("n", "<C-w>v", "<cmd>vsplit<cr><C-w>l <cmd>Explore .<cr>", { silent = true })
 vim.keymap.set("n", "<C-w>S", "<cmd>split ")
 vim.keymap.set("n", "<C-w>V", "<cmd>vsplit ")
--- Moving to tabs
-vim.keymap.set("n", "<C-l>", "<C-w>w")
 -- Resizing
 vim.keymap.set("n", "<C-left>", "<cmd>vertical resize -2<cr>", { silent = true })
 vim.keymap.set("n", "<C-right>", "<cmd>vertical resize +2<cr>", { silent = true })
 vim.keymap.set("n", "<C-up>", "<cmd>resize +2<cr>", { silent = true })
 vim.keymap.set("n", "<C-down>", "<cmd>resize -2<cr>", { silent = true })
--- Window tabs
-vim.keymap.set("n", "<C-w>i", "<cmd>tabnew ~/.config/nvim<cr>", { silent = true })
-vim.keymap.set("n", "<C-w>c", "<cmd>tabclose<cr>", { silent = true })
-vim.keymap.set("n", "<C-w>t", "<cmd>tabnew<cr><cmd>Ex<cr>", { silent = true })
-vim.keymap.set("n", "<C-w>T", "<cmd>tabnew ")
--- Moving to window tabs
-vim.keymap.set("n", "<Tab>", "gt")
-vim.keymap.set("n", "<S-Tab>", "gT")
 
 -- Run
 autocmd("BufRead", {

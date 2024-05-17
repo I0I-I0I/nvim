@@ -17,7 +17,7 @@ require(lsp .. "plugins")
 vim.call("plug#end")
 
 -- Config
-local config = "mini.plugins.config."
+local config = plugins ..  "config."
 
 require(config .. "telescope")
 require(config .. "trouble")
