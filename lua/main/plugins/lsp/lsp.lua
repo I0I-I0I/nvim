@@ -101,9 +101,9 @@ function lspzero.config()
 		group = augroup("UserLspConfig", {}),
 		callback = function(ev)
 			local client = vim.lsp.get_client_by_id(ev.data.client_id)
-			if client.server_capabilities.inlayHintProvider then
-				vim.lsp.inlay_hint.enable(ev.buf, true)
-			end
+			-- if client.server_capabilities.inlayHintProvider then
+			-- 	vim.lsp.inlay_hint.enable(ev.buf, true)
+			-- end
 
 			vim.bo[ev.buf].omnifunc = "v:lua.vim.lsp.omnifunc"
 

@@ -1,6 +1,6 @@
 local Bufferline = {
 	"akinsho/bufferline.nvim",
-	event = "VeryLazy",
+	lazy = false,
 	version = "*",
 	dependencies = {
 		{ "nvim-tree/nvim-web-devicons" },
@@ -54,7 +54,6 @@ function Bufferline.config()
 					filetype = "neo-tree",
 					text = "File Explorer",
 					text_align = "center",
-					padding = 0,
 					separator = true,
 				},
 			},
