@@ -7,7 +7,7 @@ require("typescript-tools").setup({
 	},
 
 	settings = {
-		separate_diagnostic_server = false,
+		separate_diagnostic_server = true,
 		publish_diagnostic_on = "insert_leave",
 		expose_as_code_action = "all",
 		tsserver_path = nil,
@@ -17,7 +17,7 @@ require("typescript-tools").setup({
 		complete_function_calls = true,
 		include_completions_with_insert_text = true,
 		code_lens = "all",
-		disable_member_code_lens = true,
+		disable_member_code_lens = false,
 
 		tsserver_file_preferences = {
 			includeInlayParameterNameHints = "all",

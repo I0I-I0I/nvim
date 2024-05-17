@@ -9,7 +9,6 @@ return {
 	opts = {
 		projects = {
 			"/mnt/d/code/project/app/*",
-			"/mnt/d/code/project/sites/*",
 			"~/.config/nvim/lua/main",
 			"~/.config/nvim/lua/mini",
 		},

@@ -53,6 +53,7 @@ function Bufferline.config()
 				{
 					filetype = "neo-tree",
 					text = "File Explorer",
+					highlight = "Directory",
 					text_align = "center",
 					separator = true,
 				},

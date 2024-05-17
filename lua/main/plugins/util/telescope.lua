@@ -43,8 +43,9 @@ function Telescope.config()
 	local opts = {
 		defaults = {
 			prompt_prefix = "  ",
-			-- selection_caret = "  ",
-			selection_caret = "  ",
+			selection_caret = "  ",
+			-- selection_caret = "  ",
+
 			vimgrep_arguments = {
 				"rg",
 				"--color=never",

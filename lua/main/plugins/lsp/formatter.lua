@@ -21,9 +21,10 @@ function Formatter.config()
 			python = { "black" },
 		},
 		format_on_save = {
-			lsp_fallback = true,
+			timeout_ms = 3000,
 			async = false,
-			timeout_ms = 500,
+			quiet = false,
+			lsp_fallback = true,
 		},
 	})
 end

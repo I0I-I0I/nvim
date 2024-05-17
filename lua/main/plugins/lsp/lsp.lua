@@ -1,7 +1,7 @@
 local lspzero = {
 	"VonHeikemen/lsp-zero.nvim",
 	dependencies = {
-		"neovim/nvim-lspconfig",
+		{ "neovim/nvim-lspconfig" },
 		{ "pmizio/typescript-tools.nvim", dependencies = { "nvim-lua/plenary.nvim", "neovim/nvim-lspconfig" } },
 		{ "williamboman/mason.nvim", dependencies = { "williamboman/mason-lspconfig.nvim" } },
 	},
@@ -13,6 +13,25 @@ function lspzero.config()
 	lspconfig = require("lspconfig")
 	lsp_zero = require("lsp-zero")
 	capabilities = require("cmp_nvim_lsp").default_capabilities()
+
+	lspconfig.opts = {
+		diagnostics = {
+			underline = false,
+			update_in_insert = false,
+			virtual_text = {
+				spacing = 4,
+				source = "if_many",
+				prefix = "●",
+			},
+			severity_sort = true,
+		},
+		inlay_hints = {
+			enabled = true,
+		},
+		codelens = {
+			enabled = true,
+		},
+	}
 
 	lsp_zero.on_attach(function(client, bufnr)
 		lsp_zero.default_keymaps({
@@ -101,9 +120,16 @@ function lspzero.config()
 		group = augroup("UserLspConfig", {}),
 		callback = function(ev)
 			local client = vim.lsp.get_client_by_id(ev.data.client_id)
-			-- if client.server_capabilities.inlayHintProvider then
-			-- 	vim.lsp.inlay_hint.enable(ev.buf, true)
-			-- end
+			if client.server_capabilities.inlayHintProvider then
+				vim.lsp.inlay_hint.enable(ev.buf, true)
+			end
+			if client.supports_method("textDocument/codeLens") then
+				vim.lsp.codelens.refresh()
+				vim.api.nvim_create_autocmd({ "BufEnter", "CursorHold", "InsertLeave" }, {
+					buffer = ev.buf,
+					callback = vim.lsp.codelens.refresh,
+				})
+			end
 
 			vim.bo[ev.buf].omnifunc = "v:lua.vim.lsp.omnifunc"
 
