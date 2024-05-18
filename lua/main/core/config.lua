@@ -14,15 +14,17 @@ vim.opt.undodir = os.getenv("HOME") .. "/.vim/undodir"
 vim.opt.undofile = true
 
 -- WSL yank support
-vim.cmd([[
-    let s:clip = '/mnt/c/Windows/System32/clip.exe'
-    if executable(s:clip)
-        augroup WSLYank
-            autocmd!
-            autocmd TextYankPost * if v:event.operator ==# 'y' | call system(s:clip, @0) | endif
-        augroup END
-    endif
-]])
+if not vim.g.neovide then
+	vim.cmd([[
+        let s:clip = '/mnt/c/Windows/System32/clip.exe'
+        if executable(s:clip)
+            augroup WSLYank
+                autocmd!
+                autocmd TextYankPost * if v:event.operator ==# 'y' | call system(s:clip, @0) | endif
+            augroup END
+        endif
+    ]])
+end
 
 vim.cmd([[
 	cnoreabbrev W w

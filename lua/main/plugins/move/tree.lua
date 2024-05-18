@@ -49,7 +49,7 @@ function Neotree.config()
 			},
 		},
 		window = {
-			width = 30,
+			width = 33,
 			mappings = {
 				["P"] = { "toggle_preview", config = { use_float = true, use_image_nvim = true } },
 			},
@@ -57,7 +57,7 @@ function Neotree.config()
 	})
 
 	-- NeoTree
-	vim.keymap.set("n", "<C-b>", "<cmd>Neotree left focus toggle<cr>", { silent = true })
+	vim.keymap.set("n", "<C-b>", "<cmd>Neotree left toggle .<cr>", { silent = true })
 end
 
 return Neotree

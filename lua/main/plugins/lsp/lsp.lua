@@ -46,11 +46,11 @@ function lspzero.config()
 		vim.keymap.set("n", "gr", require("telescope.builtin").lsp_references, opts)
 		vim.keymap.set("n", "<leader>fd", require("telescope.builtin").lsp_definitions, opts)
 	end)
-
+	-- ▲ ⚑
 	lsp_zero.set_sign_icons({
 		error = "✘",
-		warn = "▲",
-		hint = "⚑",
+		warn = "",
+		hint = "󰉀",
 		info = "»",
 	})
 

@@ -24,10 +24,10 @@ vim.keymap.set("i", "<C-r>", "<cmd>norm <C-r><cr>", { noremap = true })
 vim.keymap.set("i", "<C-j>", "<cmd>norm o<cr>", { silent = true, noremap = true })
 vim.keymap.set("i", "<C-k>", "<cmd>norm O<cr>", { silent = true, noremap = true })
 
-vim.keymap.set("i", "<A-h>", "<left>")
-vim.keymap.set("i", "<A-l>", "<right>")
-vim.keymap.set("i", "<A-k>", "<up>")
-vim.keymap.set("i", "<A-j>", "<down>")
+vim.keymap.set({ "i", "c" }, "<A-h>", "<left>")
+vim.keymap.set({ "i", "c" }, "<A-l>", "<right>")
+vim.keymap.set({ "i", "c" }, "<A-k>", "<up>")
+vim.keymap.set({ "i", "c" }, "<A-j>", "<down>")
 
 vim.keymap.set("i", "<C-l>", "<cmd>norm w<cr>", { silent = true, noremap = true })
 vim.keymap.set("i", "<C-h>", "<cmd>norm b<cr>", { silent = true, noremap = true })
@@ -84,8 +84,8 @@ vim.keymap.set("n", "<leader>w", function()
 end)
 
 -- Save
-vim.cmd("cnoreabbrev save wa<cr><cmd>mksession! session.vim<cr><cmd>qa<cr>")
-vim.cmd("cnoreabbrev ss source session.vim<cr>")
+-- vim.cmd("cnoreabbrev save wa<cr><cmd>mksession! session.vim<cr><cmd>qa<cr>")
+-- vim.cmd("cnoreabbrev ss source session.vim<cr>")
 
 -- Split
 vim.keymap.set("n", "<C-w>s", "<cmd>split<cr><C-w>j <cmd>Explore .<cr>", { silent = true })

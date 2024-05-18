@@ -69,12 +69,14 @@ function Telescope.config()
 					["<C-k>"] = actions.cycle_history_prev,
 					["<C-n>"] = actions.move_selection_next,
 					["<C-p>"] = actions.move_selection_previous,
+					["<C-d>"] = actions.delete_buffer,
 				},
 				n = {
 					["esc"] = actions.close,
 					["q"] = actions.close,
 					["j"] = actions.move_selection_next,
 					["k"] = actions.move_selection_previous,
+					["dd"] = actions.delete_buffer,
 				},
 			},
 		},
@@ -141,6 +143,8 @@ function Telescope.config()
 	require("telescope").setup(opts)
 	require("telescope").load_extension("scope")
 	require("telescope").load_extension("notify")
+
+	require(Theme_utils .. "telescope_theme")
 end
 
 return Telescope

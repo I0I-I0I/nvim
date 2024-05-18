@@ -1,14 +1,11 @@
--- Basic
 local root = "main."
+-- Basic
 local core = root .. "core."
 local plugins = "main.plugins."
 
 require(core .. "config")
 require(core .. "utils")
 require(core .. "mappings")
-
--- Colorscheme
-local colorscheme = "everforest" -- kanagawa everforest tokyonight-moon nord
 
 -- Plugins
 local theme = root .. "theme."
@@ -50,9 +47,9 @@ Plugins = {
 	{ import = util .. "illuminate" },
 	{ import = util .. "spectre" },
 	{ import = util .. "undotree" },
-	{ import = util .. "projects" },
 	{ import = util .. "wakatime" },
 	{ import = util .. "telescope" },
+	{ import = util .. "session" },
 
 	-- LSP
 	{ import = lsp .. "lsp" },
@@ -66,7 +63,7 @@ Plugins = {
 	{ import = lsp .. "garbage" },
 
 	-- AI
-	-- { import = ai .. "codeium" },
+	{ import = ai .. "codeium" },
 
 	-- Git
 	{ import = git .. "git" },
@@ -76,4 +73,5 @@ require(plugins .. "lazy")
 
 -- Themes
 require(theme .. "colorscheme")
-vim.cmd("SetColor " .. colorscheme)
+
+vim.cmd("Color kanagawa 0.8")

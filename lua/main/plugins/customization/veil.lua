@@ -20,23 +20,11 @@ function veil.config()
 			}),
 			builtin.sections.buttons({
 				{
-					icon = "",
-					text = "Continue",
-					shortcut = "c",
-					callback = function()
-						vim.cmd("NeovimProjectLoadRecent")
-						vim.cmd("Bdelete")
-						vim.cmd("OpenVeil")
-					end,
-				},
-				{
 					icon = "",
 					text = "Sessions",
 					shortcut = "s",
 					callback = function()
-						vim.cmd(
-							"Telescope neovim-project discover theme=dropdown prompt_title=🗃️\\ All\\ projects"
-						)
+						vim.cmd("Sessions")
 					end,
 				},
 				{
@@ -53,6 +41,15 @@ function veil.config()
 					shortcut = "f",
 					callback = function()
 						vim.cmd("Telescope find_files")
+					end,
+				},
+				{
+					icon = "",
+					text = "Config",
+					shortcut = "i",
+					callback = function()
+						vim.cmd("cd ~/.config/nvim/lua/main")
+						vim.cmd("Neotree float")
 					end,
 				},
 				{
