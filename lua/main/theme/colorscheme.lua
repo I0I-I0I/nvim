@@ -1,11 +1,11 @@
 Colorschemes = {
 	{
-		"rebelot/kanagawa.nvim",
-		name = "kanagawa",
+		"Alexis12119/nightly.nvim",
+		name = "nightly",
 		lazy = false,
 		priority = 1000,
 		theme_names = {
-			"kanagawa",
+			"nightly",
 		},
 	},
 	{
@@ -18,21 +18,22 @@ Colorschemes = {
 		},
 	},
 	{
-		"folke/tokyonight.nvim",
-		name = "tokyonight",
+		"Everblush/nvim",
+		name = "everblush",
 		lazy = false,
 		priority = 1000,
 		theme_names = {
-			"tokyonight",
+			"everblush",
 		},
 	},
 	{
-		"shaunsingh/nord.nvim",
-		name = "nord",
+		"projekt0n/github-nvim-theme",
+		name = "github",
 		lazy = false,
 		priority = 1000,
 		theme_names = {
-			"nord",
+			"github_dark_dimmed",
+			"github_light",
 		},
 	},
 	{
@@ -43,6 +44,42 @@ Colorschemes = {
 		theme_names = {
 			"catppuccin-latte",
 			"catppuccin-macchiato",
+		},
+	},
+	{
+		"folke/tokyonight.nvim",
+		name = "tokyonight",
+		lazy = false,
+		priority = 1000,
+		theme_names = {
+			"tokyonight",
+		},
+	},
+	{
+		"rebelot/kanagawa.nvim",
+		name = "kanagawa",
+		lazy = false,
+		priority = 1000,
+		theme_names = {
+			"kanagawa",
+		},
+	},
+	{
+		"pauchiner/pastelnight.nvim",
+		name = "pastelnight",
+		lazy = false,
+		priority = 1000,
+		theme_names = {
+			"pastelnight",
+		},
+	},
+	{
+		"shaunsingh/nord.nvim",
+		name = "nord",
+		lazy = false,
+		priority = 1000,
+		theme_names = {
+			"nord",
 		},
 	},
 	{
@@ -72,15 +109,6 @@ Colorschemes = {
 		priority = 1000,
 		theme_names = {
 			"night-owl",
-		},
-	},
-	{
-		"Alexis12119/nightly.nvim",
-		name = "nightly",
-		lazy = false,
-		priority = 1000,
-		theme_names = {
-			"nightly",
 		},
 	},
 }

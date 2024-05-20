@@ -75,14 +75,14 @@ return {
 							["al"] = { query = "@loop.outer", desc = "Select outer part of a loop" },
 							["il"] = { query = "@loop.inner", desc = "Select inner part of a loop" },
 
-							["af"] = { query = "@call.outer", desc = "Select outer part of a function call" },
-							["if"] = { query = "@call.inner", desc = "Select inner part of a function call" },
+							["am"] = { query = "@call.outer", desc = "Select outer part of a function call" },
+							["im"] = { query = "@call.inner", desc = "Select inner part of a function call" },
 
-							["am"] = {
+							["af"] = {
 								query = "@function.outer",
 								desc = "Select outer part of a method/function definition",
 							},
-							["im"] = {
+							["if"] = {
 								query = "@function.inner",
 								desc = "Select inner part of a method/function definition",
 							},
@@ -99,10 +99,10 @@ return {
 					swap = {
 						enable = true,
 						swap_next = {
-							["<leader>n"] = "@parameter.inner",
+							["]a"] = "@parameter.inner",
 						},
 						swap_previous = {
-							["<leader>p"] = "@parameter.inner",
+							["]a"] = "@parameter.inner",
 						},
 					},
 

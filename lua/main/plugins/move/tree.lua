@@ -3,7 +3,7 @@ local Neotree = {
 	branch = "v3.x",
 	cmd = "Neotree",
 	keys = {
-		{ "<C-b>" },
+		{ "<C-n>", "<cmd>Neotree left toggle .<cr>", { silent = true, noremap = true } },
 	},
 }
 
@@ -54,10 +54,13 @@ function Neotree.config()
 				["P"] = { "toggle_preview", config = { use_float = true, use_image_nvim = true } },
 			},
 		},
+		source_selector = {
+			winbar = true,
+			statusline = false,
+		},
 	})
 
 	-- NeoTree
-	vim.keymap.set("n", "<C-b>", "<cmd>Neotree left toggle .<cr>", { silent = true })
 end
 
 return Neotree

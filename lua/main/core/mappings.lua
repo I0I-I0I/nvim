@@ -3,11 +3,12 @@ vim.keymap.set("v", "K", ":m '<-2<cr>gv=gv", { silent = true })
 vim.keymap.set("v", "J", ":m '>+1<cr>gv=gv", { silent = true })
 
 -- Quick fix list
-vim.keymap.set("n", "<C-n>", "<cmd>cnext<cr>", { silent = true, noremap = true })
-vim.keymap.set("n", "<C-p>", "<cmd>cprevious<cr>", { silent = true, noremap = true })
+-- vim.keymap.set("n", "<C-n>", "<cmd>cnext<cr>", { silent = true, noremap = true })
+-- vim.keymap.set("n", "<C-p>", "<cmd>cprevious<cr>", { silent = true, noremap = true })
 
 -- $ ^
 vim.keymap.set({ "v", "n", "x" }, "H", "^")
+vim.keymap.set({ "v", "n", "x" }, "M", "%")
 vim.keymap.set({ "n", "x", "v" }, "L", "g_")
 
 -- leave from insert mode
@@ -20,6 +21,7 @@ vim.keymap.set("i", "<C-d>", "<cmd>norm X<cr>", { noremap = true })
 vim.keymap.set("i", "<C-c>", "<cmd>norm cc<cr>", { noremap = true })
 vim.keymap.set("i", "<C-u>", "<cmd>norm u<cr>", { noremap = true })
 vim.keymap.set("i", "<C-r>", "<cmd>norm <C-r><cr>", { noremap = true })
+vim.keymap.set("i", "<C-/>", "<cmd>norm gcc<cr>", { noremap = true })
 
 vim.keymap.set("i", "<C-j>", "<cmd>norm o<cr>", { silent = true, noremap = true })
 vim.keymap.set("i", "<C-k>", "<cmd>norm O<cr>", { silent = true, noremap = true })
@@ -59,8 +61,8 @@ vim.keymap.set("x", "<leader>p", '""p')
 vim.keymap.set("v", "x", '"_x')
 vim.keymap.set({ "v", "n" }, "X", '"_X')
 
-vim.keymap.set({ "n", "v" }, "s", '"_s')
-vim.keymap.set({ "n", "v" }, "S", '"_S')
+-- vim.keymap.set({ "n", "v" }, "s", '"_s')
+-- vim.keymap.set({ "n", "v" }, "S", '"_S')
 
 -- Save
 vim.keymap.set({ "v", "n", "i" }, "<C-s>", "<cmd>w<cr><Esc>")

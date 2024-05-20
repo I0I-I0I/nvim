@@ -26,6 +26,13 @@ function SetColors(colors)
 		end,
 	})
 
+	vim.cmd([[
+		hi! lualine_transitional_lualine_b_insert_to_lualine_c_insert guibg=NONE
+		hi! lualine_transitional_lualine_b_normal_to_lualine_c_normal guibg=NONE
+		hi! lualine_transitional_lualine_b_visual_to_lualine_c_visual guibg=NONE
+		hi! lualine_transitional_lualine_b_command_to_lualine_c_command guibg=NONE
+    ]])
+
 	autocmd("CmdlineEnter", {
 		group = group,
 		callback = function()

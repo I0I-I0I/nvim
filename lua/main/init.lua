@@ -1,3 +1,4 @@
+Path_to_config = "~/.config/nvim/lua/main/"
 local root = "main."
 -- Basic
 local core = root .. "core."
@@ -18,20 +19,19 @@ local git = plugins .. "git."
 
 Plugins = {
 	-- Theme
-	{ import = theme },
+	{ import = theme .. "colorscheme" },
 
 	-- Customization
 	{ import = custom .. "bufferline" },
 	{ import = custom .. "blankline" },
 	{ import = custom .. "undo" },
 	{ import = custom .. "colorizer" },
-	{ import = custom .. "hlargs" },
 	{ import = custom .. "notify" },
 	{ import = custom .. "noice" },
 	{ import = custom .. "rainbow-brackets" },
 	{ import = custom .. "veil" },
 	{ import = custom .. "icons" },
-	{ import = custom .. "mini" },
+	{ import = custom .. "animation" },
 
 	-- Move
 	{ import = move .. "tree" },
@@ -47,9 +47,9 @@ Plugins = {
 	{ import = util .. "illuminate" },
 	{ import = util .. "spectre" },
 	{ import = util .. "undotree" },
-	{ import = util .. "wakatime" },
 	{ import = util .. "telescope" },
 	{ import = util .. "session" },
+	{ import = util .. "wakatime" },
 
 	-- LSP
 	{ import = lsp .. "lsp" },
@@ -63,7 +63,7 @@ Plugins = {
 	{ import = lsp .. "garbage" },
 
 	-- AI
-	{ import = ai .. "codeium" },
+	-- { import = ai .. "codeium" },
 
 	-- Git
 	{ import = git .. "git" },
@@ -74,4 +74,4 @@ require(plugins .. "lazy")
 -- Themes
 require(theme .. "colorscheme")
 
-vim.cmd("Color kanagawa 0.8")
+require(theme .. "theme")

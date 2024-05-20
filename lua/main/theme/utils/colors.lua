@@ -241,6 +241,10 @@ local colors = {
 		{ "EndOfBuffer", { fg = "#111111" } },
 		{ "WinSeparator", { fg = "#555555" } },
 		{ "NeoTreeWinSeparator", { fg = "#555555" } },
+		{ "NeoTreeTabInactive", { fg = "#666666" } },
+
+		{ "NeoTreeTabSeparatorActive", { fg = "#555555" } },
+		{ "NeoTreeTabSeparatorInactive", { fg = "#555555" } },
 		{ "TelescopeSelection", { fg = "#fff000" } },
 		{ "TelescopeResultNormal", { fg = "#ffffff" } },
 		{ "TelescopeResultTitle", { fg = "#ffffff" } },

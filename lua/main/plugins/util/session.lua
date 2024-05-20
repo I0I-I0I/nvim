@@ -14,21 +14,12 @@ local Session = {
 }
 
 function Session_telescope()
-	local builtin = require("telescope.builtin")
 	local pickers = require("telescope.pickers")
 	local finders = require("telescope.finders")
-	local conf = require("telescope.config").values
+	local sorters = require("telescope.sorters")
 	local actions = require("telescope.actions")
 	local action_state = require("telescope.actions.state")
-
-	function get_resession_list()
-		local resession = require("resession")
-		local result = {}
-		for key, value in pairs(resession.list()) do
-			table.insert(result, value)
-		end
-		return result
-	end
+	local resession = require("resession")
 
 	local all_sessions = function(opts)
 		opts = require("telescope.themes").get_dropdown({})
@@ -36,10 +27,11 @@ function Session_telescope()
 			.new(opts, {
 				prompt_title = "🗃️ All sessions",
 				finder = finders.new_table({
-					results = get_resession_list(),
+					results = resession.list(),
 				}),
-				sorter = conf.generic_sorter(opts),
-				attach_mappings = function(prompt_bufnr, map)
+				sorter = sorters.get_generic_fuzzy_sorter(),
+
+				attach_mappings = function(prompt_bufnr, _)
 					actions.select_default:replace(function()
 						actions.close(prompt_bufnr)
 						local selection = action_state.get_selected_entry()
