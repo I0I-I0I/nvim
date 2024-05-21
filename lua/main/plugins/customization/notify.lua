@@ -8,9 +8,11 @@ return {
 				max_width = 50,
 				render = "minimal",
 				stages = "slide",
+				timeout = 3000,
+				top_down = false,
 			})
 
-			vim.keymap.set("n", "<leader>fn", "<cmd>Telescope notify", {})
+			vim.keymap.set("n", "<leader>fn", "<cmd>Telescope notify<cr>", { silent = true })
 		end,
 	},
 }

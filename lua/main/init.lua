@@ -45,10 +45,11 @@ Plugins = {
 	{ import = util .. "comments" },
 	{ import = util .. "bbye" },
 	{ import = util .. "illuminate" },
-	{ import = util .. "spectre" },
+	-- { import = util .. "spectre" },
 	{ import = util .. "undotree" },
 	{ import = util .. "telescope" },
 	{ import = util .. "session" },
+	{ import = util .. "hlargs" },
 	{ import = util .. "wakatime" },
 
 	-- LSP

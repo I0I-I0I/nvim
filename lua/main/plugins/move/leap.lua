@@ -17,8 +17,8 @@ function Leap.config()
 	leap.opts.special_keys.multi_revert = "<backspace>"
 	leap.opts.equivalence_classes = { " \t\r\n" }
 
-	vim.keymap.set({ "v", "n", "o" }, "s", "<Plug>(leap-forward-to)")
-	vim.keymap.set({ "v", "n", "o" }, "S", "<Plug>(leap-backward-to)")
+	vim.keymap.set("n", "s", "<Plug>(leap-forward-to)")
+	vim.keymap.set("n", "S", "<Plug>(leap-backward-to)")
 end
 
 return Leap

@@ -1,12 +1,13 @@
 Plug = vim.fn["plug#"]
 
-local lsp = "mini.lsp."
-local plugins = "mini.plugins."
+local lsp = Root .. "lsp."
+local plugins = Root .. "plugins."
+local theme = Root .. "theme."
 
 vim.call("plug#begin")
 
 -- Colorscheme
-Plug("folke/tokyonight.nvim")
+require(theme .. "colorscheme")
 
 -- Plugins
 require(plugins .. "plugins")
@@ -17,10 +18,12 @@ require(lsp .. "plugins")
 vim.call("plug#end")
 
 -- Config
-local config = plugins ..  "config."
+local config = plugins .. "config."
 
 require(config .. "telescope")
-require(config .. "trouble")
 require(config .. "gitsign")
-require(config .. "harpoon")
 require(config .. "undotree")
+require(config .. "bbye")
+require(config .. "scope")
+require(config .. "treesitter")
+require(config .. "surround")

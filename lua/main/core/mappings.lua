@@ -8,31 +8,31 @@ vim.keymap.set("v", "J", ":m '>+1<cr>gv=gv", { silent = true })
 
 -- $ ^
 vim.keymap.set({ "v", "n", "x" }, "H", "^")
-vim.keymap.set({ "v", "n", "x" }, "M", "%")
+vim.keymap.set({ "v", "n", "x" }, "M", "<cmd>norm %<cr>", { silent = true, noremap = true })
 vim.keymap.set({ "n", "x", "v" }, "L", "g_")
 
 -- leave from insert mode
 vim.keymap.set("i", "jk", "<Esc>")
 
+-- norm in visual
+vim.keymap.set("v", "n", ":norm ")
+
 -- Insert Enter
-vim.keymap.set("i", "<C-w>", "<cmd>norm dwa<cr>", { noremap = true })
-vim.keymap.set("i", "<C-b>", "<cmd>norm dba<cr>", { noremap = true })
-vim.keymap.set("i", "<C-d>", "<cmd>norm X<cr>", { noremap = true })
-vim.keymap.set("i", "<C-c>", "<cmd>norm cc<cr>", { noremap = true })
-vim.keymap.set("i", "<C-u>", "<cmd>norm u<cr>", { noremap = true })
-vim.keymap.set("i", "<C-r>", "<cmd>norm <C-r><cr>", { noremap = true })
-vim.keymap.set("i", "<C-/>", "<cmd>norm gcc<cr>", { noremap = true })
+vim.keymap.set("i", "<C-w>", "<cmd>norm dwa<cr>", { silent = true, noremap = true })
+vim.keymap.set("i", "<C-b>", "<cmd>norm dba<cr>", { silent = true, noremap = true })
+vim.keymap.set("i", "<C-d>", "<cmd>norm X<cr>", { silent = true, noremap = true })
+vim.keymap.set("i", "<C-c>", "<cmd>norm cc<cr>", { silent = true, noremap = true })
+vim.keymap.set("i", "<C-/>", "<cmd>norm gcc<cr>", { silent = true, noremap = true })
 
 vim.keymap.set("i", "<C-j>", "<cmd>norm o<cr>", { silent = true, noremap = true })
 vim.keymap.set("i", "<C-k>", "<cmd>norm O<cr>", { silent = true, noremap = true })
-
-vim.keymap.set({ "i", "c" }, "<A-h>", "<left>")
-vim.keymap.set({ "i", "c" }, "<A-l>", "<right>")
-vim.keymap.set({ "i", "c" }, "<A-k>", "<up>")
-vim.keymap.set({ "i", "c" }, "<A-j>", "<down>")
-
 vim.keymap.set("i", "<C-l>", "<cmd>norm w<cr>", { silent = true, noremap = true })
 vim.keymap.set("i", "<C-h>", "<cmd>norm b<cr>", { silent = true, noremap = true })
+
+vim.keymap.set({ "i", "c" }, "<A-h>", "<left>", { silent = true, noremap = true })
+vim.keymap.set({ "i", "c" }, "<A-l>", "<right>", { silent = true, noremap = true })
+vim.keymap.set({ "i", "c" }, "<A-k>", "<up>", { silent = true, noremap = true })
+vim.keymap.set({ "i", "c" }, "<A-j>", "<down>", { silent = true, noremap = true })
 
 -- yank and paste
 vim.keymap.set("v", "1y", '"zy', { noremap = true })
@@ -59,10 +59,9 @@ vim.keymap.set("x", "<leader>p", '""p')
 
 -- Not yank with x/s
 vim.keymap.set("v", "x", '"_x')
-vim.keymap.set({ "v", "n" }, "X", '"_X')
-
--- vim.keymap.set({ "n", "v" }, "s", '"_s')
--- vim.keymap.set({ "n", "v" }, "S", '"_S')
+vim.keymap.set("v", "X", '"_X')
+vim.keymap.set("v", "s", '"_s')
+vim.keymap.set("v", "S", '"_S')
 
 -- Save
 vim.keymap.set({ "v", "n", "i" }, "<C-s>", "<cmd>w<cr><Esc>")
@@ -85,15 +84,12 @@ vim.keymap.set("n", "<leader>w", function()
 	vim.opt.wrap = not vim.opt.wrap._value
 end)
 
--- Save
--- vim.cmd("cnoreabbrev save wa<cr><cmd>mksession! session.vim<cr><cmd>qa<cr>")
--- vim.cmd("cnoreabbrev ss source session.vim<cr>")
-
 -- Split
 vim.keymap.set("n", "<C-w>s", "<cmd>split<cr><C-w>j <cmd>Explore .<cr>", { silent = true })
 vim.keymap.set("n", "<C-w>v", "<cmd>vsplit<cr><C-w>l <cmd>Explore .<cr>", { silent = true })
 vim.keymap.set("n", "<C-w>S", "<cmd>split ")
 vim.keymap.set("n", "<C-w>V", "<cmd>vsplit ")
+
 -- Resizing
 vim.keymap.set("n", "<C-left>", "<cmd>vertical resize -2<cr>", { silent = true })
 vim.keymap.set("n", "<C-right>", "<cmd>vertical resize +2<cr>", { silent = true })

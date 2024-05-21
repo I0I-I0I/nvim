@@ -18,12 +18,21 @@ Colorschemes = {
 		},
 	},
 	{
-		"Everblush/nvim",
-		name = "everblush",
+		"rebelot/kanagawa.nvim",
+		name = "kanagawa",
 		lazy = false,
 		priority = 1000,
 		theme_names = {
-			"everblush",
+			"kanagawa",
+		},
+	},
+	{
+		"lunarvim/horizon.nvim",
+		name = "horizon",
+		lazy = false,
+		priority = 1000,
+		theme_names = {
+			"horizon",
 		},
 	},
 	{
@@ -56,12 +65,12 @@ Colorschemes = {
 		},
 	},
 	{
-		"rebelot/kanagawa.nvim",
-		name = "kanagawa",
+		"Everblush/nvim",
+		name = "everblush",
 		lazy = false,
 		priority = 1000,
 		theme_names = {
-			"kanagawa",
+			"everblush",
 		},
 	},
 	{
@@ -109,6 +118,15 @@ Colorschemes = {
 		priority = 1000,
 		theme_names = {
 			"night-owl",
+		},
+	},
+	{
+		"jabuti-theme/jabuti-nvim",
+		name = "jabuti",
+		lazy = false,
+		priority = 1000,
+		theme_names = {
+			"jabuti",
 		},
 	},
 }

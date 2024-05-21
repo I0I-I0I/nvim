@@ -4,8 +4,8 @@ autocmd = vim.api.nvim_create_autocmd
 augroup = vim.api.nvim_create_augroup
 
 function _G.check_back_space()
-    local col = vim.fn.col('.') - 1
-    return col == 0 or vim.fn.getline('.'):sub(col, col):match('%s') ~= nil
+	local col = vim.fn.col(".") - 1
+	return col == 0 or vim.fn.getline("."):sub(col, col):match("%s") ~= nil
 end
 
 -- Settings
@@ -13,25 +13,6 @@ vim.g.mapleader = ","
 vim.opt.termguicolors = true
 vim.scriptencoding = "utf-8"
 vim.opt.encoding = "utf-8"
-
--- vim.cmd([[
-    -- set filetype=on
-    -- set omnifunc=v:lua.vim.lua_omnifunc
--- ]])
---
--- autocmd("Filetype", {
-	-- pattern = {
-		-- "javascript",
-		-- "javascriptreact",
-		-- "javascript.jsx",
-		-- "typescript",
-		-- "typescriptreact",
-		-- "typescript.tsx",
-	-- },
-    -- callback = function()
-        -- vim.cmd("set omnifunc=javascriptcomplete#CompleteJS")
-    -- end
--- })
 
 -- Undo
 vim.opt.undodir = os.getenv("HOME") .. "/.vim/undodir"
@@ -102,13 +83,15 @@ vim.cmd([[
 vim.opt.autoread = true
 vim.bo.autoread = true
 
+-- Tabline
+vim.opt.showtabline = 2
+
 -- Tabs
 vim.opt.autoindent = true
 vim.opt.smartindent = true
 vim.opt.smarttab = true
-vim.opt.showtabline = 1
-vim.opt.shiftwidth = 4
 vim.opt.expandtab = true
+vim.opt.shiftwidth = 4
 vim.opt.tabstop = 4
 vim.opt.softtabstop = 0
 

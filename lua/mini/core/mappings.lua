@@ -5,11 +5,6 @@ vim.keymap.set("v", "J", ":m '>+1<cr>gv=gv", { silent = true })
 -- Buffers
 vim.keymap.set("n", "<C-j>", "<cmd>bnext<cr>", { silent = true, noremap = true })
 vim.keymap.set("n", "<C-k>", "<cmd>bprevious<cr>", { silent = true, noremap = true })
-vim.keymap.set("n", "<leader>q", "<cmd>bdelete<cr>", { silent = true, noremap = true })
-
--- Quick fix list
-vim.keymap.set("n", "<C-n>", "<cmd>cnext<cr>", { silent = true, noremap = true })
-vim.keymap.set("n", "<C-p>", "<cmd>cprevious<cr>", { silent = true, noremap = true })
 
 -- Scroll
 vim.keymap.set("n", "<C-d>", "<C-d>zz")
@@ -22,9 +17,13 @@ vim.keymap.set("t", "<C-\\>", "<cmd>close<cr>", { silent = true })
 -- leave from insert mode
 vim.keymap.set("i", "jk", "<Esc>")
 
+-- norm in visual
+vim.keymap.set("v", "n", ":norm ")
+
 -- $ ^
 vim.keymap.set({ "v", "n", "x" }, "H", "^")
 vim.keymap.set({ "n", "x", "v" }, "L", "g_")
+vim.keymap.set({ "n", "x", "v" }, "M", "%")
 
 -- In insert
 vim.keymap.set("i", "<C-w>", "<cmd>norm dwa<cr>", { noremap = true })
@@ -81,7 +80,7 @@ vim.keymap.set({ "v", "n", "i" }, "<C-s>", "<cmd>w<cr><Esc>")
 vim.keymap.set({ "n", "v" }, "<leader>r", ":%s/\\<<C-r><C-w>\\>/<C-r><C-w>/gI<Left><Left><Left>")
 
 -- Explore
-vim.keymap.set("n", "<C-b>", "<cmd>Ex<cr>", { silent = true })
+vim.keymap.set("n", "<C-n>", "<cmd>Lex<cr>", { silent = true })
 
 -- Tabs
 vim.keymap.set("v", "<", "<gv")
@@ -118,7 +117,7 @@ vim.keymap.set("n", "<C-down>", "<cmd>resize -2<cr>", { silent = true })
 -- Window tabs
 vim.keymap.set("n", "<C-w>i", "<cmd>tabnew ~/.config/nvim-min<cr>", { silent = true })
 vim.keymap.set("n", "<C-w>c", "<cmd>tabclose<cr>", { silent = true })
-vim.keymap.set("n", "<C-w>t", "<cmd>tabnew<cr><cmd>Ex<cr>", { silent = true })
+vim.keymap.set("n", "<C-w>t", "<cmd>tabnew<cr><cmd>Lex<cr>", { silent = true })
 vim.keymap.set("n", "<C-w>T", "<cmd>tabnew ")
 -- Moving to window tabs
 vim.keymap.set("n", "<Tab>", "gt")

@@ -5,4 +5,14 @@ local AutoPairs = {
 	opts = {},
 }
 
+function AutoPairs.config()
+	local autopairs = require("ultimate-autopair")
+
+	autopairs.setup({
+		profile = "default",
+		cmap = false,
+		pair_cmap = false,
+	})
+end
+
 return AutoPairs

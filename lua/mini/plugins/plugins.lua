@@ -1,20 +1,23 @@
 return {
-    -- Telescope
-    Plug("nvim-lua/plenary.nvim"),
-    Plug("nvim-telescope/telescope.nvim", { ["tag"] = "0.1.6" }),
+	-- Telescope
+	Plug("nvim-lua/plenary.nvim"),
+	Plug("nvim-telescope/telescope.nvim", { ["tag"] = "0.1.6" }),
 
-    -- Harpoon
-    Plug("ThePrimeagen/harpoon"),
+	-- Harpoon
+	Plug("tiagovla/scope.nvim"),
 
-    -- Git
-    Plug("lewis6991/gitsigns.nvim"),
+	-- Git
+	Plug("lewis6991/gitsigns.nvim"),
 
-    -- Trouble
-    Plug("folke/trouble.nvim"),
+	-- Surround
+	Plug("kylechui/nvim-surround", { ["tag"] = "*" }),
 
-    -- Surround
-    Plug("tpope/vim-surround"),
+	-- TreeSitter
+	Plug("nvim-treesitter/nvim-treesitter", { ["do"] = ":TSUpdate" }),
 
-    -- Undotree
-    Plug("mbbill/undotree"),
+	-- Undotree
+	Plug("mbbill/undotree"),
+
+	-- Bdelete
+	Plug("moll/vim-bbye"),
 }

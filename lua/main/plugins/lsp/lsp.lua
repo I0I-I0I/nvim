@@ -2,8 +2,16 @@ local lspzero = {
 	"VonHeikemen/lsp-zero.nvim",
 	dependencies = {
 		{ "neovim/nvim-lspconfig" },
-		{ "pmizio/typescript-tools.nvim", dependencies = { "nvim-lua/plenary.nvim", "neovim/nvim-lspconfig" } },
-		{ "williamboman/mason.nvim", dependencies = { "williamboman/mason-lspconfig.nvim" } },
+		{
+			"pmizio/typescript-tools.nvim",
+			dependencies = {
+				"nvim-lua/plenary.nvim",
+				"neovim/nvim-lspconfig",
+			},
+		},
+		{ "williamboman/mason.nvim", dependencies = {
+			"williamboman/mason-lspconfig.nvim",
+		} },
 	},
 	branch = "v3.x",
 	event = { "BufReadPre", "BufNewFile" },
@@ -46,7 +54,7 @@ function lspzero.config()
 		vim.keymap.set("n", "gr", require("telescope.builtin").lsp_references, opts)
 		vim.keymap.set("n", "<leader>fd", require("telescope.builtin").lsp_definitions, opts)
 	end)
-	-- ▲ ⚑
+
 	lsp_zero.set_sign_icons({
 		error = "✘",
 		warn = "",

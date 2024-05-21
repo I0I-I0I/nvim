@@ -5,9 +5,8 @@ local Cmp = {
 		{ "hrsh7th/cmp-buffer" },
 		{ "hrsh7th/cmp-cmdline" },
 		{ "hrsh7th/cmp-path" },
-		{ "saadparwaiz1/cmp_luasnip" },
 		{ "roginfarrer/cmp-css-variables" },
-		{ "jdrupal-dev/css-vars.nvim", opts = {} },
+		{ "saadparwaiz1/cmp_luasnip" },
 		{
 			"L3MON4D3/LuaSnip",
 			version = "v2.*",
@@ -23,6 +22,10 @@ function Cmp.config()
 	local lspkind = require("lspkind")
 	local cmp_action = require("lsp-zero").cmp_action()
 
+	vim.g.css_variables_files = {
+		"./src/styles/base/variables.css",
+	}
+
 	require("luasnip.loaders.from_vscode").lazy_load()
 
 	cmp.setup({
@@ -33,12 +36,11 @@ function Cmp.config()
 		},
 
 		sources = cmp.config.sources({
-			{ name = "css_vars" },
-			{ name = "codeium" },
-			{ name = "nvim_lsp" },
 			{ name = "luasnip", option = { show_autosnippets = true } },
+			{ name = "css-variables" },
+			-- { name = "codeium" },
 			{ name = "nvim_lua" },
-		}, {
+			{ name = "nvim_lsp" },
 			{ name = "buffer" },
 			{ name = "path" },
 		}),
@@ -65,14 +67,16 @@ function Cmp.config()
 		}),
 
 		formatting = {
-			fields = { "kind", "abbr" },
+			fields = { "abbr", "menu", "kind" },
 			format = lspkind.cmp_format({
-				mode = "symbol",
+				mode = "symbol_text",
 				show_labelDetails = true,
-				preset = "default", -- "codicons"
+				-- preset = "default",
+				preset = "codicons",
 				ellipsis_char = "...",
 				symbol_map = {
 					Codeium = "",
+					Snippet = "",
 				},
 			}),
 		},
@@ -84,7 +88,7 @@ function Cmp.config()
 
 	cmp.setup.filetype("gitcommit", {
 		sources = cmp.config.sources({
-			{ name = "git" }, -- You can specify the `git` source if [you were installed it](https://github.com/petertriho/cmp-git).
+			{ name = "git" },
 		}, {
 			{ name = "buffer" },
 		}),
