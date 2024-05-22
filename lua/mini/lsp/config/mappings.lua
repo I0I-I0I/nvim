@@ -1,7 +1,12 @@
 -- Attach/Mappings
 autocmd("LspAttach", {
 	callback = function(event)
+		local bufnr = event.buf
 		local client = vim.lsp.get_client_by_id(event.data.client_id)
+
+		local function buf_set_option(...)
+			vim.api.nvim_buf_set_option(bufnr, ...)
+		end
 
 		if client.server_capabilities.inlayHintProvider then
 			vim.lsp.inlay_hint.enable(event.buf, true)
@@ -14,6 +19,8 @@ autocmd("LspAttach", {
 				callback = vim.lsp.codelens.refresh,
 			})
 		end
+
+		buf_set_option("omnifunc", "v:lua.vim.lsp.omnifunc")
 
 		vim.keymap.set("n", "K", vim.lsp.buf.hover, { desc = "Show hover", buffer = event.buf })
 		vim.keymap.set(

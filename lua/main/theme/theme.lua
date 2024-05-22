@@ -1,1 +1,1 @@
-vim.cmd("Color catppuccin-latte 1")
+vim.cmd("Color kanagawa 0.73")
