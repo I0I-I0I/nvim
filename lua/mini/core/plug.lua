@@ -21,9 +21,7 @@ vim.call("plug#end")
 local config = plugins .. "config."
 
 require(config .. "telescope")
-require(config .. "gitsign")
 require(config .. "undotree")
 require(config .. "bbye")
 require(config .. "scope")
-require(config .. "treesitter")
 require(config .. "surround")

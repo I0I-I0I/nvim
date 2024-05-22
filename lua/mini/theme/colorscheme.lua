@@ -1,24 +1,21 @@
 Colorschemes = {
-	Plug("Alexis12119/nightly.nvim"),
 	Plug("sainnhe/everforest"),
-	Plug("catppuccin/nvim"),
-	Plug("EdenEast/nightfox.nvim"),
+	Plug("morhetz/gruvbox"),
 }
 
 AllColorschemes = {
-	"nightly",
 	"everforest",
-	"catppuccin-latte",
-	"catppuccin-macchiato",
-	"dawnfox",
-	"duskfox",
-	"nordfox",
+	"gruvbox",
 }
 
 Theme_utils = Root .. "theme.utils."
 
-require(Theme_utils .. "disableItalic")
+vim.g.gruvbox_contrast_light = "hard"
+vim.g.gruvbox_improved_tabline = 1
+vim.g.gruvbox_improved_warnings = 1
+
 require(Theme_utils .. "setColors")
 require(Theme_utils .. "setColorscheme")
+require(Theme_utils .. "toggleThemeStyle")
 
 return Colorschemes

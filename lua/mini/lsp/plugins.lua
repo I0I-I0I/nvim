@@ -3,10 +3,9 @@ return {
 	Plug("williamboman/mason.nvim"),
 
 	-- Linter/Foramtter
-	Plug("mfussenegger/nvim-lint"),
 	Plug("stevearc/conform.nvim"),
 
-	-- Cmp
+	-- Completion
 	Plug("hrsh7th/nvim-cmp"),
 	Plug("hrsh7th/cmp-nvim-lsp"),
 	Plug("hrsh7th/cmp-cmdline"),

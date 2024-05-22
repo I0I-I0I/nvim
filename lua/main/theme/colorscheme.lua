@@ -136,5 +136,6 @@ Theme_utils = "main.theme.utils."
 require(Theme_utils .. "disableItalic")
 require(Theme_utils .. "setColors")
 require(Theme_utils .. "setColorscheme")
+require(Theme_utils .. "toggleThemeStyle")
 
 return Colorschemes

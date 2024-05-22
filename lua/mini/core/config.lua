@@ -62,11 +62,11 @@ vim.opt.swapfile = false
 vim.opt.backup = false
 
 -- Explorer
-vim.cmd("let g:netrw_banner = 0")
-vim.cmd("let g:netrw_liststyle = 3")
-vim.cmd("let g:netrw_browse_split = 0")
-vim.cmd("let g:netrw_winsize = 20")
-vim.cmd("let g:netrw_preview = 1")
+vim.g.netrw_banner = 0
+vim.g.netrw_liststyle = 3
+vim.g.netrw_browse_split = 4
+vim.g.netrw_winsize = 20
+vim.g.netrw_preview = 1
 
 autocmd("BufWritePre", {
 	callback = function()
@@ -150,7 +150,7 @@ vim.opt.foldmethod = "indent"
 vim.opt.foldcolumn = "0"
 vim.opt.foldlevel = 99
 
-vim.opt.laststatus = 2
+vim.opt.laststatus = 3
 
 local function git_branch()
 	local branch = vim.fn.system("git rev-parse --abbrev-ref HEAD 2>/dev/null | tr -d '\n'")

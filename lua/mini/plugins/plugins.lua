@@ -6,18 +6,15 @@ return {
 	-- Harpoon
 	Plug("tiagovla/scope.nvim"),
 
-	-- Git
-	Plug("lewis6991/gitsigns.nvim"),
-
 	-- Surround
 	Plug("kylechui/nvim-surround", { ["tag"] = "*" }),
-
-	-- TreeSitter
-	Plug("nvim-treesitter/nvim-treesitter", { ["do"] = ":TSUpdate" }),
 
 	-- Undotree
 	Plug("mbbill/undotree"),
 
 	-- Bdelete
 	Plug("moll/vim-bbye"),
+
+	-- NvimTree
+	Plug("nvim-tree/nvim-tree.lua"),
 }
