@@ -8,19 +8,17 @@ function Lens.config()
 
 	require("lsp-lens").setup({
 		enable = true,
-		include_declaration = true, -- Reference include declaration
-		sections = { -- Enable / Disable specific request, formatter example looks 'Format Requests'
+		include_declaration = true,
+		sections = {
 			definition = false,
 			references = true,
 			implements = true,
-			git_authors = true,
+			git_authors = false,
 		},
 		ignore_filetype = {
 			"prisma",
 		},
-		-- Target Symbol Kinds to show lens information
 		target_symbol_kinds = { SymbolKind.Function, SymbolKind.Method, SymbolKind.Interface },
-		-- Symbol Kinds that may have target symbol kinds as children
 		wrapper_symbol_kinds = { SymbolKind.Class, SymbolKind.Struct },
 	})
 end

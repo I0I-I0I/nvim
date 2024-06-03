@@ -33,7 +33,7 @@ vim.keymap.set({ "i", "c" }, "<A-j>", "<down>", { noremap = true })
 
 -- Paste
 vim.keymap.set("x", "p", '"_dP')
-vim.keymap.set("x", "<leader>p", '""p')
+vim.keymap.set("x", "P", '""p')
 
 -- Not yank with x/s
 vim.keymap.set("v", "x", '"_x')
@@ -52,10 +52,11 @@ vim.keymap.set("v", "<", "<gv")
 vim.keymap.set("v", ">", ">gv")
 
 -- Turn off search highlight
-vim.keymap.set("n", "<leader><space>", "<cmd>nohlsearch<cr>", { silent = true })
+vim.keymap.set("n", "<space>", "<cmd>nohlsearch<cr>", { silent = true })
 
 -- Wrap
-vim.keymap.set("n", "<leader>w", function()
+
+vim.keymap.set("n", "<F2>", function()
 	vim.opt.wrap = not vim.opt.wrap._value
 end)
 
