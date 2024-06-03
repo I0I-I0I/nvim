@@ -121,7 +121,7 @@ vim.opt.number = true
 vim.opt.relativenumber = true
 
 -- Scroll
-vim.opt.scrolloff = 8
+vim.opt.scrolloff = 3
 
 -- Search
 vim.opt.hlsearch = true
@@ -143,13 +143,15 @@ vim.opt.foldlevel = 99
 
 vim.opt.laststatus = 0
 
--- Yank
-autocmd("TextYankPost", {
-	pattern = "*",
-	callback = function()
-		vim.highlight.on_yank({
-			higroup = "IncSearch",
-			timeout = 100,
-		})
-	end,
-})
+-- Signcolumn
+vim.opt.signcolumn = "yes"
+
+-- Utils
+
+Utils = "default.utils."
+
+require(Utils .. "resize")
+require(Utils .. "stringToArray")
+require(Utils .. "yank")
+require(Utils .. "yankCutPast")
+require(Utils .. "verticalHelp")

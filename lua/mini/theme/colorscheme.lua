@@ -1,21 +1,21 @@
-Colorschemes = {
+ColorschemesPlug = {
 	Plug("sainnhe/everforest"),
 	Plug("morhetz/gruvbox"),
 }
 
-AllColorschemes = {
+Colorschemes = { { theme_names = {
 	"everforest",
 	"gruvbox",
-}
+} } }
 
-Theme_utils = Root .. "theme.utils."
+Theme = "default.theme."
+Theme_utils = Theme .. "utils."
 
 vim.g.gruvbox_contrast_light = "hard"
 vim.g.gruvbox_improved_tabline = 1
 vim.g.gruvbox_improved_warnings = 1
 
-require(Theme_utils .. "setColors")
-require(Theme_utils .. "setColorscheme")
-require(Theme_utils .. "toggleThemeStyle")
+require(Theme .. "setColors")
+require(Theme .. "setColorscheme")
 
-return Colorschemes
+return ColorschemesPlug

@@ -1,12 +1,12 @@
 Path_to_config = "~/.config/nvim/lua/main/"
 local root = "main."
+
 -- Basic
-local core = root .. "core."
+local default = "default."
 local plugins = "main.plugins."
 
-require(core .. "config")
-require(core .. "utils")
-require(core .. "mappings")
+require(default .. "config")
+require(default .. "mappings")
 
 -- Plugins
 local theme = root .. "theme."
@@ -25,7 +25,6 @@ Plugins = {
 	{ import = custom .. "bufferline" },
 	{ import = custom .. "blankline" },
 	{ import = custom .. "undo" },
-	{ import = custom .. "colorizer" },
 	{ import = custom .. "notify" },
 	{ import = custom .. "noice" },
 	{ import = custom .. "rainbow-brackets" },
@@ -35,7 +34,6 @@ Plugins = {
 
 	-- Move
 	{ import = move .. "tree" },
-	{ import = move .. "leap" },
 
 	-- Utils
 	{ import = util .. "surround" },
@@ -45,23 +43,22 @@ Plugins = {
 	{ import = util .. "comments" },
 	{ import = util .. "bbye" },
 	{ import = util .. "illuminate" },
-	-- { import = util .. "spectre" },
 	{ import = util .. "undotree" },
 	{ import = util .. "telescope" },
 	{ import = util .. "session" },
-	{ import = util .. "hlargs" },
 	{ import = util .. "wakatime" },
+	{ import = util .. "quick-scope" },
 
 	-- LSP
 	{ import = lsp .. "lsp" },
 	{ import = lsp .. "cmp" },
 	{ import = lsp .. "formatter" },
 	{ import = lsp .. "linter" },
-	{ import = lsp .. "trouble" },
 	{ import = lsp .. "lspsaga" },
+	{ import = lsp .. "garbage" },
 	{ import = lsp .. "lsp-lens" },
 	{ import = lsp .. "fidget" },
-	{ import = lsp .. "garbage" },
+	{ import = lsp .. "trouble" },
 
 	-- AI
 	-- { import = ai .. "codeium" },

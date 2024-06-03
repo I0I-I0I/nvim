@@ -3,7 +3,9 @@ local Neotree = {
 	branch = "v3.x",
 	cmd = "Neotree",
 	keys = {
-		{ "<C-n>", "<cmd>Neotree left toggle .<cr>", { silent = true, noremap = true } },
+		{ "<leader>nl", "<cmd>Neotree left toggle .<cr>", { silent = true, noremap = true } },
+		{ "<leader>nr", "<cmd>Neotree right toggle .<cr>", { silent = true, noremap = true } },
+		{ "<leader>nf", "<cmd>Neotree float toggle .<cr>", { silent = true, noremap = true } },
 	},
 }
 

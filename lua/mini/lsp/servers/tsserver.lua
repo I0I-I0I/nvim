@@ -31,20 +31,20 @@ autocmd("FileType", {
 				typescript = {
 					inlayHints = {
 						includeInlayEnumMemberValueHints = true,
-						includeInlayFunctionLikeReturnTypeHints = true,
-						includeInlayFunctionParameterTypeHints = true,
+						includeInlayFunctionLikeReturnTypeHints = false,
+						includeInlayFunctionParameterTypeHints = false,
 						includeInlayParameterNameHints = "all",
-						includeInlayParameterNameHintsWhenArgumentMatchesName = true,
+						includeInlayParameterNameHintsWhenArgumentMatchesName = false,
 						includeInlayVariableTypeHints = false,
 					},
 				},
 				javascript = {
 					inlayHints = {
 						includeInlayEnumMemberValueHints = true,
-						includeInlayFunctionLikeReturnTypeHints = true,
-						includeInlayFunctionParameterTypeHints = true,
+						includeInlayFunctionLikeReturnTypeHints = false,
+						includeInlayFunctionParameterTypeHints = false,
 						includeInlayParameterNameHints = "all",
-						includeInlayParameterNameHintsWhenArgumentMatchesName = true,
+						includeInlayParameterNameHintsWhenArgumentMatchesName = false,
 						includeInlayVariableTypeHints = false,
 					},
 				},

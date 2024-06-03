@@ -61,23 +61,29 @@ return {
 						enable = true,
 						lookahead = true,
 						keymaps = {
+							-- assignment
 							["a="] = { query = "@assignment.outer", desc = "Select outer part of an assignment" },
 							["i="] = { query = "@assignment.inner", desc = "Select inner part of an assignment" },
 							["v="] = { query = "@assignment.lhs", desc = "Select left hand side of an assignment" },
 							["r="] = { query = "@assignment.rhs", desc = "Select right hand side of an assignment" },
 
+							-- parameters
 							["aa"] = { query = "@parameter.outer", desc = "Select outer part of a parameter/argument" },
 							["ia"] = { query = "@parameter.inner", desc = "Select inner part of a parameter/argument" },
 
+							-- conditional
 							["ai"] = { query = "@conditional.outer", desc = "Select outer part of a conditional" },
 							["ii"] = { query = "@conditional.inner", desc = "Select inner part of a conditional" },
 
+							-- loops
 							["al"] = { query = "@loop.outer", desc = "Select outer part of a loop" },
 							["il"] = { query = "@loop.inner", desc = "Select inner part of a loop" },
 
+							-- functions
 							["am"] = { query = "@call.outer", desc = "Select outer part of a function call" },
 							["im"] = { query = "@call.inner", desc = "Select inner part of a function call" },
 
+							-- functions
 							["af"] = {
 								query = "@function.outer",
 								desc = "Select outer part of a method/function definition",
@@ -87,12 +93,19 @@ return {
 								desc = "Select inner part of a method/function definition",
 							},
 
+							-- classes
 							["ac"] = { query = "@class.outer", desc = "Select outer part of a class" },
 							["ic"] = { query = "@class.inner", desc = "Select inner part of a class" },
 
-							["in"] = { query = "@number.inner", desc = "Select inner part of a number" },
+							-- comments
+							["at"] = { query = "@comment.outer", desc = "Select outer part of a comment" },
+
+							-- HTML
 							["ih"] = { query = "@attribute.inner", desc = "Select inner part of a attribute" },
 							["ah"] = { query = "@attribute.outer", desc = "Select inner part of a attribute" },
+
+							-- number
+							["in"] = { query = "@number.inner", desc = "Select inner part of a number" },
 						},
 					},
 
@@ -102,13 +115,13 @@ return {
 							["]a"] = "@parameter.inner",
 						},
 						swap_previous = {
-							["]a"] = "@parameter.inner",
+							["[a"] = "@parameter.inner",
 						},
 					},
 
 					move = {
 						enable = true,
-						set_jumps = true, -- whether to set jumps in the jumplist
+						set_jumps = true,
 						goto_next_start = {
 							["]m"] = { query = "@call.outer", desc = "Next function call start" },
 							["]f"] = { query = "@function.outer", desc = "Next method/function def start" },

@@ -1,19 +1,28 @@
 local Animation = {
-	"yuttie/comfortable-motion.vim",
+	"karb94/neoscroll.nvim",
 	event = "VeryLazy",
 }
 
 function Animation.config()
-	local opts = { silent = true, noremap = true }
-
-	vim.g.comfortable_motion_no_default_key_mappings = 1
-	vim.g.comfortable_motion_scroll_down_key = "j"
-	vim.g.comfortable_motion_scroll_up_key = "k"
-
-	vim.keymap.set("n", "<C-d>", "<cmd>call comfortable_motion#flick(110)<cr>", opts)
-	vim.keymap.set("n", "<C-u>", "<cmd>call comfortable_motion#flick(-110)<cr>", opts)
-	vim.keymap.set("n", "<ScrollWheelDown>", "<cmd>call comfortable_motion#flick(40)<cr>", opts)
-	vim.keymap.set("n", "<ScrollWheelUp>", "<cmd>call comfortable_motion#flick(-40)<cr>", opts)
+	require("neoscroll").setup({
+		mappings = { -- Keys to be mapped to their corresponding default scrolling animation
+			"<C-u>",
+			"<C-d>",
+			"<C-b>",
+			"<C-f>",
+			"<C-y>",
+			"<C-e>",
+			"zt",
+			"zz",
+			"zb",
+		},
+		hide_cursor = true, -- Hide cursor while scrolling
+		stop_eof = true, -- Stop at <EOF> when scrolling downwards
+		respect_scrolloff = false, -- Stop scrolling when the cursor reaches the scrolloff margin of the file
+		cursor_scrolls_alone = true, -- The cursor will keep on scrolling even if the window cannot scroll further
+		easing = "linear", -- Default easing function
+		performance_mode = false,
+	})
 end
 
 return Animation

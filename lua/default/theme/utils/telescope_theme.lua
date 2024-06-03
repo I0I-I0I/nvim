@@ -60,6 +60,3 @@ vim.api.nvim_create_user_command("Colors", function(input)
 end, {
 	nargs = "*",
 })
-
-vim.keymap.set("n", "<leader>tt", "<cmd>Colors 1<cr>")
-vim.keymap.set("n", "<leader>ta", "<cmd>Colors 0.73<cr>")

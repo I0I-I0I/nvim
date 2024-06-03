@@ -4,7 +4,9 @@ local LspSaga = {
 }
 
 function LspSaga.config()
-	require("lspsaga").setup({
+	local saga = require("lspsaga")
+
+	saga.setup({
 		lightbulb = {
 			enable = false,
 		},
@@ -34,13 +36,14 @@ function LspSaga.config()
 
 	local opts = { noremap = true, silent = true }
 
-	vim.keymap.set("n", "K", "<cmd>Lspsaga hover_doc<cr>", opts)
-	vim.keymap.set("n", "gd", "<cmd>Lspsaga peek_definition<cr>", opts)
-	vim.keymap.set("n", "<leader>R", "<cmd>Lspsaga rename<cr>", opts)
+	vim.keymap.set("n", "<leader>lk", "<cmd>Lspsaga hover_doc<cr>", opts)
+	vim.keymap.set("n", "<leader>lr", "<cmd>Lspsaga rename<cr>", opts)
+	vim.keymap.set("n", "<leader>ld", "<cmd>Lspsaga peek_definition<cr>", opts)
+	vim.keymap.set("n", "<leader>lca", "<cmd>Lspsaga code_action<cr>", opts)
 	vim.keymap.set("n", "<leader>lf", "<cmd>Lspsaga finder<cr>", opts)
 	vim.keymap.set("n", "<leader>lo", "<cmd>Lspsaga outline<cr>", opts)
-	vim.keymap.set({ "v", "n" }, "<leader>lD", "<cmd>Lspsaga diagnostic_jump_next<cr>", opts)
-	vim.keymap.set({ "v", "n" }, "<leader>ca", "<cmd>Lspsaga code_action<cr>")
+	vim.keymap.set("n", "[d", "<cmd>Lspsaga diagnostic_jump_next<cr>", opts)
+	vim.keymap.set("n", "]d", "<cmd>Lspsaga diagnostic_jump_prev<cr>", opts)
 	vim.keymap.set({ "n", "t" }, "<C-\\>", "<cmd>Lspsaga term_toggle<cr>")
 end
 

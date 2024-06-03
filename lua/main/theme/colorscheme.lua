@@ -1,14 +1,5 @@
 Colorschemes = {
 	{
-		"Alexis12119/nightly.nvim",
-		name = "nightly",
-		lazy = false,
-		priority = 1000,
-		theme_names = {
-			"nightly",
-		},
-	},
-	{
 		"sainnhe/everforest",
 		name = "everforest",
 		lazy = false,
@@ -24,6 +15,15 @@ Colorschemes = {
 		priority = 1000,
 		theme_names = {
 			"kanagawa",
+		},
+	},
+	{
+		"Alexis12119/nightly.nvim",
+		name = "nightly",
+		lazy = false,
+		priority = 1000,
+		theme_names = {
+			"nightly",
 		},
 	},
 	{
@@ -131,11 +131,13 @@ Colorschemes = {
 	},
 }
 
-Theme_utils = "main.theme.utils."
+Theme = "default.theme."
+Theme_utils = Theme .. "utils."
 
-require(Theme_utils .. "disableItalic")
-require(Theme_utils .. "setColors")
-require(Theme_utils .. "setColorscheme")
-require(Theme_utils .. "toggleThemeStyle")
+require(Theme .. "setColors")
+require(Theme .. "setColorscheme")
+
+vim.keymap.set("n", "<leader>fc", "<cmd>Colors 1<cr>")
+vim.keymap.set("n", "<leader>fac", "<cmd>Colors 0.73<cr>")
 
 return Colorschemes

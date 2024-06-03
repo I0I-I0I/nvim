@@ -9,9 +9,10 @@ local lspzero = {
 				"neovim/nvim-lspconfig",
 			},
 		},
-		{ "williamboman/mason.nvim", dependencies = {
-			"williamboman/mason-lspconfig.nvim",
-		} },
+		{
+			"williamboman/mason.nvim",
+			dependencies = { "williamboman/mason-lspconfig.nvim" },
+		},
 	},
 	branch = "v3.x",
 	event = { "BufReadPre", "BufNewFile" },
@@ -23,16 +24,6 @@ function lspzero.config()
 	capabilities = require("cmp_nvim_lsp").default_capabilities()
 
 	lspconfig.opts = {
-		diagnostics = {
-			underline = false,
-			update_in_insert = false,
-			virtual_text = {
-				spacing = 4,
-				source = "if_many",
-				prefix = "●",
-			},
-			severity_sort = true,
-		},
 		inlay_hints = {
 			enabled = true,
 		},
@@ -41,31 +32,32 @@ function lspzero.config()
 		},
 	}
 
-	lsp_zero.on_attach(function(client, bufnr)
-		lsp_zero.default_keymaps({
-			buffer = bufnr,
-			exclude = { "K", "gd", "gr", "<C-k>", "<leader>f", "<leader>ca" },
-		})
-
-		local opts = { noremap = true, silent = true }
-
-		vim.keymap.set("n", "K", "<cmd>Lspsaga hover_doc<cr>", opts)
-		vim.keymap.set("n", "gd", "<cmd>Lspsaga peek_definition<cr>", opts)
-		vim.keymap.set("n", "gr", require("telescope.builtin").lsp_references, opts)
-		vim.keymap.set("n", "<leader>fd", require("telescope.builtin").lsp_definitions, opts)
-	end)
+	vim.diagnostic.config({
+		sighns = true,
+		underline = true,
+		severity_sort = true,
+		update_in_insert = false,
+		virtual_text = false,
+		float = {
+			focusable = false,
+			border = "rounded",
+			header = "",
+			prefix = "",
+			source = "always",
+		},
+	})
 
 	lsp_zero.set_sign_icons({
-		error = "✘",
-		warn = "",
-		hint = "󰉀",
-		info = "»",
+		error = "✘ ",
+		warn = " ",
+		hint = "󰌶 ",
+		info = "» ",
 	})
 
 	-- Servers
 
+	local servers = "main.plugins.lsp.servers."
 	local function importServer(server)
-		local servers = "main.plugins.lsp.servers."
 		return require(servers .. server)
 	end
 
@@ -79,14 +71,14 @@ function lspzero.config()
 			"pylsp",
 			"stylelint_lsp",
 			"cssmodules_ls",
-
-			-- "stylua",
-			-- "eslint_d",
-			-- "prettierd",
-			-- "htmlhint",
-			-- "pylint",
-			-- "black",
 		},
+
+		-- "stylua",
+		-- "eslint_d",
+		-- "prettierd",
+		-- "htmlhint",
+		-- "pylint",
+		-- "black",
 
 		handlers = {
 			lsp_zero.default_setup,
@@ -102,27 +94,7 @@ function lspzero.config()
 		},
 	})
 
-	-- Diagnostic
-	vim.diagnostic.config({
-		virtual_text = true,
-		sighns = true,
-		underline = true,
-		severity_sort = true,
-		update_in_insert = false,
-		float = {
-			focusable = false,
-			border = "rounded",
-			header = "",
-			prefix = "",
-		},
-	})
-
 	-- Mappings
-
-	vim.keymap.set("n", "<leader>e", vim.diagnostic.open_float)
-	vim.keymap.set("n", "[d", vim.diagnostic.goto_prev)
-	vim.keymap.set("n", "]d", vim.diagnostic.goto_next)
-	vim.keymap.set("n", "<leader>Q", vim.diagnostic.setloclist)
 
 	autocmd("LspAttach", {
 		group = augroup("UserLspConfig", {}),
@@ -142,20 +114,15 @@ function lspzero.config()
 			vim.bo[ev.buf].omnifunc = "v:lua.vim.lsp.omnifunc"
 
 			local opts = { buffer = ev.buf }
-			-- vim.keymap.set("n", "K", vim.lsp.buf.hover, opts)
-			-- vim.keymap.set("n", "<C-k>", vim.lsp.buf.signature_help, opts)
-			-- vim.keymap.set("n", "gd", vim.lsp.buf.definition, opts)
-			-- vim.keymap.set("n", "gr", vim.lsp.buf.references, opts)
-			-- vim.keymap.set({ "n", "v" }, "<leader>ca", vim.lsp.buf.code_action, opts)
-			-- vim.keymap.set("n", "<leader>R", "vim.lsp.rename", opts)
-			-- vim.keymap.set("n", "<leader>wa", vim.lsp.buf.add_workspace_folder, opts)
-			-- vim.keymap.set("n", "<leader>wr", vim.lsp.buf.remove_workspace_folder, opts)
-			-- vim.keymap.set("n", "<leader>wl", function()
-			-- 	print(vim.inspect(vim.lsp.buf.list_workspace_folders()))
-			-- end, opts)
-			vim.keymap.set("n", "gD", vim.lsp.buf.declaration, opts)
-			vim.keymap.set("n", "gI", vim.lsp.buf.implementation, opts)
-			vim.keymap.set("n", "<leader>D", vim.lsp.buf.type_definition, opts)
+
+			vim.keymap.set("n", "<leader>le", vim.diagnostic.open_float)
+
+			vim.keymap.set("n", "<leader>lD", vim.lsp.buf.declaration, opts)
+			vim.keymap.set("n", "<leader>li", vim.lsp.buf.implementation, opts)
+			vim.keymap.set("n", "<leader>ltd", vim.lsp.buf.type_definition, opts)
+
+			vim.keymap.set("n", "<leader>fr", require("telescope.builtin").lsp_references)
+			vim.keymap.set("n", "<leader>fd", require("telescope.builtin").lsp_definitions)
 		end,
 	})
 end

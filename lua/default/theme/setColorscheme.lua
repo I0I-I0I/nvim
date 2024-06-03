@@ -1,15 +1,7 @@
 function SetColorscheme(colorscheme, transparent)
-	local colors = require(Theme_utils .. "colors")
+	require(Theme_utils .. "toggleThemeStyle")
 	vim.opt.background = "dark"
 	vim.cmd.colorscheme(colorscheme)
-
-	vim.cmd([[
-        hi! CursorLine gui=underline cterm=underline guibg=NONE ctermfg=None guifg=None
-        hi IlluminatedWord gui=underline guibg=none
-        hi IlluminatedWordRead gui=underline guibg=none
-        hi IlluminatedWordWrite gui=underline guibg=none
-        hi IlluminatedWordText gui=underline guibg=none
-    ]])
 
 	if transparent == 1 then
 		vim.cmd([[
@@ -21,8 +13,19 @@ function SetColorscheme(colorscheme, transparent)
 		if vim.g.neovide then
 			vim.g.neovide_transparency = 1
 		end
+		if colorscheme == "horizon" then
+			vim.cmd("hi NonText guifg=#777777")
+		elseif colorscheme == "night-owl" then
+			vim.cmd([[
+                hi NeoTreeNormal guibg=#021727
+                hi NeoTreeNormalNC guibg=#021727
+                hi NeoTreeEndOfBuffer guibg=#021727
+            ]])
+		end
 		return
-	elseif not transparent then
+	end
+
+	if not transparent then
 		transparent = 0.8
 	end
 
@@ -30,7 +33,16 @@ function SetColorscheme(colorscheme, transparent)
 		vim.g.neovide_transparency = transparent
 	end
 
+	local colors = require(Theme .. "colors")
 	SetColors(colors)
+
+	vim.cmd([[
+        hi! CursorLine gui=underline cterm=underline guibg=NONE ctermfg=None guifg=None
+        hi IlluminatedWord gui=underline guibg=none
+        hi IlluminatedWordRead gui=underline guibg=none
+        hi IlluminatedWordWrite gui=underline guibg=none
+        hi IlluminatedWordText gui=underline guibg=none
+    ]])
 end
 
 function GetColorschemeNames()
