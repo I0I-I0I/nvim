@@ -6,15 +6,16 @@ vim.keymap.set("v", "J", ":m '>+1<cr>gv=gv", { silent = true })
 vim.keymap.set("i", "jk", "<Esc>")
 
 -- Buffers
-vim.keymap.set("n", "<C-j>", "<cmd>bnext<cr>", { silent = true, noremap = false })
-vim.keymap.set("n", "<C-k>", "<cmd>bprevious<cr>", { silent = true, noremap = false })
+vim.keymap.set("n", "gn", "<cmd>bnext<cr>", { silent = true, noremap = false })
+vim.keymap.set("n", "gp", "<cmd>bprevious<cr>", { silent = true, noremap = false })
+vim.keymap.set("n", "gw", "<cmd>bdelete<cr>", { silent = true, noremap = false })
 
 -- norm in visual
 vim.keymap.set("v", "n", ":norm ")
 
 -- Macros
-vim.keymap.set("n", "Q", ":norm @@j<cr>", { silent = true, noremap = true })
-vim.keymap.set("x", "Q", ":norm @@<cr>", { silent = true, noremap = true })
+vim.keymap.set("n", "Q", ":norm @aj<cr>", { silent = true, noremap = true })
+vim.keymap.set("x", "Q", ":norm @a<cr>", { silent = true, noremap = true })
 
 -- Insert Enter
 vim.keymap.set("i", "<C-b>", "<cmd>norm dwa<cr>", { silent = true, noremap = true })
@@ -25,7 +26,6 @@ vim.keymap.set("i", "<C-k>", "<cmd>norm O<cr>", { silent = true, noremap = true 
 
 vim.keymap.set({ "i", "c" }, "<C-h>", "<C-Left>", { noremap = true })
 vim.keymap.set({ "i", "c" }, "<C-l>", "<C-Right>", { noremap = true })
-
 vim.keymap.set({ "i", "c" }, "<A-h>", "<left>", { noremap = true })
 vim.keymap.set({ "i", "c" }, "<A-l>", "<right>", { noremap = true })
 vim.keymap.set({ "i", "c" }, "<A-k>", "<up>", { noremap = true })
@@ -34,6 +34,8 @@ vim.keymap.set({ "i", "c" }, "<A-j>", "<down>", { noremap = true })
 -- Paste
 vim.keymap.set("x", "p", '"_dP')
 vim.keymap.set("x", "P", '""p')
+
+vim.keymap.set({ "v", "n" }, "<space>", '"')
 
 -- Not yank with x/s
 vim.keymap.set("v", "x", '"_x')
@@ -52,7 +54,7 @@ vim.keymap.set("v", "<", "<gv")
 vim.keymap.set("v", ">", ">gv")
 
 -- Turn off search highlight
-vim.keymap.set("n", "<space>", "<cmd>nohlsearch<cr>", { silent = true })
+vim.keymap.set("n", "<space><space>", "<cmd>nohlsearch<cr>", { silent = true })
 
 -- Wrap
 
@@ -61,10 +63,10 @@ vim.keymap.set("n", "<F2>", function()
 end)
 
 -- Split
-vim.keymap.set("n", "<C-w>s", "<cmd>split<cr><C-w>j <cmd>Explore .<cr>", { silent = true })
-vim.keymap.set("n", "<C-w>v", "<cmd>vsplit<cr><C-w>l <cmd>Explore .<cr>", { silent = true })
-vim.keymap.set("n", "<C-w>S", "<cmd>split ")
-vim.keymap.set("n", "<C-w>V", "<cmd>vsplit ")
+vim.keymap.set("n", "<C-w>s", "<cmd>split<cr><C-w>j", { silent = true })
+vim.keymap.set("n", "<C-w>v", "<cmd>vsplit<cr><C-w>l", { silent = true })
+vim.keymap.set("n", "<C-w>S", ":split ")
+vim.keymap.set("n", "<C-w>V", ":vsplit ")
 
 -- Resizing
 vim.keymap.set("n", "<C-left>", "<cmd>vertical resize -2<cr>", { silent = true })

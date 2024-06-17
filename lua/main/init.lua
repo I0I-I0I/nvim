@@ -22,15 +22,16 @@ Plugins = {
 	{ import = theme .. "colorscheme" },
 
 	-- Customization
-	{ import = custom .. "bufferline" },
+	{ import = custom .. "animation" },
 	{ import = custom .. "blankline" },
+	{ import = custom .. "bufferline" },
 	{ import = custom .. "undo" },
 	{ import = custom .. "notify" },
 	{ import = custom .. "noice" },
 	{ import = custom .. "rainbow-brackets" },
 	{ import = custom .. "veil" },
 	{ import = custom .. "icons" },
-	{ import = custom .. "animation" },
+	{ import = custom .. "pets" },
 
 	-- Move
 	{ import = move .. "tree" },

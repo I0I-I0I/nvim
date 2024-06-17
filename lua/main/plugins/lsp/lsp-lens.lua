@@ -10,10 +10,10 @@ function Lens.config()
 		enable = true,
 		include_declaration = true,
 		sections = {
-			definition = false,
+			definition = true,
 			references = true,
 			implements = true,
-			git_authors = false,
+			git_authors = true,
 		},
 		ignore_filetype = {
 			"prisma",

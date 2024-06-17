@@ -15,7 +15,8 @@ vim.keymap.set("n", "n", "nzzzv")
 vim.keymap.set("n", "N", "Nzzzv")
 
 -- Netrw
-vim.keymap.set("n", "<C-n>", "<cmd>Lex<cr>", { silent = true, noremap = false })
+vim.keymap.set("n", "<leader>nl", "<cmd>Lex<cr>", { silent = true, noremap = false })
+vim.keymap.set("n", "<leader>nf", "<cmd>Ex<cr>", { silent = true, noremap = false })
 
 -- Save
 vim.cmd("cnoreabbrev save wa<cr><cmd>mksession! session.vim<cr><cmd>qa<cr>")

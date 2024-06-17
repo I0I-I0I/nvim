@@ -28,7 +28,7 @@ function lspzero.config()
 			enabled = true,
 		},
 		codelens = {
-			enabled = true,
+			enabled = false,
 		},
 	}
 
@@ -43,15 +43,15 @@ function lspzero.config()
 			border = "rounded",
 			header = "",
 			prefix = "",
-			source = "always",
+			source = true,
 		},
 	})
 
 	lsp_zero.set_sign_icons({
-		error = "✘ ",
-		warn = " ",
-		hint = "󰌶 ",
-		info = "» ",
+		error = LspIcons.error,
+		warn = LspIcons.warn,
+		hint = LspIcons.hint,
+		info = LspIcons.info,
 	})
 
 	-- Servers
@@ -100,20 +100,27 @@ function lspzero.config()
 		group = augroup("UserLspConfig", {}),
 		callback = function(ev)
 			local client = vim.lsp.get_client_by_id(ev.data.client_id)
-			if client.server_capabilities.inlayHintProvider then
-				vim.lsp.inlay_hint.enable(ev.buf, true)
-			end
-			if client.supports_method("textDocument/codeLens") then
-				vim.lsp.codelens.refresh()
-				vim.api.nvim_create_autocmd({ "BufEnter", "CursorHold", "InsertLeave" }, {
-					buffer = ev.buf,
-					callback = vim.lsp.codelens.refresh,
-				})
-			end
+			local opts = { buffer = ev.buf }
 
 			vim.bo[ev.buf].omnifunc = "v:lua.vim.lsp.omnifunc"
 
-			local opts = { buffer = ev.buf }
+			if client.server_capabilities.inlayHintProvider then
+				vim.lsp.inlay_hint.enable(true)
+			end
+
+			-- if client.supports_method("textDocument/codeLens") then
+			-- 	vim.lsp.codelens.refresh()
+			-- 	vim.api.nvim_command(
+			-- 		[[autocmd BufEnter,CursorHold,InsertLeave <buffer> lua vim.lsp.codelens.refresh({ bufnr = 0 })]]
+			-- 	)
+			-- 	vim.api.nvim_buf_set_keymap(
+			-- 		ev.buf,
+			-- 		"n",
+			-- 		"<leader>ll",
+			-- 		"<Cmd>lua vim.lsp.codelens.run()<CR>",
+			-- 		{ silent = true }
+			-- 	)
+			-- end
 
 			vim.keymap.set("n", "<leader>le", vim.diagnostic.open_float)
 

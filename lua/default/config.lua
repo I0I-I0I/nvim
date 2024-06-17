@@ -9,23 +9,6 @@ vim.opt.termguicolors = true
 vim.scriptencoding = "utf-8"
 vim.opt.encoding = "utf-8"
 
--- Undo
-vim.opt.undodir = os.getenv("HOME") .. "/.vim/undodir"
-vim.opt.undofile = true
-
--- WSL yank support
-if not vim.g.neovide then
-	vim.cmd([[
-        let s:clip = '/mnt/c/Windows/System32/clip.exe'
-        if executable(s:clip)
-            augroup WSLYank
-                autocmd!
-                autocmd TextYankPost * if v:event.operator ==# 'y' | call system(s:clip, @0) | endif
-            augroup END
-        endif
-    ]])
-end
-
 vim.cmd([[
 	cnoreabbrev W w
 	cnoreabbrev W! w!
@@ -36,29 +19,9 @@ vim.cmd([[
 	cnoreabbrev Qa qa
 ]])
 
--- Cursor line
-vim.cmd("set cursorlineopt=line")
-
-autocmd("InsertEnter", {
-	command = "set nocursorline",
-})
-
-autocmd("InsertLeave", {
-	command = "set cursorline",
-})
-
-autocmd("BufEnter", {
-	pattern = "*.*",
-	command = "set cursorline",
-})
-
--- Source
-function Source()
-	vim.cmd("w | source")
-end
-
-vim.api.nvim_create_user_command("Source", Source, {})
-vim.cmd("ab so Source")
+-- Undo
+vim.opt.undodir = os.getenv("HOME") .. "/.vim/undodir"
+vim.opt.undofile = true
 
 -- Spell
 vim.opt.spelllang = "en_us"
@@ -69,10 +32,10 @@ vim.opt.swapfile = false
 vim.opt.backup = false
 
 -- Explorer
-vim.cmd("let g:netrw_banner = 0")
-vim.cmd("let g:netrw_liststyle = 3")
-vim.cmd("let g:netrw_browse_split = 0")
-vim.cmd("let g:netrw_winsize = 20")
+vim.g.netrw_banner = 0
+vim.g.netrw_liststyle = 3
+vim.g.netrw_browse_split = 0
+vim.g.netrw_winsize = 20
 
 vim.opt.autoread = true
 vim.bo.autoread = true
@@ -97,17 +60,14 @@ vim.cmd("set iskeyword+=!,^34,^_")
 vim.g.formatoptions = "qrn1"
 
 -- Update time
-vim.opt.updatetime = 300
+vim.opt.updatetime = 50
 
 -- Display invisible characters
 vim.opt.list = false
 
 -- Wrap
 vim.opt.linebreak = true
-vim.wo.linebreak = true
-autocmd("VimEnter", {
-	command = "set wrap",
-})
+autocmd("VimEnter", { command = "set wrap" })
 
 -- Shell
 vim.opt.shell = "/bin/zsh"
@@ -151,7 +111,8 @@ vim.opt.signcolumn = "yes"
 Utils = "default.utils."
 
 require(Utils .. "resize")
-require(Utils .. "stringToArray")
 require(Utils .. "yank")
-require(Utils .. "yankCutPast")
 require(Utils .. "verticalHelp")
+require(Utils .. "stringToArray")
+require(Utils .. "source")
+require(Utils .. "cursorLine")

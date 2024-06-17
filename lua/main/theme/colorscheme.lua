@@ -137,7 +137,4 @@ Theme_utils = Theme .. "utils."
 require(Theme .. "setColors")
 require(Theme .. "setColorscheme")
 
-vim.keymap.set("n", "<leader>fc", "<cmd>Colors 1<cr>")
-vim.keymap.set("n", "<leader>fac", "<cmd>Colors 0.73<cr>")
-
 return Colorschemes

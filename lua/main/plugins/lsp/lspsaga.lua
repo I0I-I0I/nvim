@@ -42,8 +42,8 @@ function LspSaga.config()
 	vim.keymap.set("n", "<leader>lca", "<cmd>Lspsaga code_action<cr>", opts)
 	vim.keymap.set("n", "<leader>lf", "<cmd>Lspsaga finder<cr>", opts)
 	vim.keymap.set("n", "<leader>lo", "<cmd>Lspsaga outline<cr>", opts)
-	vim.keymap.set("n", "[d", "<cmd>Lspsaga diagnostic_jump_next<cr>", opts)
-	vim.keymap.set("n", "]d", "<cmd>Lspsaga diagnostic_jump_prev<cr>", opts)
+	vim.keymap.set("n", "]d", "<cmd>Lspsaga diagnostic_jump_next<cr>", opts)
+	vim.keymap.set("n", "[d", "<cmd>Lspsaga diagnostic_jump_prev<cr>", opts)
 	vim.keymap.set({ "n", "t" }, "<C-\\>", "<cmd>Lspsaga term_toggle<cr>")
 end
 

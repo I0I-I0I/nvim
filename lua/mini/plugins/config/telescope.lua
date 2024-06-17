@@ -9,7 +9,6 @@ vim.keymap.set("n", "<leader>fr", builtin.registers, {})
 vim.keymap.set("n", "<leader>fs", function()
 	builtin.grep_string({ search = vim.fn.input("Grep -> ") })
 end)
-vim.keymap.set("i", "<C-v>", builtin.registers, { noremap = true, silent = true })
 vim.keymap.set("n", "z=", builtin.spell_suggest, {})
 
 local opts = {

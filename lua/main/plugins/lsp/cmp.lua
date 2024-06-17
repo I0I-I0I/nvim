@@ -40,15 +40,21 @@ function Cmp.config()
 		}),
 
 		window = {
-			-- cmp.config.window.bordered()
+			-- cmp.config.window.bordered(),
 			completion = {
-				border = "rounded",
+				border = nil,
+				col_offset = -3,
+				side_padding = 1,
+				scrollbar = true,
+				scrolloff = 3,
+			},
+			documentation = {
+				border = nil,
 				col_offset = -3,
 				side_padding = 1,
 				scrollbar = false,
-				scrolloff = 8,
+				scrolloff = 3,
 			},
-			documentation = cmp.config.window.bordered(),
 		},
 
 		mapping = cmp.mapping.preset.insert({

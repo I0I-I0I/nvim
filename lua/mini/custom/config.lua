@@ -5,7 +5,7 @@ end
 
 -- tabline
 
-vim.cmd("set tabline=%{bufname(winbufnr(0))}")
+vim.opt.showtabline = 2
 
 -- Whitespace removal
 

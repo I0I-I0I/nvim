@@ -14,10 +14,6 @@ autocmd("FileType", {
 					runtime = { version = "LuaJIT" },
 					workspace = {
 						checkThirdParty = false,
-						-- library = {
-						-- "${3rd}/luv/library",
-						-- unpack(vim.api.nvim_get_runtime_file("", true)),
-						-- },
 						library = { vim.env.VIMRUNTIME },
 					},
 					complition = {

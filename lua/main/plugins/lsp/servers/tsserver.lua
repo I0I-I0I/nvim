@@ -16,8 +16,8 @@ require("typescript-tools").setup({
 		tsserver_locale = "en",
 		complete_function_calls = true,
 		include_completions_with_insert_text = true,
-		code_lens = "all",
-		disable_member_code_lens = false,
+		code_lens = "off",
+		disable_member_code_lens = true,
 
 		tsserver_file_preferences = {
 			includeInlayParameterNameHints = "all",

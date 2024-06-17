@@ -8,8 +8,6 @@ local colors = {
 	default = {
 		"Normal",
 		"WinBar",
-		"Normal",
-		"WinBar",
 		"WinBarNC",
 		"NormalNC",
 		"NormalFloat",
@@ -73,7 +71,7 @@ local colors = {
 		"NoiceCmdlineIconFilter",
 		"CybuBackground",
 		"CybuBorder",
-		"Pmenu",
+		-- "Pmenu",
 		"TroubleNormal",
 		"TroubleCount",
 	},
@@ -250,7 +248,7 @@ local colors = {
 		{ "TelescopeResultTitle", { fg = "#ffffff" } },
 		{ "TelescopeResultBorder", { fg = "#ffffff" } },
 		{ "TelescopePromptNormal", { fg = "#ffffff" } },
-		{ "NeoTreeCursorLine", { fg = "#fff000" } },
+		-- { "NeoTreeCursorLine", { fg = "#fff000" } },
 		{ "CybuFocus", { bg = "#e4e4e4", fg = "#1c1c1c" } },
 	},
 }

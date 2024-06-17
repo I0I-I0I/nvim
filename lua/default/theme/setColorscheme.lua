@@ -29,15 +29,17 @@ function SetColorscheme(colorscheme, transparent)
 		transparent = 0.8
 	end
 
-	if vim.g.neovide then
-		vim.g.neovide_transparency = transparent
-	end
-
 	local colors = require(Theme .. "colors")
 	SetColors(colors)
 
+	if vim.g.neovide then
+		vim.g.neovide_transparency = transparent
+		vim.cmd("hi! CursorLine guibg=#333333")
+	else
+		vim.cmd("hi! CursorLine gui=underline cterm=underline guibg=NONE ctermfg=None guifg=None")
+	end
+
 	vim.cmd([[
-        hi! CursorLine gui=underline cterm=underline guibg=NONE ctermfg=None guifg=None
         hi IlluminatedWord gui=underline guibg=none
         hi IlluminatedWordRead gui=underline guibg=none
         hi IlluminatedWordWrite gui=underline guibg=none

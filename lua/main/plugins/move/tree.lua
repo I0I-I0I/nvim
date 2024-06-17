@@ -3,17 +3,17 @@ local Neotree = {
 	branch = "v3.x",
 	cmd = "Neotree",
 	keys = {
-		{ "<leader>nl", "<cmd>Neotree left toggle .<cr>", { silent = true, noremap = true } },
-		{ "<leader>nr", "<cmd>Neotree right toggle .<cr>", { silent = true, noremap = true } },
-		{ "<leader>nf", "<cmd>Neotree float toggle .<cr>", { silent = true, noremap = true } },
+		{ "<leader>nl", "<cmd>Neotree left toggle show .<cr>", { silent = true, noremap = true } },
+		{ "<leader>nr", "<cmd>Neotree right toggle show .<cr>", { silent = true, noremap = true } },
+		{ "<leader>nf", "<cmd>Neotree close<cr><cmd>Neotree float toggle .<cr>", { silent = true, noremap = true } },
 	},
 }
 
 function Neotree.config()
-	vim.fn.sign_define("DiagnosticSignError", { text = "- ", texthl = "DiagnosticSignError" })
-	vim.fn.sign_define("DiagnosticSignWarn", { text = "! ", texthl = "DiagnosticSignWarn" })
-	vim.fn.sign_define("DiagnosticSignInfo", { text = "i ", texthl = "DiagnosticSignInfo" })
-	vim.fn.sign_define("DiagnosticSignHint", { text = "? ", texthl = "DiagnosticSignHint" })
+	vim.fn.sign_define("DiagnosticSignError", { text = LspIcons.error, texthl = "DiagnosticSignError" })
+	vim.fn.sign_define("DiagnosticSignWarn", { text = LspIcons.warn, texthl = "DiagnosticSignWarn" })
+	vim.fn.sign_define("DiagnosticSignHint", { text = LspIcons.hint, texthl = "DiagnosticSignHint" })
+	vim.fn.sign_define("DiagnosticSignInfo", { text = LspIcons.info, texthl = "DiagnosticSignInfo" })
 
 	require("neo-tree").setup({
 		filesystem = {

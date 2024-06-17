@@ -16,6 +16,13 @@ function icons.webDev.config()
 	})
 end
 
+LspIcons = {
+	error = "✘ ",
+	warn = " ",
+	hint = "󰌶 ",
+	info = "» ",
+}
+
 return {
 	icons.webDev,
 	icons.lspkind,

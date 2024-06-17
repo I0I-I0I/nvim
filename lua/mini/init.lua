@@ -11,6 +11,9 @@ local custom = Root .. "custom."
 require("default.config")
 require("default.mappings")
 
+-- Utils
+require("default.utils.betterFind")
+
 -- Plugins/LSP
 require(plugins .. "plug")
 require(lsp .. "lsp")
@@ -20,9 +23,4 @@ require(custom .. "config")
 require(custom .. "mappings")
 
 -- Current colorscheme
-require(theme .. "theme")
-
-vim.cmd([[
-    highlight QuickScopePrimary guifg='#afff5f' gui=underline ctermfg=155 cterm=underline
-    highlight QuickScopeSecondary guifg='#5fffff' gui=underline ctermfg=81 cterm=underline
-]])
+require(theme .. "colorscheme")

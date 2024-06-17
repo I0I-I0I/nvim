@@ -10,7 +10,7 @@ local Trouble = {
 		},
 		{
 			"<leader>td",
-			"<cmd>Trouble diagnostics toggle filter.buf=0<cr>",
+			"<cmd>Trouble diagnostics toggle focus=true preview.type=float filter.buf=0<cr>",
 			desc = "Buffer Diagnostics (Trouble)",
 		},
 		{

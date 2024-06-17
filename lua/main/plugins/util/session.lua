@@ -73,7 +73,16 @@ function Session.config()
 		extensions = { scope = {} },
 	})
 
-	vim.keymap.set("n", "<leader>ss", resession.save)
+	vim.keymap.set("n", "<leader>ss", function()
+		if resession.get_current_session_info() == nil then
+			local input = vim.fn.input("Name session -> ")
+			if input ~= "" then
+				resession.save(input)
+			end
+		else
+			resession.save()
+		end
+	end)
 	vim.keymap.set("n", "<leader>sl", "<cmd>Sessions<cr>")
 	vim.keymap.set("n", "<leader>si", "<cmd>lua =require('resession').get_current_session_info()<cr>")
 	vim.keymap.set("n", "<leader>sd", function()
