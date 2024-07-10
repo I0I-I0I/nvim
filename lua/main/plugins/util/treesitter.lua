@@ -29,6 +29,9 @@ return {
 					"bash",
 					"gitignore",
 					"vim",
+					"http",
+					"xml",
+					"graphql",
 				},
 
 				sync_install = false,

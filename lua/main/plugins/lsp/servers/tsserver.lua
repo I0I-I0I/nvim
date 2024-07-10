@@ -31,3 +31,5 @@ require("typescript-tools").setup({
 		},
 	},
 })
+
+vim.keymap.set("n", "<leader>lR", "<cmd>TSToolsRenameFile<cr>", { silent = true, noremap = true })

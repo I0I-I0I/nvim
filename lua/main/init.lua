@@ -31,7 +31,6 @@ Plugins = {
 	{ import = custom .. "rainbow-brackets" },
 	{ import = custom .. "veil" },
 	{ import = custom .. "icons" },
-	{ import = custom .. "pets" },
 
 	-- Move
 	{ import = move .. "tree" },
@@ -47,8 +46,9 @@ Plugins = {
 	{ import = util .. "undotree" },
 	{ import = util .. "telescope" },
 	{ import = util .. "session" },
-	{ import = util .. "wakatime" },
 	{ import = util .. "quick-scope" },
+	{ import = util .. "wakatime" },
+	{ import = util .. "neotest" },
 
 	-- LSP
 	{ import = lsp .. "lsp" },
@@ -67,6 +67,10 @@ Plugins = {
 	-- Git
 	{ import = git .. "git" },
 }
+
+-- if not vim.g.neovide then
+-- 	table.insert(Plugins, { import = custom .. "pets" })
+-- end
 
 require(plugins .. "lazy")
 

@@ -10,4 +10,4 @@ require(Theme .. "setColors")
 require(Theme .. "setColorscheme")
 require(localTheme .. "setColor")
 
-vim.cmd("SetColor everforest 1")
+vim.cmd("SetColor everforest 0")

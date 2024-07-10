@@ -31,6 +31,14 @@ vim.opt.spell = true
 vim.opt.swapfile = false
 vim.opt.backup = false
 
+-- Disable auto comments
+vim.api.nvim_create_autocmd("BufEnter", {
+	pattern = "*.*",
+	callback = function()
+		vim.cmd("set formatoptions-=cro")
+	end,
+})
+
 -- Explorer
 vim.g.netrw_banner = 0
 vim.g.netrw_liststyle = 3
@@ -79,6 +87,7 @@ vim.opt.visualbell.t_vb = false
 -- Numbers
 vim.opt.number = true
 vim.opt.relativenumber = true
+vim.opt.numberwidth = 1
 
 -- Scroll
 vim.opt.scrolloff = 3
@@ -102,6 +111,7 @@ vim.opt.foldcolumn = "0"
 vim.opt.foldlevel = 99
 
 vim.opt.laststatus = 0
+vim.opt.statusline = " "
 
 -- Signcolumn
 vim.opt.signcolumn = "yes"
@@ -116,3 +126,4 @@ require(Utils .. "verticalHelp")
 require(Utils .. "stringToArray")
 require(Utils .. "source")
 require(Utils .. "cursorLine")
+require(Utils .. "hurl")

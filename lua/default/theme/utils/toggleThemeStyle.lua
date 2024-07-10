@@ -7,4 +7,4 @@ local function toggleThemeStyle()
 	end
 end
 
-vim.keymap.set("n", "<leader>ts", toggleThemeStyle)
+vim.keymap.set("n", "<leader>tt", toggleThemeStyle)

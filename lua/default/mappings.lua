@@ -73,18 +73,19 @@ vim.keymap.set("n", "<C-left>", "<cmd>vertical resize -2<cr>", { silent = true }
 vim.keymap.set("n", "<C-right>", "<cmd>vertical resize +2<cr>", { silent = true })
 vim.keymap.set("n", "<C-up>", "<cmd>resize +2<cr>", { silent = true })
 vim.keymap.set("n", "<C-down>", "<cmd>resize -2<cr>", { silent = true })
+vim.keymap.set("n", "<C-w>m", "<C-w>|<C-w>_", { silent = true })
 
 -- Run
 autocmd("BufRead", {
 	pattern = "*.js",
 	callback = function()
-		vim.keymap.set("n", "<F8>", "<cmd>w<cr><cmd>exec '!node' shellescape(@%, 1)<cr>", { silent = true })
+		vim.keymap.set("n", "<leader>R", "<cmd>w<cr><cmd>exec '!node' shellescape(@%, 1)<cr>", { silent = true })
 	end,
 })
 
 autocmd("BufRead", {
 	pattern = "*.py",
 	callback = function()
-		vim.keymap.set("n", "<F8>", "<cmd>w<cr><cmd>exec '!python3.11' shellescape(@%, 1)<cr>", { silent = true })
+		vim.keymap.set("n", "<leader>R", "<cmd>w<cr><cmd>exec '!python3.11' shellescape(@%, 1)<cr>", { silent = true })
 	end,
 })

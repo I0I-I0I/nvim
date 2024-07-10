@@ -1,7 +1,7 @@
 function SetBgColor(bgColor)
 	vim.cmd("hi Normal guibg=" .. bgColor)
 	vim.cmd("hi NormalNC guibg=" .. bgColor)
-	vim.cmd("hi EndOfBuffer guibg=" .. bgColor .. " guifg=" .. bgColor)
+	vim.cmd("hi EndOfBuffer guibg=" .. bgColor .. " guifg=#222222")
 	vim.cmd("hi TabLineFill guibg=" .. bgColor)
 	vim.cmd("hi LineNrAbove guibg=" .. bgColor .. " guifg=#444444")
 	vim.cmd("hi LineNrBelow guibg=" .. bgColor .. " guifg=#444444")

@@ -1,6 +1,11 @@
 local Pets = {
 	"giusgad/pets.nvim",
 	dependencies = { "MunifTanjim/nui.nvim", "giusgad/hologram.nvim" },
+	cmd = {
+		"PETS",
+		"PetsNewCustom",
+		"PetsNew",
+	},
 }
 
 function Pets.config()
@@ -21,6 +26,16 @@ function Pets.config()
 			-- doesn't work for you then set this to true and the popup will use hl and will be spawned above the statusline (hopefully)
 		},
 	})
+
+	vim.api.nvim_create_user_command("PETS", function()
+		vim.cmd([[
+            PetsNewCustom rocky gray rocky_first
+            PetsNewCustom rocky gray rocky_second
+            PetsNewCustom rocky gray rocky_third
+            PetsNewCustom dog gray rocky_gray
+            PetsNewCustom dog brown dog_brown
+        ]])
+	end, {})
 end
 
 return Pets

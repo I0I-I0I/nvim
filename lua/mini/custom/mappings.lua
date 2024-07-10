@@ -7,8 +7,8 @@ vim.keymap.set("n", "<C-d>", "<C-d>zz")
 vim.keymap.set("n", "<C-u>", "<C-u>zz")
 
 -- Terminal
-vim.keymap.set("n", "<C-\\>", "<cmd>split <cr><C-w>J<cmd>resize 20<cr><cmd>term<cr>i", { silent = true })
-vim.keymap.set("t", "<C-\\>", "<cmd>close<cr>", { silent = true })
+-- vim.keymap.set("n", "<C-\\>", "<cmd>split <cr><C-w>J<cmd>resize 20<cr><cmd>term<cr>i", { silent = true })
+-- vim.keymap.set("t", "<C-\\>", "<cmd>close<cr>", { silent = true })
 
 -- Search
 vim.keymap.set("n", "n", "nzzzv")

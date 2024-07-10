@@ -122,7 +122,7 @@ function lspzero.config()
 			-- 	)
 			-- end
 
-			vim.keymap.set("n", "<leader>le", vim.diagnostic.open_float)
+			-- vim.keymap.set("n", "<leader>le", vim.diagnostic.open_float)
 
 			vim.keymap.set("n", "<leader>lD", vim.lsp.buf.declaration, opts)
 			vim.keymap.set("n", "<leader>li", vim.lsp.buf.implementation, opts)

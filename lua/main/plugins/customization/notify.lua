@@ -9,7 +9,7 @@ return {
 				render = "compact",
 				stages = "slide",
 				timeout = 3000,
-				top_down = false,
+				top_down = true,
 			})
 
 			vim.keymap.set("n", "<leader>fn", "<cmd>Telescope notify theme=dropdown<cr>", { silent = true })
