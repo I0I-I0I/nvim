@@ -49,6 +49,7 @@ Plugins = {
 	{ import = util .. "quick-scope" },
 	{ import = util .. "wakatime" },
 	{ import = util .. "neotest" },
+	{ import = util .. "todo" },
 
 	-- LSP
 	{ import = lsp .. "lsp" },
@@ -67,10 +68,6 @@ Plugins = {
 	-- Git
 	{ import = git .. "git" },
 }
-
--- if not vim.g.neovide then
--- 	table.insert(Plugins, { import = custom .. "pets" })
--- end
 
 require(plugins .. "lazy")
 

@@ -17,9 +17,10 @@ vim.g.neovide_hide_mouse_when_typing = true
 vim.g.neovide_fullscreen = true
 
 -- vim.o.guifont = "MonaspaceKrypton Nerd Font"
--- vim.o.guifont = "FantasqueSansM Nerd Font"
 -- vim.o.guifont = "GohuFont 14 Nerd Font"
 -- vim.o.guifont = "Serious Sans Nerd Font Mono"
+vim.o.guifont = "FantasqueSansM Nerd Font:h15:w0"
+-- vim.o.guifont = "FantasqueSansM Nerd Font"
 
 vim.opt.linespace = 1
 vim.g.neovide_unlink_border_highlights = true

@@ -29,6 +29,9 @@ Plug("moll/vim-bbye")
 -- Quick-scope
 Plug("unblevable/quick-scope")
 
+-- Tree
+Plug("nvim-tree/nvim-tree.lua")
+
 --
 -- LSP --
 --
@@ -48,3 +51,4 @@ require(plugins .. "undotree")
 require(plugins .. "bbye")
 require(plugins .. "scope")
 require(plugins .. "surround")
+require(plugins .. "nvim-tree")

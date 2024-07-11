@@ -7,6 +7,9 @@ function SetBgColor(bgColor)
 	vim.cmd("hi LineNrBelow guibg=" .. bgColor .. " guifg=#444444")
 	vim.cmd("hi LineNr guibg=" .. bgColor .. " guifg=#eeeeee")
 	vim.cmd("hi SignColumn guibg=" .. bgColor .. " guifg=#eeeeee")
+	vim.cmd("hi NvimTreeNormal guibg=" .. bgColor .. " guifg=#eeeeee")
+	vim.cmd("hi NvimTreeNormalNC guibg=" .. bgColor .. " guifg=#eeeeee")
+	vim.cmd("hi NvimTreeEndOfBuffer guibg=" .. bgColor .. " guifg=#000000")
 
 	vim.cmd([[
         highlight QuickScopePrimary guifg='#afff5f' gui=underline ctermfg=155 cterm=underline
