@@ -1,5 +1,6 @@
 -- Capabilities
-capabilities = vim.lsp.protocol.make_client_capabilities()
+-- capabilities = vim.lsp.protocol.make_client_capabilities()
+capabilities = require("cmp_nvim_lsp").default_capabilities()
 
 -- Local variables
 local lsp = Root .. "lsp."

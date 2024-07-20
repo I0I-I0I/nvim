@@ -4,7 +4,7 @@ local M = {
 }
 
 function M.config()
-	vim.keymap.set("i", "<C-c>", function()
+	vim.keymap.set("i", "<C-l>", function()
 		return vim.fn["codeium#Accept"]()
 	end, { expr = true, silent = true })
 	vim.keymap.set("i", "<A-]>", function()

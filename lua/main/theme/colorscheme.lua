@@ -77,7 +77,7 @@ Colorschemes = {
 	},
 }
 
-Theme = "default.theme."
+Theme = default .. ".theme."
 Theme_utils = Theme .. "utils."
 
 require(Theme .. "setColors")

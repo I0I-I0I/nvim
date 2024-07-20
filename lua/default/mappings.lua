@@ -24,8 +24,8 @@ vim.keymap.set("i", "<C-/>", "<cmd>norm gcc<cr>", { silent = true, noremap = tru
 vim.keymap.set("i", "<C-j>", "<cmd>norm o<cr>", { silent = true, noremap = true })
 vim.keymap.set("i", "<C-k>", "<cmd>norm O<cr>", { silent = true, noremap = true })
 
-vim.keymap.set({ "i", "c" }, "<C-h>", "<C-Left>", { noremap = true })
-vim.keymap.set({ "i", "c" }, "<C-l>", "<C-Right>", { noremap = true })
+-- vim.keymap.set({ "i", "c" }, "<C-h>", "<C-Left>", { noremap = true })
+-- vim.keymap.set({ "i", "c" }, "<C-l>", "<C-Right>", { noremap = true })
 vim.keymap.set({ "i", "c" }, "<A-h>", "<left>", { noremap = true })
 vim.keymap.set({ "i", "c" }, "<A-l>", "<right>", { noremap = true })
 vim.keymap.set({ "i", "c" }, "<A-k>", "<up>", { noremap = true })
@@ -67,6 +67,9 @@ vim.keymap.set("n", "<C-w>s", "<cmd>split<cr><C-w>j", { silent = true })
 vim.keymap.set("n", "<C-w>v", "<cmd>vsplit<cr><C-w>l", { silent = true })
 vim.keymap.set("n", "<C-w>S", ":split ")
 vim.keymap.set("n", "<C-w>V", ":vsplit ")
+
+vim.keymap.set("n", "<C-w>t", "<cmd>tabnew<cr>")
+vim.keymap.set("n", "<C-w>T", ":tabnew ")
 
 -- Resizing
 vim.keymap.set("n", "<C-left>", "<cmd>vertical resize -2<cr>", { silent = true })

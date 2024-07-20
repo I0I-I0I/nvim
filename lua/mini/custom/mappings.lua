@@ -17,3 +17,6 @@ vim.keymap.set("n", "N", "Nzzzv")
 -- Save
 vim.cmd("cnoreabbrev save wa<cr><cmd>mksession! session.vim<cr><cmd>qa<cr>")
 vim.cmd("cnoreabbrev ss source session.vim<cr>")
+
+-- Tab
+vim.keymap.set("n", "<C-w>t", "<cmd>tabnew<cr><cmd>NvimTreeOpen<cr>", { silent = true })

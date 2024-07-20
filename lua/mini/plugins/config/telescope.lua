@@ -3,16 +3,24 @@ local actions = require("telescope.actions")
 
 vim.keymap.set("n", "<leader>ff", builtin.find_files, {})
 vim.keymap.set("n", "<leader>fw", builtin.live_grep, {})
-vim.keymap.set("n", "<leader>b", builtin.buffers, {})
-vim.keymap.set("n", "<leader>ft", builtin.colorscheme, {})
-vim.keymap.set("n", "<leader>fr", builtin.registers, {})
+vim.keymap.set("n", "<leader>fb", builtin.buffers, {})
+vim.keymap.set("n", "<leader>fab", "<cmd>M scope buffers<cr>", { silent = true })
+vim.keymap.set("n", "<leader>ft", "<cmd>Colors 1<cr>", { silent = true, noremap = true })
+vim.keymap.set("n", "<leader>fat", "<cmd>Colors 0.73<cr>", { silent = true, noremap = true })
+vim.keymap.set("n", "<leader>fh", builtin.help_tags, {})
+vim.keymap.set("n", "<leader>fk", builtin.keymaps, {})
+vim.keymap.set("n", "<leader>fR", builtin.registers, {})
+vim.keymap.set("n", "z=", builtin.spell_suggest, {})
 vim.keymap.set("n", "<leader>fs", function()
 	builtin.grep_string({ search = vim.fn.input("Grep -> ") })
 end)
-vim.keymap.set("n", "z=", builtin.spell_suggest, {})
 
 local opts = {
 	defaults = {
+		prompt_prefix = "  ",
+		selection_caret = "  ",
+		-- selection_caret = "  ",
+
 		vimgrep_arguments = {
 			"rg",
 			"--color=never",
@@ -36,12 +44,14 @@ local opts = {
 				["<C-k>"] = actions.cycle_history_prev,
 				["<C-n>"] = actions.move_selection_next,
 				["<C-p>"] = actions.move_selection_previous,
+				["<C-d>"] = actions.delete_buffer,
 			},
 			n = {
 				["esc"] = actions.close,
 				["q"] = actions.close,
 				["j"] = actions.move_selection_next,
 				["k"] = actions.move_selection_previous,
+				["dd"] = actions.delete_buffer,
 			},
 		},
 	},
@@ -54,12 +64,12 @@ local opts = {
 		},
 		grep_string = {
 			theme = "ivy",
-			border = false,
+			border = true,
 		},
 		find_files = {
 			theme = "dropdown",
 			previewer = false,
-			border = false,
+			border = true,
 			prompt_title = "~ Files ~",
 			shorten_path = false,
 		},
@@ -68,14 +78,6 @@ local opts = {
 			prompt_title = "~ Buffers ~",
 			previewer = false,
 			initial_mode = "normal",
-			mappings = {
-				i = {
-					["<C-d>"] = actions.delete_buffer,
-				},
-				n = {
-					["dd"] = actions.delete_buffer,
-				},
-			},
 		},
 		registers = {
 			theme = "cursor",
@@ -107,5 +109,6 @@ local opts = {
 }
 
 require("telescope").setup(opts)
+require("telescope").load_extension("scope")
 
-require(Theme_utils .. "telescope_theme")
+-- require(Theme_utils .. "telescope_theme")

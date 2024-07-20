@@ -74,8 +74,6 @@ function M.config()
 			statusline = false,
 		},
 	})
-
-	-- NeoTree
 end
 
 return M
