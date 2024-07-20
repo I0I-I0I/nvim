@@ -1,4 +1,4 @@
-local noice = {
+local M = {
 	"folke/noice.nvim",
 	dependencies = {
 		"MunifTanjim/nui.nvim",
@@ -6,7 +6,7 @@ local noice = {
 	},
 }
 
-function noice.config()
+function M.config()
 	require("noice").setup({
 		cmdline = {
 			format = {
@@ -76,4 +76,4 @@ function noice.config()
 	})
 end
 
-return noice
+return M

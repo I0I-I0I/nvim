@@ -1,10 +1,10 @@
-local rainbow = {
+local M = {
 	"HiPhish/rainbow-delimiters.nvim",
 	event = { "BufRead", "BufNewFile" },
 	lazy = true,
 }
 
-function rainbow.config()
+function M.config()
 	local rainbow_delimiters = require("rainbow-delimiters")
 
 	--@type rainbow_delimiters.config
@@ -33,4 +33,4 @@ function rainbow.config()
 	}
 end
 
-return rainbow
+return M

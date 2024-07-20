@@ -1,6 +1,6 @@
-local WakaTime = {
+local M = {
 	"wakatime/vim-wakatime",
 	event = "VeryLazy",
 }
 
-return WakaTime
+return M

@@ -1,4 +1,4 @@
-local Session = {
+local M = {
 	"stevearc/resession.nvim",
 	cmd = { "Sessions" },
 	keys = {
@@ -13,7 +13,7 @@ local Session = {
 	opts = {},
 }
 
-function Session_telescope()
+function M_telescope()
 	local pickers = require("telescope.pickers")
 	local finders = require("telescope.finders")
 	local sorters = require("telescope.sorters")
@@ -52,7 +52,7 @@ function Session_telescope()
 	vim.api.nvim_create_user_command("Sessions", all_sessions, {})
 end
 
-function Session.config()
+function M.config()
 	local resession = require("resession")
 
 	resession.setup({
@@ -93,10 +93,10 @@ function Session.config()
 	vim.keymap.set("n", "<leader>sD", function()
 		local current_session = resession.get_current()
 		resession.delete(current_session)
-		print('Session "' .. current_session .. '" is deleted')
+		print('M "' .. current_session .. '" is deleted')
 	end)
 
-	Session_telescope()
+	M_telescope()
 end
 
-return Session
+return M

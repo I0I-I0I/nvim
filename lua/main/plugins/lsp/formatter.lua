@@ -1,9 +1,9 @@
-local Formatter = {
+local M = {
 	"stevearc/conform.nvim",
 	event = "BufWritePre",
 }
 
-function Formatter.config()
+function M.config()
 	local conform = require("conform")
 	conform.setup({
 		formatters_by_ft = {
@@ -29,4 +29,4 @@ function Formatter.config()
 	})
 end
 
-return Formatter
+return M

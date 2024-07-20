@@ -1,4 +1,4 @@
-local Bbye = {
+local M = {
 	"moll/vim-bbye",
 	cmd = { "Bdelete" },
 	keys = {
@@ -9,7 +9,7 @@ local Bbye = {
 	},
 }
 
-function Bbye.config()
+function M.config()
 	local opts = { silent = true, noremap = true }
 
 	vim.keymap.set("n", "<leader>q", "<cmd>Bdelete<cr>", opts)
@@ -20,4 +20,4 @@ function Bbye.config()
 	vim.keymap.set("n", "<leader>C", "<cmd>Bdelete!<cr><cmd>close<cr>", opts)
 end
 
-return Bbye
+return M

@@ -1,4 +1,4 @@
-local QuickScope = {
+local M = {
 	"unblevable/quick-scope",
 }
 
@@ -15,4 +15,4 @@ vim.cmd([[
     augroup END
 ]])
 
-return QuickScope
+return M

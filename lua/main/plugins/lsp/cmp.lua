@@ -1,4 +1,4 @@
-local Cmp = {
+local M = {
 	"hrsh7th/nvim-cmp",
 	dependencies = {
 		{ "hrsh7th/cmp-nvim-lsp" },
@@ -16,7 +16,7 @@ local Cmp = {
 	event = { "InsertEnter", "CmdlineEnter" },
 }
 
-function Cmp.config()
+function M.config()
 	local cmp = require("cmp")
 	local lspkind = require("lspkind")
 	local cmp_action = require("lsp-zero").cmp_action()
@@ -111,4 +111,4 @@ function Cmp.config()
 	})
 end
 
-return Cmp
+return M

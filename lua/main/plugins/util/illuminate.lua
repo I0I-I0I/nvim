@@ -1,9 +1,9 @@
-local Illuminate = {
+local M = {
 	"RRethy/vim-illuminate",
 	event = "BufReadPost",
 }
 
-function Illuminate.config()
+function M.config()
 	local illuminate = require("illuminate")
 
 	illuminate.configure({
@@ -64,4 +64,4 @@ function Illuminate.config()
 	})
 end
 
-return Illuminate
+return M

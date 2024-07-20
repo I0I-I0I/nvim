@@ -1,6 +1,6 @@
-local Telescope = {
+local M = {
 	"nvim-telescope/telescope.nvim",
-	cmd = "Telescope",
+	cmd = "M",
 	dependencies = {
 		{ "nvim-lua/plenary.nvim" },
 	},
@@ -9,14 +9,14 @@ local Telescope = {
 	},
 }
 
-function Telescope.config()
+function M.config()
 	local builtin = require("telescope.builtin")
 	local actions = require("telescope.actions")
 
 	vim.keymap.set("n", "<leader>ff", builtin.find_files, {})
 	vim.keymap.set("n", "<leader>fw", builtin.live_grep, {})
 	vim.keymap.set("n", "<leader>fb", builtin.buffers, {})
-	vim.keymap.set("n", "<leader>fab", "<cmd>Telescope scope buffers<cr>", { silent = true })
+	vim.keymap.set("n", "<leader>fab", "<cmd>M scope buffers<cr>", { silent = true })
 	vim.keymap.set("n", "<leader>ft", "<cmd>Colors 1<cr>", { silent = true, noremap = true })
 	vim.keymap.set("n", "<leader>fat", "<cmd>Colors 0.73<cr>", { silent = true, noremap = true })
 	vim.keymap.set("n", "<leader>fh", builtin.help_tags, {})
@@ -126,4 +126,4 @@ function Telescope.config()
 	require(Theme_utils .. "telescope_theme")
 end
 
-return Telescope
+return M

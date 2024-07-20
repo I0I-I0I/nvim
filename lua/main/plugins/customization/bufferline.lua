@@ -1,4 +1,4 @@
-local Bufferline = {
+local M = {
 	"akinsho/bufferline.nvim",
 	event = "VeryLazy",
 	dependencies = {
@@ -7,7 +7,7 @@ local Bufferline = {
 	},
 }
 
-function Bufferline.config()
+function M.config()
 	local opts = { silent = true, noremap = true }
 
 	--
@@ -102,4 +102,4 @@ function Bufferline.config()
 	})
 end
 
-return Bufferline
+return M

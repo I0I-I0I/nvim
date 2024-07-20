@@ -17,6 +17,8 @@ vim.cmd([[
     cnoreabbrev Wq wq
 	cnoreabbrev Wa wa
 	cnoreabbrev Qa qa
+
+	cnoreabbrev n norm
 ]])
 
 -- Undo
@@ -112,6 +114,7 @@ vim.opt.foldlevel = 99
 
 vim.opt.laststatus = 0
 vim.opt.statusline = " "
+vim.opt.cmdheight = 0
 
 -- Signcolumn
 vim.opt.signcolumn = "yes"

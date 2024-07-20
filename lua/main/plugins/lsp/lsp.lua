@@ -1,4 +1,4 @@
-local lspzero = {
+local M = {
 	"VonHeikemen/lsp-zero.nvim",
 	dependencies = {
 		{ "neovim/nvim-lspconfig" },
@@ -18,7 +18,7 @@ local lspzero = {
 	event = { "BufReadPre", "BufNewFile" },
 }
 
-function lspzero.config()
+function M.config()
 	lspconfig = require("lspconfig")
 	lsp_zero = require("lsp-zero")
 	capabilities = require("cmp_nvim_lsp").default_capabilities()
@@ -134,4 +134,4 @@ function lspzero.config()
 	})
 end
 
-return lspzero
+return M

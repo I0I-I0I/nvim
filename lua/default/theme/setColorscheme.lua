@@ -15,12 +15,6 @@ function SetColorscheme(colorscheme, transparent)
 		end
 		if colorscheme == "horizon" then
 			vim.cmd("hi NonText guifg=#777777")
-		elseif colorscheme == "night-owl" then
-			vim.cmd([[
-                hi NeoTreeNormal guibg=#021727
-                hi NeoTreeNormalNC guibg=#021727
-                hi NeoTreeEndOfBuffer guibg=#021727
-            ]])
 		end
 		return
 	end

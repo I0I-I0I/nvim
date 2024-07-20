@@ -9,6 +9,36 @@ Colorschemes = {
 		},
 	},
 	{
+		"EdenEast/nightfox.nvim",
+		name = "nightfox",
+		lazy = false,
+		priority = 1000,
+		theme_names = {
+			"nightfox",
+			"dayfox",
+			"duskfox",
+			"carbonfox",
+		},
+	},
+	{
+		"zenbones-theme/zenbones.nvim",
+		name = "zenbones",
+		lazy = false,
+		priority = 1000,
+		dependencies = {
+			"rktjmp/lush.nvim",
+		},
+		theme_names = {
+			"zenbones",
+			"kanagawabones",
+			"forestbones",
+			"tokyobones",
+			"rosebones",
+			"duckbones",
+			"neobones",
+		},
+	},
+	{
 		"rebelot/kanagawa.nvim",
 		name = "kanagawa",
 		lazy = false,
@@ -43,15 +73,6 @@ Colorschemes = {
 		theme_names = {
 			"catppuccin-latte",
 			"catppuccin-macchiato",
-		},
-	},
-	{
-		"pauchiner/pastelnight.nvim",
-		name = "pastelnight",
-		lazy = false,
-		priority = 1000,
-		theme_names = {
-			"pastelnight",
 		},
 	},
 }

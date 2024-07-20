@@ -1,11 +1,11 @@
-local Treesj = {
+local M = {
 	"Wansmer/treesj",
 	keys = {
 		{ "<leader>j", "<cmd>TSJToggle<cr>", desc = "Join Toggle" },
 	},
 }
 
-function Treesj.config()
+function M.config()
 	local tsj = require("treesj")
 
 	tsj.setup({
@@ -23,4 +23,4 @@ function Treesj.config()
 	end)
 end
 
-return Treesj
+return M

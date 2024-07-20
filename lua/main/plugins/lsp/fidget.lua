@@ -1,15 +1,15 @@
-local Fidget = {
+local M = {
 	"j-hui/fidget.nvim",
 	event = "BufRead",
 }
 
-function Fidget.config()
+function M.config()
 	require("fidget").setup({
 		-- Options related to notification subsystem
 		notification = {
 			poll_rate = 10, -- How frequently to poll and render notifications
 			filter = vim.log.levels.INFO, -- Minimum notifications level
-			override_vim_notify = false, -- Automatically override vim.notify() with Fidget
+			override_vim_notify = false, -- Automatically override vim.notify() with M
 			-- How to configure notification groups when instantiated
 			configs = { default = require("fidget.notification").default_config },
 
@@ -38,4 +38,4 @@ function Fidget.config()
 	})
 end
 
-return Fidget
+return M

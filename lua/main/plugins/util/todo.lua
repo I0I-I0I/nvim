@@ -1,13 +1,10 @@
-local Todo = {
+local M = {
 	"folke/todo-comments.nvim",
 	dependencies = {
 		"nvim-lua/plenary.nvim",
 		"nvim-telescope/telescope.nvim",
 	},
-	keys = {
-		{ "<leader>fT", "<cmd>TodoTelescope cwd=./src<cr>", "open telescope with todos" },
-	},
-	cmd = { "TodoTelescope", "TodoTrouble" },
+	event = "VeryLazy",
 	opts = {
 		keywords = {
 			FIX = {
@@ -33,4 +30,4 @@ local Todo = {
 -- WARNING:
 -- TEST:
 
-return Todo
+return M

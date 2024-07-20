@@ -1,11 +1,11 @@
-local AutoPairs = {
+local M = {
 	"altermo/ultimate-autopair.nvim",
 	event = "InsertEnter",
 	branch = "v0.6",
 	opts = {},
 }
 
-function AutoPairs.config()
+function M.config()
 	local autopairs = require("ultimate-autopair")
 
 	autopairs.setup({
@@ -15,4 +15,4 @@ function AutoPairs.config()
 	})
 end
 
-return AutoPairs
+return M

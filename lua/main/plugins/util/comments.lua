@@ -1,4 +1,4 @@
-local Comment = {
+local M = {
 	"numToStr/Comment.nvim",
 	dependencies = {
 		"JoosepAlviste/nvim-ts-context-commentstring",
@@ -6,7 +6,7 @@ local Comment = {
 	event = "BufRead",
 }
 
-function Comment.config()
+function M.config()
 	local ts_context = require("ts_context_commentstring")
 	local comment = require("Comment")
 
@@ -18,4 +18,4 @@ function Comment.config()
 	})
 end
 
-return Comment
+return M

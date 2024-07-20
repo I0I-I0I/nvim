@@ -1,4 +1,4 @@
-local Neotest = {
+local M = {
 	"nvim-neotest/neotest",
 	dependencies = {
 		"nvim-neotest/nvim-nio",
@@ -10,7 +10,7 @@ local Neotest = {
 	},
 }
 
-function Neotest.config()
+function M.config()
 	local neotest = require("neotest")
 
 	neotest.setup({
@@ -21,12 +21,12 @@ function Neotest.config()
 
 	vim.keymap.set("n", "<leader>tr", function()
 		neotest.run.run(vim.fn.expand("%"))
-		vim.cmd("Neotest summary open")
+		vim.cmd("M summary open")
 	end)
 	vim.keymap.set("n", "<leader>ts", neotest.run.stop)
-	vim.keymap.set("n", "<leader>tS", "<cmd>Neotest summary toggle<cr>")
+	vim.keymap.set("n", "<leader>tS", "<cmd>M summary toggle<cr>")
 	vim.keymap.set("n", "<leader>ta", neotest.run.attach)
-	vim.keymap.set("n", "<leader>to", "<cmd>Neotest output<cr>")
+	vim.keymap.set("n", "<leader>to", "<cmd>M output<cr>")
 end
 
-return Neotest
+return M

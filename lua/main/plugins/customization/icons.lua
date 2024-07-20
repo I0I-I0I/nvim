@@ -1,4 +1,4 @@
-local icons = {
+local M = {
 	webDev = {
 		"nvim-tree/nvim-web-devicons",
 		lazy = true,
@@ -9,7 +9,7 @@ local icons = {
 	},
 }
 
-function icons.webDev.config()
+function M.webDev.config()
 	require("nvim-web-devicons").setup({
 		override = {},
 		default = true,
@@ -24,8 +24,8 @@ LspIcons = {
 }
 
 return {
-	icons.webDev,
-	icons.lspkind,
+	M.webDev,
+	M.lspkind,
 }
 
 -- symbol_map = {

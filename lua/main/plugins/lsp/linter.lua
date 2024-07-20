@@ -1,9 +1,9 @@
-local Lint = {
+local M = {
 	"mfussenegger/nvim-lint",
 	event = { "BufReadPre", "BufNewFile" },
 }
 
-function Lint.config()
+function M.config()
 	local lint = require("lint")
 
 	lint.linters_by_ft = {
@@ -26,4 +26,4 @@ function Lint.config()
 	})
 end
 
-return Lint
+return M

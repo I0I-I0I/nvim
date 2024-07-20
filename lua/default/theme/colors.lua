@@ -71,7 +71,6 @@ local colors = {
 		"NoiceCmdlineIconFilter",
 		"CybuBackground",
 		"CybuBorder",
-		-- "Pmenu",
 		"TroubleNormal",
 		"TroubleCount",
 	},

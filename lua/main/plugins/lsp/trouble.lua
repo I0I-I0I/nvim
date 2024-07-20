@@ -1,4 +1,4 @@
-local Trouble = {
+local M = {
 	"folke/trouble.nvim",
 	dependencies = { "nvim-tree/nvim-web-devicons" },
 	cmd = "Trouble",
@@ -21,8 +21,8 @@ local Trouble = {
 	},
 }
 
-function Trouble.config()
+function M.config()
 	require("trouble").setup({})
 end
 
-return Trouble
+return M

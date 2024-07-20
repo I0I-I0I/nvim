@@ -50,6 +50,8 @@ Plugins = {
 	{ import = util .. "wakatime" },
 	{ import = util .. "neotest" },
 	{ import = util .. "todo" },
+	{ import = util .. "terminal" },
+	{ import = util .. "multicursors" },
 
 	-- LSP
 	{ import = lsp .. "lsp" },

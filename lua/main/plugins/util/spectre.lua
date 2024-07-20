@@ -1,4 +1,4 @@
-local Spectre = {
+local M = {
 	"nvim-pack/nvim-spectre",
 	dependencies = { "nvim-lua/plenary.nvim" },
 	keys = {
@@ -6,7 +6,7 @@ local Spectre = {
 	},
 }
 
-function Spectre.config()
+function M.config()
 	vim.keymap.set("n", "<leader>cs", '<cmd>lua require("spectre").toggle()<CR>', {
 		desc = "Toggle spectre",
 	})
@@ -21,4 +21,4 @@ function Spectre.config()
 	})
 end
 
-return Spectre
+return M

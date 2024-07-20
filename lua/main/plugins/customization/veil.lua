@@ -1,4 +1,4 @@
-local veil = {
+local M = {
 	"willothy/veil.nvim",
 	dependencies = {
 		"nvim-lua/plenary.nvim",
@@ -7,7 +7,7 @@ local veil = {
 	priority = 1000,
 }
 
-function veil.config()
+function M.config()
 	local builtin = require("veil.builtin")
 	local current_day = os.date("%A")
 
@@ -158,6 +158,9 @@ function veil.config()
             ]])
 		elseif cmd == "c" then
 			vim.cmd("close")
+		elseif cmd == "C" then
+			vim.cmd("Bdelete!")
+			vim.cmd("close")
 		end
 	end
 
@@ -174,8 +177,10 @@ function veil.config()
         cnoreabbrev wqa lua CloseAllWindows('wqa')
         cnoreabbrev Wqa lua CloseAllWindows('wqa')
 
-        cnoreabbrev c lua CloseAllWindows('c')
+        cnoreabbrev c close
+        
+        cnoreabbrev C 
     ]])
 end
 
-return veil
+return M

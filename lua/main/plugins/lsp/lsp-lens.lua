@@ -1,9 +1,9 @@
-local Lens = {
+local M = {
 	"VidocqH/lsp-lens.nvim",
 	event = "BufRead",
 }
 
-function Lens.config()
+function M.config()
 	local SymbolKind = vim.lsp.protocol.SymbolKind
 
 	require("lsp-lens").setup({
@@ -23,4 +23,4 @@ function Lens.config()
 	})
 end
 
-return Lens
+return M

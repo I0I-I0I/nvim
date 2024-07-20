@@ -1,4 +1,4 @@
-local undo = {
+local M = {
 	"tzachar/highlight-undo.nvim",
 	keys = {
 		{ "u", desc = "Undo" },
@@ -6,4 +6,4 @@ local undo = {
 	config = true,
 }
 
-return undo
+return M

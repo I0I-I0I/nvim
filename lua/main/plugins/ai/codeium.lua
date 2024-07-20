@@ -1,9 +1,9 @@
-local Codeium = {
+local M = {
 	"Exafunction/codeium.vim",
 	event = "BufEnter",
 }
 
-function Codeium.config()
+function M.config()
 	vim.keymap.set("i", "<C-c>", function()
 		return vim.fn["codeium#Accept"]()
 	end, { expr = true, silent = true })
@@ -23,4 +23,4 @@ function Codeium.config()
 	vim.keymap.set("i", "<C-;>", "<Cmd>call codeium#CycleOrComplete()<CR>")
 end
 
-return Codeium
+return M

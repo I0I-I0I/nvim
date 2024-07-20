@@ -1,9 +1,9 @@
-local git = {
+local M = {
 	"lewis6991/gitsigns.nvim",
 	event = "BufRead",
 }
 
-function git.config()
+function M.config()
 	require("gitsigns").setup({
 		signs = {
 			add = { text = "┃" },
@@ -29,4 +29,4 @@ function git.config()
 	vim.keymap.set("n", "<leader>gl", "<cmd>Gitsigns toggle_current_line_blame<cr>", { silent = true })
 end
 
-return git
+return M

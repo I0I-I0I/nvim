@@ -1,10 +1,10 @@
-local Hlargs = {
+local M = {
 	"m-demare/hlargs.nvim",
 	event = "BufRead",
 }
 
-function Hlargs.config()
+function M.config()
 	require("hlargs").setup()
 end
 
-return Hlargs
+return M

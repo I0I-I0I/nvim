@@ -1,4 +1,4 @@
-local Neotree = {
+local M = {
 	"nvim-neo-tree/neo-tree.nvim",
 	branch = "v3.x",
 	cmd = "Neotree",
@@ -9,7 +9,7 @@ local Neotree = {
 	},
 }
 
-function Neotree.config()
+function M.config()
 	vim.fn.sign_define("DiagnosticSignError", { text = LspIcons.error, texthl = "DiagnosticSignError" })
 	vim.fn.sign_define("DiagnosticSignWarn", { text = LspIcons.warn, texthl = "DiagnosticSignWarn" })
 	vim.fn.sign_define("DiagnosticSignHint", { text = LspIcons.hint, texthl = "DiagnosticSignHint" })
@@ -31,26 +31,39 @@ function Neotree.config()
 
 		close_if_last_window = true,
 		popup_border_style = "rounded",
-		modified = {
-			symbol = "✚",
-			highlight = "NeoTreeModified",
-		},
-		git_status = {
-			symbols = {
-				-- Change type
-				added = "✚",
-				modified = "",
-				deleted = "✖",
-				renamed = "󰁕",
-				-- Status type
-				untracked = "",
-				ignored = "",
-				unstaged = "󰄱",
-				staged = "",
-				conflict = "",
+		default_component_configs = {
+			modified = {
+				symbol = "",
+				highlight = "NeoTreeModified",
+			},
+			icon = {
+				folder_closed = " ", --  
+				folder_open = " ", --  
+				folder_empty = "󰜌",
+				highlight = "NeoTreeFileIcon",
+			},
+			name = {
+				use_git_status_colors = false,
+				highlight = "NeoTreeFileName",
+			},
+			git_status = {
+				symbols = {
+					-- Change type
+					added = " ",
+					modified = " ",
+					deleted = " ",
+					renamed = " ",
+					-- Status type
+					untracked = " ",
+					ignored = "",
+					unstaged = "󰄱",
+					staged = "",
+					conflict = "",
+				},
 			},
 		},
 		window = {
+			position = "left",
 			width = 33,
 			mappings = {
 				["P"] = { "toggle_preview", config = { use_float = true, use_image_nvim = true } },
@@ -65,4 +78,4 @@ function Neotree.config()
 	-- NeoTree
 end
 
-return Neotree
+return M
