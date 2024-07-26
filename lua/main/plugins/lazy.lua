@@ -17,44 +17,40 @@ local custom = plugins .. "customization."
 local move = plugins .. "move."
 local util = plugins .. "util."
 local lsp = plugins .. "lsp."
-local ai = plugins .. "ai."
 local git = plugins .. "git."
+local other = plugins .. "other."
+local integration = plugins .. "integration."
 
 require("lazy").setup({
 	-- Theme
 	{ import = theme .. "colorscheme" },
 
 	-- Customization
-	{ import = custom .. "animation" },
-	{ import = custom .. "blankline" },
+	{ import = custom .. "pets" },
+	{ import = custom .. "indentline" },
 	{ import = custom .. "bufferline" },
 	{ import = custom .. "undo" },
 	{ import = custom .. "notify" },
 	{ import = custom .. "noice" },
-	-- { import = custom .. "rainbow-brackets" },
 	{ import = custom .. "veil" },
 	{ import = custom .. "icons" },
+	{ import = custom .. "colorizer" },
 
 	-- Move
-	{ import = move .. "tree" },
+	{ import = move .. "nvim-tree" },
+	{ import = move .. "spider" },
+	{ import = move .. "multicursors" },
+	{ import = move .. "quick-scope" },
 
 	-- Utils
 	{ import = util .. "surround" },
-	{ import = util .. "treesitter" },
-	{ import = util .. "autopairs" },
 	{ import = util .. "treesj" },
 	{ import = util .. "comments" },
 	{ import = util .. "bbye" },
 	{ import = util .. "illuminate" },
 	{ import = util .. "undotree" },
-	{ import = util .. "telescope" },
-	{ import = util .. "session" },
-	{ import = util .. "quick-scope" },
-	{ import = util .. "wakatime" },
-	{ import = util .. "neotest" },
 	{ import = util .. "todo" },
 	{ import = util .. "terminal" },
-	{ import = util .. "multicursors" },
 
 	-- LSP
 	{ import = lsp .. "lsp" },
@@ -64,11 +60,18 @@ require("lazy").setup({
 	{ import = lsp .. "lspsaga" },
 	{ import = lsp .. "garbage" },
 	{ import = lsp .. "lsp-lens" },
-	{ import = lsp .. "fidget" },
 	{ import = lsp .. "trouble" },
 
-	-- AI
-	{ import = ai .. "codeium" },
+	-- Other
+	{ import = other .. "neotest" },
+	{ import = other .. "treesitter" },
+	{ import = other .. "telescope" },
+	{ import = other .. "session" },
+
+	-- What
+	{ import = integration .. "leetcode" },
+	{ import = integration .. "wakatime" },
+	{ import = integration .. "codeium" },
 
 	-- Git
 	{ import = git .. "git" },

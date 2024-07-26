@@ -1,7 +1,6 @@
 local M = {
 	"akinsho/toggleterm.nvim",
 	version = "*",
-	keys = { "<leader>T" },
 }
 
 function M.config()
@@ -19,12 +18,14 @@ function M.config()
 		direction = "vertical",
 	})
 
-	vim.keymap.set(
-		"n",
-		"<leader>T",
-		"<cmd>ToggleTerm direction=vertical size=50<cr>",
-		{ silent = true, noremap = true }
-	)
+	Bind({
+		["n"] = {
+			["<plugleader>T"] = {
+				"<cmd>ToggleTerm direction=vertical size=50<cr>",
+				{ silent = true, noremap = true },
+			},
+		},
+	})
 end
 
 return M

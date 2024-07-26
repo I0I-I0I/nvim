@@ -34,5 +34,3 @@ vim.keymap.set("n", "<C-->", function()
 	vim.cmd([[let g:neovide_scale_factor -= 0.1]])
 	print("Scale: " .. vim.g.neovide_scale_factor)
 end, { silent = true, noremap = true })
-
-require("main")

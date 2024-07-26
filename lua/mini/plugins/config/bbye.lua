@@ -1,2 +1,6 @@
-vim.keymap.set("n", "<leader>q", "<cmd>Bdelete<cr>", { silent = true, noremap = true })
-vim.keymap.set("n", "<leader>Q", "<cmd>Bdelete!<cr>", { silent = true, noremap = true })
+Bind({
+	["n"] = {
+		["<plugleader>q"] = { "<cmd>Bdelete<cr>", { silent = true, noremap = true } },
+		["<plugleader>Q"] = { "<cmd>Bdelete!<cr>", { silent = true, noremap = true } },
+	},
+})

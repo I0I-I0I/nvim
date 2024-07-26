@@ -7,4 +7,8 @@ local function toggleThemeStyle()
 	end
 end
 
-vim.keymap.set("n", "<leader>tt", toggleThemeStyle)
+Bind({
+	["n"] = {
+		["<leader>tt"] = { toggleThemeStyle },
+	},
+})

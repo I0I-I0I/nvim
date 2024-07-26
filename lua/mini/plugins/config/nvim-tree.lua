@@ -1,8 +1,5 @@
--- disable netrw at the very start of your init.lua
 vim.g.loaded_netrw = 1
 vim.g.loaded_netrwPlugin = 1
-
--- optionally enable 24-bit colour
 vim.opt.termguicolors = true
 
 require("nvim-tree").setup({
@@ -12,12 +9,33 @@ require("nvim-tree").setup({
 	view = {
 		width = 30,
 	},
-	renderer = {
-		group_empty = true,
-	},
 	filters = {
-		dotfiles = true,
+		custom = { "node_modules", "\\.git$" },
+	},
+	modified = {
+		enable = true,
+		show_on_dirs = false,
+		show_on_open_dirs = false,
+	},
+	tab = {
+		sync = {
+			open = true,
+			close = true,
+			ignore = {},
+		},
+	},
+	update_focused_file = {
+		enable = true,
+		update_root = {
+			enable = false,
+			ignore_list = {},
+		},
+		exclude = false,
 	},
 })
 
-vim.keymap.set("n", "<leader>n", "<cmd>NvimTreeToggle<cr>")
+Bind({
+	["n"] = {
+		["<plugleader>n"] = { "<cmd>NvimTreeToggle<cr>" },
+	},
+})

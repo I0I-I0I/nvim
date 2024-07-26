@@ -7,6 +7,7 @@ theme = root .. "theme."
 
 -- Basic
 require(default .. "config")
+require(Utils .. "statusline")
 require(default .. "mappings")
 
 -- Plugins

@@ -18,7 +18,7 @@ vim.cmd([[
 	cnoreabbrev Wa wa
 	cnoreabbrev Qa qa
 
-	cnoreabbrev n norm
+    cnoreabbrev n norm
 ]])
 
 -- Undo
@@ -112,8 +112,7 @@ vim.opt.foldmethod = "indent"
 vim.opt.foldcolumn = "0"
 vim.opt.foldlevel = 99
 
-vim.opt.laststatus = 0
-vim.opt.statusline = " "
+vim.opt.laststatus = 3
 vim.opt.cmdheight = 0
 
 -- Signcolumn
@@ -123,11 +122,15 @@ vim.opt.signcolumn = "yes"
 
 Utils = "default.utils."
 
+require(Utils .. "bind")
 require(Utils .. "resize")
 require(Utils .. "yank")
-require(Utils .. "verticalHelp")
-require(Utils .. "stringToArray")
+require(Utils .. "better_find")
+require(Utils .. "vertical_help")
+require(Utils .. "string_to_array")
 require(Utils .. "source")
-require(Utils .. "cursorLine")
+require(Utils .. "cursor_line")
 require(Utils .. "hurl")
+require(Utils .. "terminal_mode")
 require(Utils .. "tabline")
+-- require(Utils .. "statusline")

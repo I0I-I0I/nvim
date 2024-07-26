@@ -2,7 +2,7 @@ vim.api.nvim_create_user_command("Hurl", function(input)
 	local method
 	local url
 	local fileStorageName = "requestHurl.json"
-	print("hello")
+
 	if input.fargs[1] ~= "GET" then
 		method = "GET"
 		url = input.fargs[1]
@@ -22,15 +22,25 @@ end, {
 	nargs = "*",
 })
 
-vim.keymap.set("n", "<leader>r", function()
-	local pattern = "http[A-Za-z/.:1-9]*"
-	local line = vim.fn.getline(".")
-	local request = line:match(pattern)
-	vim.cmd("Hurl " .. request)
-end)
+Bind({
+	["n"] = {
+		["<leader>r"] = {
+			function()
+				local pattern = "http[A-Za-z/.:1-9]*"
+				local line = vim.fn.getline(".")
+				local request = line:match(pattern)
+				vim.cmd("Hurl " .. request)
+			end,
+		},
+	},
 
-vim.keymap.set("v", "<leader>r", function()
-	vim.cmd('norm "hy')
-	local request = vim.fn.getreg("h")
-	vim.cmd("Hurl " .. request)
-end)
+	["v"] = {
+		["<leader>r"] = {
+			function()
+				vim.cmd('norm "hy')
+				local request = vim.fn.getreg("h")
+				vim.cmd("Hurl " .. request)
+			end,
+		},
+	},
+})

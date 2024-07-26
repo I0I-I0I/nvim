@@ -23,41 +23,32 @@ function M.config()
 
 	scope.setup({})
 
-	vim.keymap.set("n", "<leader>m1", "<cmd>ScopeMoveBuf 1<cr>", opts)
-	vim.keymap.set("n", "<leader>m2", "<cmd>ScopeMoveBuf 2<cr>", opts)
-	vim.keymap.set("n", "<leader>m3", "<cmd>ScopeMoveBuf 3<cr>", opts)
-	vim.keymap.set("n", "<leader>m4", "<cmd>ScopeMoveBuf 4<cr>", opts)
-
-	--
-	-- BufferLine
-	--
 	local bufferline = require("bufferline")
 
-	vim.keymap.set("n", "<leader>1", "<cmd>lua require('bufferline').go_to(1, true)<cr>", opts)
-	vim.keymap.set("n", "<leader>2", "<cmd>lua require('bufferline').go_to(2, true)<cr>", opts)
-	vim.keymap.set("n", "<leader>3", "<cmd>lua require('bufferline').go_to(3, true)<cr>", opts)
-	vim.keymap.set("n", "<leader>4", "<cmd>lua require('bufferline').go_to(4, true)<cr>", opts)
-	vim.keymap.set("n", "<leader>5", "<cmd>lua require('bufferline').go_to(5, true)<cr>", opts)
-	vim.keymap.set("n", "<leader>6", "<cmd>lua require('bufferline').go_to(6, true)<cr>", opts)
-	vim.keymap.set("n", "<leader>7", "<cmd>lua require('bufferline').go_to(7, true)<cr>", opts)
-	vim.keymap.set("n", "<leader>8", "<cmd>lua require('bufferline').go_to(8, true)<cr>", opts)
-	vim.keymap.set("n", "<leader>9", "<cmd>lua require('bufferline').go_to(9, true)<cr>", opts)
-	vim.keymap.set("n", "<leader>$", "<cmd>lua require('bufferline').go_to(-1, true)<cr>", opts)
+	Bind({
+		["n"] = {
+			["<plugleader>m1"] = { "<cmd>ScopeMoveBuf 1<cr>", opts },
+			["<plugleader>m2"] = { "<cmd>ScopeMoveBuf 2<cr>", opts },
+			["<plugleader>m3"] = { "<cmd>ScopeMoveBuf 3<cr>", opts },
+			["<plugleader>m4"] = { "<cmd>ScopeMoveBuf 4<cr>", opts },
 
-	-- Move buffers
-	vim.keymap.set("n", "]b", "<cmd>BufferLineMoveNext<cr>", opts)
-	vim.keymap.set("n", "[b", "<cmd>BufferLineMovePrev<cr>", opts)
+			["<plugleader>1"] = { "<cmd>lua require('bufferline').go_to(1, true)<cr>", opts },
+			["<plugleader>2"] = { "<cmd>lua require('bufferline').go_to(2, true)<cr>", opts },
+			["<plugleader>3"] = { "<cmd>lua require('bufferline').go_to(3, true)<cr>", opts },
+			["<plugleader>4"] = { "<cmd>lua require('bufferline').go_to(4, true)<cr>", opts },
+			["<plugleader>5"] = { "<cmd>lua require('bufferline').go_to(5, true)<cr>", opts },
+			["<plugleader>6"] = { "<cmd>lua require('bufferline').go_to(6, true)<cr>", opts },
+			["<plugleader>7"] = { "<cmd>lua require('bufferline').go_to(7, true)<cr>", opts },
+			["<plugleader>8"] = { "<cmd>lua require('bufferline').go_to(8, true)<cr>", opts },
+			["<plugleader>9"] = { "<cmd>lua require('bufferline').go_to(9, true)<cr>", opts },
+			["<plugleader>$"] = { "<cmd>lua require('bufferline').go_to(-1, true)<cr>", opts },
 
-	-- Move by buffers
-	vim.keymap.set("n", "<Tab>", "<cmd>BufferLineCycleNext<cr>", opts)
-	vim.keymap.set("n", "<S-Tab>", "<cmd>BufferLineCyclePrev<cr>", opts)
+			-- TODO fix this
+			-- ["<C-w>t"] = { "<cmd>tabnew<cr><cmd>Bdelete<cr><cmd>OpenVeil<cr>", opts },
+		},
+	})
 
 	-- Create tab
-	vim.keymap.set("n", "<C-w>t", "<cmd>tabnew<cr><cmd>Bdelete<cr><cmd>OpenVeil<cr>", opts)
-
-	-- Move by tabs
-	vim.keymap.set("n", "<leader><Tab>", "<cmd>tabnext<cr>", opts)
-	vim.keymap.set("n", "<leader><S-Tab>", "<cmd>tabprevious<cr>", opts)
 
 	local bufferlineLspIcons = {
 		error = " " .. LspIcons.error,
@@ -68,7 +59,8 @@ function M.config()
 
 	bufferline.setup({
 		options = {
-			mode = "buffers",
+			-- mode = "buffers",
+			mode = "tabs",
 			always_show_bufferline = true,
 			show_buffer_close_icons = false,
 			show_close_icon = false,
@@ -79,6 +71,13 @@ function M.config()
 			offsets = {
 				{
 					filetype = "neo-tree",
+					text = "File Explorer",
+					highlight = "Directory",
+					text_align = "center",
+					separator = true,
+				},
+				{
+					filetype = "NvimTree",
 					text = "File Explorer",
 					highlight = "Directory",
 					text_align = "center",

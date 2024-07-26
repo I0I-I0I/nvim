@@ -13,6 +13,7 @@ function M.webDev.config()
 	require("nvim-web-devicons").setup({
 		override = {},
 		default = true,
+		color_icons = true,
 	})
 end
 

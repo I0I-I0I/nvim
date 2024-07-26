@@ -1,1 +1,1 @@
-vim.cmd("Color zenbones 1")
+vim.cmd("Color everforest 0.73")

@@ -1,94 +1,135 @@
--- Move string
-vim.keymap.set("v", "K", ":m '<-2<cr>gv=gv", { silent = true })
-vim.keymap.set("v", "J", ":m '>+1<cr>gv=gv", { silent = true })
+local opts = { noremap = true, silent = true }
 
--- leave from insert mode
-vim.keymap.set("i", "jk", "<Esc>")
+Bind({
+	["n"] = {
+		-- Toggle paste mode
+		["<leader>p"] = {
+			function()
+				vim.opt.paste = not vim.opt.paste._value
+			end,
+		},
 
--- Buffers
-vim.keymap.set("n", "gn", "<cmd>bnext<cr>", { silent = true, noremap = false })
-vim.keymap.set("n", "gp", "<cmd>bprevious<cr>", { silent = true, noremap = false })
-vim.keymap.set("n", "gw", "<cmd>bdelete<cr>", { silent = true, noremap = false })
+		-- Movement
+			["<C-d>"] = { "<C-d>zz" },
+			["<C-u>"] = { "<C-u>zz" },
+			["n"] = { "nzzzv" },
+			["N"] = { "Nzzzv" },
 
--- norm in visual
-vim.keymap.set("v", "n", ":norm ")
+		-- Wrap
+		["<leader>w"] = {
+			function()
+				vim.opt.wrap = not vim.opt.wrap._value
+			end,
+			opts,
+		},
 
--- Macros
-vim.keymap.set("n", "Q", ":norm @aj<cr>", { silent = true, noremap = true })
-vim.keymap.set("x", "Q", ":norm @a<cr>", { silent = true, noremap = true })
+		-- Netrw
+		["<leader>n"] = { "<cmd>Ex<cr>", opts },
 
--- Insert Enter
-vim.keymap.set("i", "<C-b>", "<cmd>norm dwa<cr>", { silent = true, noremap = true })
-vim.keymap.set("i", "<C-/>", "<cmd>norm gcc<cr>", { silent = true, noremap = true })
+		-- Rename
+		["<leader>r"] = { ":%s/\\<<C-r><C-w>\\>/<C-r><C-w>/gI<Left><Left><Left>" },
 
-vim.keymap.set("i", "<C-j>", "<cmd>norm o<cr>", { silent = true, noremap = true })
-vim.keymap.set("i", "<C-k>", "<cmd>norm O<cr>", { silent = true, noremap = true })
+		-- Turn off search highlight
+		["<leader><leader>"] = { "<cmd>nohlsearch<cr>", opts },
 
--- vim.keymap.set({ "i", "c" }, "<C-h>", "<C-Left>", { noremap = true })
--- vim.keymap.set({ "i", "c" }, "<C-l>", "<C-Right>", { noremap = true })
-vim.keymap.set({ "i", "c" }, "<A-h>", "<left>", { noremap = true })
-vim.keymap.set({ "i", "c" }, "<A-l>", "<right>", { noremap = true })
-vim.keymap.set({ "i", "c" }, "<A-k>", "<up>", { noremap = true })
-vim.keymap.set({ "i", "c" }, "<A-j>", "<down>", { noremap = true })
+		-- Split
+		["<leader>ws"] = { "<cmd>split<cr><C-w>j", opts },
+		["<leader>wv"] = { "<cmd>vsplit<cr><C-w>l", opts },
+		["<leader>wS"] = { ":split " },
+		["<leader>wV"] = { ":vsplit " },
 
--- Paste
-vim.keymap.set("x", "p", '"_dP')
-vim.keymap.set("x", "P", '""p')
+		-- Tabs
+		["<leader>wt"] = { "<cmd>tabnew<cr>", opts },
+		["<leader>wT"] = { ":tabnew " },
+		["<leader>wc"] = { "<cmd>wa<cr><cmd>tabclose<cr>", opts },
+		["<leader>wC"] = { "<cmd>tabclose<cr>", opts },
 
-vim.keymap.set({ "v", "n" }, "<space>", '"')
+		["]t"] = { "<cmd>tabnext<cr>", opts },
+		["[t"] = { "<cmd>tabprevious<cr>", opts },
 
--- Not yank with x/s
-vim.keymap.set("v", "x", '"_x')
-vim.keymap.set("v", "X", '"_X')
-vim.keymap.set("v", "s", '"_s')
-vim.keymap.set("v", "S", '"_S')
+		-- Buffers
+		["]b"] = { "<cmd>bn<cr>", opts },
+		["[b"] = { "<cmd>bp<cr>", opts },
+		["<leader>q"] = { "<cmd>bdelete<cr>", opts },
 
--- Save
-vim.keymap.set({ "v", "n", "i" }, "<C-s>", "<cmd>w<cr><Esc>")
+		-- Resizing
+		["<C-left>"] = { "<cmd>vertical resize -2<cr>", opts },
+		["<C-right>"] = { "<cmd>vertical resize +2<cr>", opts },
+		["<C-up>"] = { "<cmd>resize +2<cr>", opts },
+		["<C-down>"] = { "<cmd>resize -2<cr>", opts },
+		["<leader>wm"] = { "<C-w>|<C-w>_", opts },
+		["<leader>w="] = { "<C-w>=", opts },
+	},
 
--- Rename
-vim.keymap.set("n", "R", ":%s/\\<<C-r><C-w>\\>/<C-r><C-w>/gI<Left><Left><Left>")
+	["i"] = {
+		["jk"] = { "<Esc>" },
 
--- Tabs
-vim.keymap.set("v", "<", "<gv")
-vim.keymap.set("v", ">", ">gv")
+		-- Insert Enter
+		["<C-b>"] = { "<cmd>norm dwa<cr>", opts },
+		["<C-/>"] = { "<cmd>norm gcc<cr>", opts },
+		["<C-j>"] = { "<cmd>norm o <cr>", opts },
+		["<C-k>"] = { "<cmd>norm O <cr>", opts },
+	},
 
--- Turn off search highlight
-vim.keymap.set("n", "<space><space>", "<cmd>nohlsearch<cr>", { silent = true })
+	["ic"] = {
+		["<C-h>"] = { "<C-Left>", opts },
+		["<C-l>"] = { "<C-Right>", opts },
+		["<A-h>"] = { "<left>", opts },
+		["<A-l>"] = { "<right>", opts },
+		["<A-k>"] = { "<up>", opts },
+		["<A-j>"] = { "<down>", opts },
+	},
 
--- Wrap
+	["v"] = {
+		-- Move strings
+		["K"] = { ":m '<-2<cr>gv=gv", opts },
+		["J"] = { ":m '>+1<cr>gv=gv", opts },
 
-vim.keymap.set("n", "<F2>", function()
-	vim.opt.wrap = not vim.opt.wrap._value
-end)
+		-- Normal
+		["n"] = { ":norm " },
 
--- Split
-vim.keymap.set("n", "<C-w>s", "<cmd>split<cr><C-w>j", { silent = true })
-vim.keymap.set("n", "<C-w>v", "<cmd>vsplit<cr><C-w>l", { silent = true })
-vim.keymap.set("n", "<C-w>S", ":split ")
-vim.keymap.set("n", "<C-w>V", ":vsplit ")
+		-- Not yank
+		["x"] = { '"_x' },
+		["X"] = { '"_X' },
+		["s"] = { '"_s' },
+		["S"] = { '"_S' },
 
-vim.keymap.set("n", "<C-w>t", "<cmd>tabnew<cr>")
-vim.keymap.set("n", "<C-w>T", ":tabnew ")
+		-- Move tabs
+		["<"] = { "<gv" },
+		[">"] = { ">gv" },
+	},
 
--- Resizing
-vim.keymap.set("n", "<C-left>", "<cmd>vertical resize -2<cr>", { silent = true })
-vim.keymap.set("n", "<C-right>", "<cmd>vertical resize +2<cr>", { silent = true })
-vim.keymap.set("n", "<C-up>", "<cmd>resize +2<cr>", { silent = true })
-vim.keymap.set("n", "<C-down>", "<cmd>resize -2<cr>", { silent = true })
-vim.keymap.set("n", "<C-w>m", "<C-w>|<C-w>_", { silent = true })
+	["x"] = {
+		-- Paste
+		["p"] = { '"_dP' },
+		["P"] = { '""p' },
+	},
+
+	["vni"] = {
+		-- Save
+		["<C-s>"] = { "<cmd>w<cr><Esc>", opts },
+	},
+})
 
 -- Run
 autocmd("BufRead", {
 	pattern = "*.js",
 	callback = function()
-		vim.keymap.set("n", "<leader>R", "<cmd>w<cr><cmd>exec '!node' shellescape(@%, 1)<cr>", { silent = true })
+		Bind({
+			["n"] = {
+				["<leader>fr"] = { "<cmd>w<cr><cmd>exec '!node' shellescape(@%, 1)<cr>", opts },
+			},
+		})
 	end,
 })
 
 autocmd("BufRead", {
 	pattern = "*.py",
 	callback = function()
-		vim.keymap.set("n", "<leader>R", "<cmd>w<cr><cmd>exec '!python3.11' shellescape(@%, 1)<cr>", { silent = true })
+		Bind({
+			["n"] = {
+				["<leader>fr"] = { "<cmd>w<cr><cmd>exec '!python3.11' shellescape(@%, 1)<cr>", opts },
+			},
+		})
 	end,
 })

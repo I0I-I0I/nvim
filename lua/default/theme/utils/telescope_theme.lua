@@ -54,7 +54,7 @@ local all_colorschemes = pickers.new(dropdown, opts)
 vim.api.nvim_create_user_command("Colors", function(input)
 	Transparency = " " .. input.fargs[1]
 	if not Transparency then
-		Transparency = 0.73
+		Transparency = 0.7
 	end
 	all_colorschemes:find()
 end, {

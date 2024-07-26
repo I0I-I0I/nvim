@@ -8,18 +8,18 @@ Colorschemes = {
 			"everforest",
 		},
 	},
-	{
-		"EdenEast/nightfox.nvim",
-		name = "nightfox",
-		lazy = false,
-		priority = 1000,
-		theme_names = {
-			"nightfox",
-			"dayfox",
-			"duskfox",
-			"carbonfox",
-		},
-	},
+	-- {
+	-- 	"EdenEast/nightfox.nvim",
+	-- 	name = "nightfox",
+	-- 	lazy = false,
+	-- 	priority = 1000,
+	-- 	theme_names = {
+	-- 		"nightfox",
+	-- 		"dayfox",
+	-- 		"duskfox",
+	-- 		"carbonfox",
+	-- 	},
+	-- },
 	{
 		"zenbones-theme/zenbones.nvim",
 		name = "zenbones",
@@ -30,12 +30,7 @@ Colorschemes = {
 		},
 		theme_names = {
 			"zenbones",
-			"kanagawabones",
-			"forestbones",
-			"tokyobones",
-			"rosebones",
-			"duckbones",
-			"neobones",
+			-- "rosebones",
 		},
 	},
 	{
@@ -48,16 +43,7 @@ Colorschemes = {
 		},
 	},
 	{
-		"Alexis12119/nightly.nvim",
-		name = "nightly",
-		lazy = false,
-		priority = 1000,
-		theme_names = {
-			"nightly",
-		},
-	},
-	{
-		"lunarvim/horizon.nvim",
+		"akinsho/horizon.nvim",
 		name = "horizon",
 		lazy = false,
 		priority = 1000,
@@ -65,16 +51,16 @@ Colorschemes = {
 			"horizon",
 		},
 	},
-	{
-		"catppuccin/nvim",
-		name = "catppuccin",
-		lazy = false,
-		priority = 1000,
-		theme_names = {
-			"catppuccin-latte",
-			"catppuccin-macchiato",
-		},
-	},
+	-- {
+	-- 	"catppuccin/nvim",
+	-- 	name = "catppuccin",
+	-- 	lazy = false,
+	-- 	priority = 1000,
+	-- 	theme_names = {
+	-- 		"catppuccin-latte",
+	-- 		-- "catppuccin-macchiato",
+	-- 	},
+	-- },
 }
 
 Theme = default .. ".theme."

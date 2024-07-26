@@ -1,15 +1,18 @@
+require(Theme_utils .. "toggleThemeStyle")
+local updateNoColor = require(Theme_utils .. "updateNoColor")
+
 function SetColorscheme(colorscheme, transparent)
-	require(Theme_utils .. "toggleThemeStyle")
 	vim.opt.background = "dark"
 	vim.cmd.colorscheme(colorscheme)
+	updateNoColor()
 
 	if transparent == 1 then
 		vim.cmd([[
-            try
-                au! Colors
-            catch
-            endtry
-        ]])
+		          try
+		              au! Colors
+		          catch
+		          endtry
+		      ]])
 		if vim.g.neovide then
 			vim.g.neovide_transparency = 1
 		end
@@ -20,7 +23,7 @@ function SetColorscheme(colorscheme, transparent)
 	end
 
 	if not transparent then
-		transparent = 0.8
+		transparent = 0.7
 	end
 
 	local colors = require(Theme .. "colors")

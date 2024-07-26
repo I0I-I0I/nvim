@@ -5,15 +5,27 @@ local M = {
 
 function M.config()
 	require("notify").setup({
-		background_colour = "#000000",
+		background_colour = "#111111",
 		max_width = 50,
 		render = "compact",
 		stages = "slide",
 		timeout = 3000,
 		top_down = true,
+
+		icons = {
+			DEBUG = "",
+			ERROR = "",
+			INFO = "",
+			TRACE = "✎",
+			WARN = "",
+		},
 	})
 
-	vim.keymap.set("n", "<leader>fn", "<cmd>Telescope notify theme=dropdown<cr>", { silent = true })
+	Bind({
+		["n"] = {
+			["<plugleader>fn"] = { "<cmd>Noice telescope<cr>", { silent = true } },
+		},
+	})
 end
 
 return M

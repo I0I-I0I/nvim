@@ -1,9 +1,5 @@
 local M = {
 	"stevearc/resession.nvim",
-	cmd = { "Sessions" },
-	keys = {
-		"<leader>s",
-	},
 	dependencies = {
 		{
 			"tiagovla/scope.nvim",
@@ -73,28 +69,38 @@ function M.config()
 		extensions = { scope = {} },
 	})
 
-	vim.keymap.set("n", "<leader>ss", function()
-		if resession.get_current_session_info() == nil then
-			local input = vim.fn.input("Name session -> ")
-			if input ~= "" then
-				resession.save(input)
-			end
-		else
-			resession.save()
-		end
-	end)
-	vim.keymap.set("n", "<leader>sl", "<cmd>Sessions<cr>")
-	vim.keymap.set("n", "<leader>si", "<cmd>lua =require('resession').get_current_session_info()<cr>")
-	vim.keymap.set("n", "<leader>sd", function()
-		local current_session = resession.get_current()
-		resession.detach()
-		print('Disconnected from  session "' .. current_session .. '"')
-	end)
-	vim.keymap.set("n", "<leader>sD", function()
-		local current_session = resession.get_current()
-		resession.delete(current_session)
-		print('M "' .. current_session .. '" is deleted')
-	end)
+	Bind({
+		["n"] = {
+			["<plugleader>ss"] = {
+				function()
+					if resession.get_current_session_info() == nil then
+						local input = vim.fn.input("Name session -> ")
+						if input ~= "" then
+							resession.save(input)
+						end
+					else
+						resession.save()
+					end
+				end,
+			},
+			["<plugleader>sl"] = { "<cmd>Sessions<cr>" },
+			["<plugleader>si"] = { "<cmd>lua =require('resession').get_current_session_info()<cr>" },
+			["<plugleader>sd"] = {
+				function()
+					local current_session = resession.get_current()
+					resession.detach()
+					print('Disconnected from  session "' .. current_session .. '"')
+				end,
+			},
+			["<plugleader>sD"] = {
+				function()
+					local current_session = resession.get_current()
+					resession.delete(current_session)
+					print('M "' .. current_session .. '" is deleted')
+				end,
+			},
+		},
+	})
 
 	M_telescope()
 end

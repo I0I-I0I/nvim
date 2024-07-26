@@ -20,7 +20,9 @@ function LspSaga.config()
 		},
 		symbol_in_winbar = {
 			enable = true,
-			hide_keyword = true,
+			hide_keyword = false,
+			color_mode = true,
+			delay = 300,
 		},
 		ui = {
 			border = "rounded",
@@ -34,18 +36,24 @@ function LspSaga.config()
 		},
 	})
 
+	if not COLOR then
+		vim.cmd("hi DevIconDefault guifg=#d3d7cf")
+	end
+
 	local opts = { noremap = true, silent = true }
 
-	vim.keymap.set("n", "<leader>lk", "<cmd>Lspsaga hover_doc<cr>", opts)
-	vim.keymap.set("n", "<leader>lr", "<cmd>Lspsaga rename<cr>", opts)
-	vim.keymap.set("n", "<leader>ld", "<cmd>Lspsaga peek_definition<cr>", opts)
-	vim.keymap.set("n", "<leader>lca", "<cmd>Lspsaga code_action<cr>", opts)
-	vim.keymap.set("n", "<leader>lf", "<cmd>Lspsaga finder<cr>", opts)
-	vim.keymap.set("n", "<leader>lo", "<cmd>Lspsaga outline<cr>", opts)
-	vim.keymap.set("n", "<leader>le", "<cmd>Lspsaga show_line_diagnostics<cr>", opts)
-	vim.keymap.set("n", "]d", "<cmd>Lspsaga diagnostic_jump_next<cr>", opts)
-	vim.keymap.set("n", "[d", "<cmd>Lspsaga diagnostic_jump_prev<cr>", opts)
-	-- vim.keymap.set({ "n", "t" }, "<leader>T", "<cmd>Lspsaga term_toggle<cr>")
+	Bind({
+		["n"] = {
+			["<plugleader>lk"] = { "<cmd>Lspsaga hover_doc<cr>", opts },
+			["<plugleader>ld"] = { "<cmd>Lspsaga peek_definition<cr>", opts },
+			["<plugleader>lca"] = { "<cmd>Lspsaga code_action<cr>", opts },
+			["<plugleader>lf"] = { "<cmd>Lspsaga finder<cr>", opts },
+			["<plugleader>lo"] = { "<cmd>Lspsaga outline<cr>", opts },
+			["<plugleader>le"] = { "<cmd>Lspsaga show_line_diagnostics<cr>", opts },
+			["]d"] = { "<cmd>Lspsaga diagnostic_jump_next<cr>", opts },
+			["[d"] = { "<cmd>Lspsaga diagnostic_jump_prev<cr>", opts },
+		},
+	})
 end
 
 return LspSaga

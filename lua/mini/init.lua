@@ -10,10 +10,8 @@ local custom = Root .. "custom."
 
 -- Default
 require(default .. "config")
+require(Utils .. "statusline")
 require(default .. "mappings")
-
--- Utils
-require(default .. "utils.betterFind")
 
 -- Plugins/LSP
 require(plugins .. "plug")
@@ -23,6 +21,6 @@ require(lsp .. "lsp")
 require(custom .. "config")
 require(custom .. "mappings")
 
--- Current colorscheme
+-- Current color scheme
 require(theme .. "colorscheme")
 require(theme .. "theme")

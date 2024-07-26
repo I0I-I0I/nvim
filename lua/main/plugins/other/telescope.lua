@@ -1,11 +1,7 @@
 local M = {
 	"nvim-telescope/telescope.nvim",
-	cmd = "M",
 	dependencies = {
 		{ "nvim-lua/plenary.nvim" },
-	},
-	keys = {
-		{ "<leader>f" },
 	},
 }
 
@@ -13,19 +9,25 @@ function M.config()
 	local builtin = require("telescope.builtin")
 	local actions = require("telescope.actions")
 
-	vim.keymap.set("n", "<leader>ff", builtin.find_files, {})
-	vim.keymap.set("n", "<leader>fw", builtin.live_grep, {})
-	vim.keymap.set("n", "<leader>fb", builtin.buffers, {})
-	vim.keymap.set("n", "<leader>fab", "<cmd>M scope buffers<cr>", { silent = true })
-	vim.keymap.set("n", "<leader>ft", "<cmd>Colors 1<cr>", { silent = true, noremap = true })
-	vim.keymap.set("n", "<leader>fat", "<cmd>Colors 0.73<cr>", { silent = true, noremap = true })
-	vim.keymap.set("n", "<leader>fh", builtin.help_tags, {})
-	vim.keymap.set("n", "<leader>fk", builtin.keymaps, {})
-	vim.keymap.set("n", "<leader>fR", builtin.registers, {})
-	vim.keymap.set("n", "z=", builtin.spell_suggest, {})
-	vim.keymap.set("n", "<leader>fs", function()
-		builtin.grep_string({ search = vim.fn.input("Grep -> ") })
-	end)
+	Bind({
+		["n"] = {
+			["<plugleader>ff"] = { builtin.find_files, {} },
+			["<plugleader>fw"] = { builtin.live_grep, {} },
+			["<plugleader>fb"] = { builtin.buffers, {} },
+			["<plugleader>fab"] = { "<cmd>M scope buffers<cr>", { silent = true } },
+			["<plugleader>ft"] = { "<cmd>Colors 1<cr>", { silent = true, noremap = true } },
+			["<plugleader>fat"] = { "<cmd>Colors 0.73<cr>", { silent = true, noremap = true } },
+			["<plugleader>fh"] = { builtin.help_tags, {} },
+			["<plugleader>fk"] = { builtin.keymaps, {} },
+			["<plugleader>fR"] = { builtin.registers, {} },
+			["z="] = { builtin.spell_suggest, {} },
+			["<plugleader>fs"] = {
+				function()
+					builtin.grep_string({ search = vim.fn.input("Grep -> ") })
+				end,
+			},
+		},
+	})
 
 	local opts = {
 		defaults = {

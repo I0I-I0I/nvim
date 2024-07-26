@@ -6,7 +6,6 @@ local M = {
 	},
 	build = ":TSUpdate",
 	event = { "BufRead", "BufNewFile" },
-	cmd = { "TSUpdateSync", "TSUpdate", "TSInstall" },
 }
 
 function M.init(plugin)
@@ -17,6 +16,7 @@ end
 function M.config()
 	local treesitter = require("nvim-treesitter.configs")
 	local ts_repeat_move = require("nvim-treesitter.textobjects.repeatable_move")
+	local ts_autotag = require("nvim-ts-autotag")
 
 	local installed = {
 		"lua",
@@ -164,10 +164,6 @@ function M.config()
 			enable = true,
 		},
 
-		autotag = {
-			enable = true,
-		},
-
 		incremental_selection = {
 			enable = true,
 			keymaps = {
@@ -181,8 +177,20 @@ function M.config()
 		textobjects = textobjects,
 	})
 
-	vim.keymap.set("n", ">", ts_repeat_move.repeat_last_move)
-	vim.keymap.set("n", "<", ts_repeat_move.repeat_last_move_opposite)
+	ts_autotag.setup({
+		opts = {
+			enable_close = true, -- Auto close tags
+			enable_rename = true, -- Auto rename pairs of tags
+			enable_close_on_slash = true, -- Auto close on trailing </
+		},
+	})
+
+	Bind({
+		["n"] = {
+			[">"] = { ts_repeat_move.repeat_last_move },
+			["<"] = { ts_repeat_move.repeat_last_move_opposite },
+		},
+	})
 end
 
 return M

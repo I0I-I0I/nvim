@@ -8,6 +8,14 @@ end
 function SetColors(colors)
 	local group = vim.api.nvim_create_augroup("Colors", {})
 
+	local updateToggleColors = require(Theme .. "toggleColors")
+
+	local newColors = updateToggleColors()
+
+	for _, item in ipairs(newColors) do
+		table.insert(colors.withFgBg, item)
+	end
+
 	for _, item in ipairs(colors.default) do
 		setColor(item)
 	end

@@ -1,23 +1,21 @@
 local M = {
 	"moll/vim-bbye",
-	cmd = { "Bdelete" },
-	keys = {
-		{ "<leader>q", "<cmd>Bdelete<cr>", desc = "Close buffer" },
-		{ "<leader>Q", "<cmd>Bdelete!<cr>", desc = "Force close buffer" },
-		{ "<leader>c", "<cmd>Bdelete<cr><cmd>close<cr>", desc = "Close buffer and close window/split" },
-		{ "<leader>C", "<cmd>Bdelete!<cr><cmd>close<cr>", desc = "Force close buffer and close window/split" },
-	},
+	event = "VeryLazy",
 }
 
 function M.config()
 	local opts = { silent = true, noremap = true }
 
-	vim.keymap.set("n", "<leader>q", "<cmd>Bdelete<cr>", opts)
-	vim.keymap.set("n", "<leader>Q", "<cmd>Bdelete!<cr>", opts)
-	vim.keymap.set("n", "<leader>aq", "<cmd>bufdo :Bdelete<cr>", opts)
-	vim.keymap.set("n", "<leader>aQ", "<cmd>bufdo :Bdelete!<cr>", opts)
-	vim.keymap.set("n", "<leader>c", "<cmd>Bdelete<cr><cmd>close<cr>", opts)
-	vim.keymap.set("n", "<leader>C", "<cmd>Bdelete!<cr><cmd>close<cr>", opts)
+	Bind({
+		["n"] = {
+			["<plugleader>q"] = { "<cmd>Bdelete<cr>", opts },
+			["<plugleader>Q"] = { "<cmd>Bdelete!<cr>", opts },
+			["<plugleader>aq"] = { "<cmd>bufdo :Bdelete<cr>", opts },
+			["<plugleader>aQ"] = { "<cmd>bufdo :Bdelete!<cr>", opts },
+			["<plugleader>c"] = { "<cmd>Bdelete<cr><cmd>close<cr>", opts },
+			["<plugleader>C"] = { "<cmd>Bdelete!<cr><cmd>close<cr>", opts },
+		},
+	})
 end
 
 return M

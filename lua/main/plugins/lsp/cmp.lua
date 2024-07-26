@@ -31,16 +31,18 @@ function M.config()
 		},
 
 		sources = cmp.config.sources({
-			{ name = "nvim_lsp" },
-			{ name = "luasnip", option = { show_autosnippets = true } },
-			{ name = "nvim_lua" },
-		}, {
-			{ name = "path" },
+			{ name = "nvim_lua", max_item_count = 10 },
+			{ name = "nvim_lsp", max_item_count = 10 },
+			{ name = "path", max_item_count = 10 },
+			{ name = "luasnip", option = { show_autosnippets = true }, max_item_count = 10 },
 			{ name = "buffer" },
 		}),
 
 		window = {
-			-- cmp.config.window.bordered(),
+			cmp.config.window.bordered(),
+			-- completion = cmp.config.window.bordered(),
+			-- documentation = cmp.config.window.bordered(),
+
 			completion = {
 				border = nil,
 				col_offset = -3,
@@ -62,18 +64,26 @@ function M.config()
 			["<C-f>"] = cmp.mapping.scroll_docs(4),
 			["<C-e>"] = cmp.mapping.abort(),
 			["<CR>"] = cmp.mapping.confirm({ select = true }),
-			["<Tab>"] = cmp_action.tab_complete(),
-			["<S-Tab>"] = cmp_action.select_prev_or_fallback(),
+			-- ["<Tab>"] = cmp_action.tab_complete(),
+			-- ["<S-Tab>"] = cmp_action.select_prev_or_fallback(),
 		}),
 
 		formatting = {
-			fields = { "abbr", "menu", "kind" },
+			fields = { "kind", "abbr", "menu" },
 			format = lspkind.cmp_format({
-				mode = "symbol_text",
+				-- options: 'text', 'text_symbol', 'symbol_text', 'symbol'
+				mode = "symbol",
 				show_labelDetails = true,
-				-- preset = "default",
-				preset = "codicons",
+				preset = "default",
+				-- preset = "codicons",
 				ellipsis_char = "...",
+				menu = {
+					buffer = "[BUF]",
+					nvim_lsp = "[LSP]",
+					path = "[PTH]",
+					luasnip = "[SNP]",
+					nvim_lua = "[LUA]",
+				},
 				symbol_map = {
 					Snippet = "",
 				},
@@ -82,6 +92,7 @@ function M.config()
 
 		experimental = {
 			ghost_text = false,
+			native_menu = false,
 		},
 	})
 
@@ -109,6 +120,15 @@ function M.config()
 			{ name = "cmdline" },
 		}),
 	})
+
+	cmp.setup.cmdline({ "/", "?" }, {
+		mapping = cmp.mapping.preset.cmdline(),
+		sources = {
+			{ name = "buffer" },
+		},
+	})
+
+	vim.api.nvim_set_hl(0, "CmpItemMenu", { fg = "#666666" })
 end
 
 return M

@@ -11,7 +11,11 @@ function M.config()
 	local builtin = require("veil.builtin")
 	local current_day = os.date("%A")
 
-	vim.keymap.set("n", "<leader>o", "<cmd>Bdelete<cr><cmd>OpenVeil<cr>", { silent = true, noremap = true })
+	Bind({
+		["n"] = {
+			["<plugleader>o"] = { "<cmd>OpenVeil<cr>", { silent = true, noremap = true } },
+		},
+	})
 
 	local default = {
 		sections = {
@@ -32,7 +36,8 @@ function M.config()
 					text = "Open tree",
 					shortcut = "t",
 					callback = function()
-						vim.cmd("Neotree float")
+						vim.cmd("NvimTreeOpen .")
+						vim.cmd("only")
 					end,
 				},
 				{
@@ -49,7 +54,8 @@ function M.config()
 					shortcut = "i",
 					callback = function()
 						vim.cmd("cd ~/.config/nvim/lua/main")
-						vim.cmd("Neotree float")
+						vim.cmd("NvimTreeOpen .")
+						vim.cmd("only")
 					end,
 				},
 				{
@@ -81,38 +87,25 @@ function M.config()
 	require("veil").setup(default)
 
 	-- Create buffer
-	vim.keymap.set("n", "<C-w>b", "<cmd>OpenVeil<cr>", { silent = true })
 
 	-- Open veil
 	function OpenVeil()
+		vim.cmd("Bdelete")
+		vim.cmd("NvimTreeClose")
 		vim.cmd("set nocursorline")
+		vim.cmd("bufdo :Bdelete")
 		vim.cmd("Veil")
 	end
 
 	vim.api.nvim_create_user_command("OpenVeil", OpenVeil, {})
 
-	-- Open Veil after edit
-	function Edit(path)
-		vim.cmd.edit(path)
-		vim.cmd("vsplit")
-		vim.cmd("OpenVeil")
-		vim.cmd("only")
-		vim.cmd("set nocursorline")
-	end
-
-	vim.api.nvim_create_user_command("Edit", function(input)
-		local path = input.fargs[1]
-		Edit(path)
-	end, {
-		nargs = 1,
-		complete = function(ArgLead, CmdLine, CursorPos)
-			local projects = {
-				"drevo",
-				"dtravel",
-			}
-			local CmdLineArray = table.getn(string_to_array(CmdLine))
-			if CmdLineArray == 1 then
-				return projects
+	autocmd("BufEnter", {
+		pattern = "*",
+		callback = function()
+			if vim.bo.filetype == "veil" then
+				vim.opt.laststatus = 0
+			else
+				vim.opt.laststatus = 3
 			end
 		end,
 	})
@@ -129,7 +122,7 @@ function M.config()
             ]])
 		elseif cmd == "wq" then
 			vim.cmd([[
-                w
+                w!
                 Bdelete
                 try
                     close
@@ -139,21 +132,18 @@ function M.config()
             ]])
 		elseif cmd == "qa" then
 			vim.cmd([[
-                bufdo :Bdelete
                 tabonly
                 only
+                bufdo :Bdelete
                 OpenVeil
             ]])
 		elseif cmd == "wqa" then
+			vim.cmd("NvimTreeClose")
 			vim.cmd([[
-                wa
+                wa!
                 tabonly
                 only
-                try
-                    bufdo :Bdelete!
-                catch
-                    echo "Error :Bdelete"
-                endtry
+                bufdo :Bdelete
                 OpenVeil
             ]])
 		elseif cmd == "c" then

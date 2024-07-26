@@ -1,11 +1,14 @@
 local M = {
-	"norcalli/nvim-colorizer.lua",
+	"brenoprata10/nvim-highlight-colors",
 	event = { "BufRead", "BufNewFile" },
 }
 
 function M.config()
-	require("colorizer").setup({
-		"*",
+	require("nvim-highlight-colors").setup({
+		---@usage 'background'|'foreground'|'virtual'
+		render = "foreground",
+
+		enable_tailwind = false,
 	})
 end
 

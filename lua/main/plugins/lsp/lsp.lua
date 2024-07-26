@@ -108,28 +108,18 @@ function M.config()
 				vim.lsp.inlay_hint.enable(true)
 			end
 
-			-- if client.supports_method("textDocument/codeLens") then
-			-- 	vim.lsp.codelens.refresh()
-			-- 	vim.api.nvim_command(
-			-- 		[[autocmd BufEnter,CursorHold,InsertLeave <buffer> lua vim.lsp.codelens.refresh({ bufnr = 0 })]]
-			-- 	)
-			-- 	vim.api.nvim_buf_set_keymap(
-			-- 		ev.buf,
-			-- 		"n",
-			-- 		"<leader>ll",
-			-- 		"<Cmd>lua vim.lsp.codelens.run()<CR>",
-			-- 		{ silent = true }
-			-- 	)
-			-- end
+			Bind({
+				["n"] = {
+					["<plugleader>lD"] = { vim.lsp.buf.declaration, opts },
+					["<plugleader>li"] = { vim.lsp.buf.implementation, opts },
+					["<plugleader>ltd"] = { vim.lsp.buf.type_definition, opts },
+					["<plugleader>lr"] = { vim.lsp.buf.rename, opts },
 
-			-- vim.keymap.set("n", "<leader>le", vim.diagnostic.open_float)
-
-			vim.keymap.set("n", "<leader>lD", vim.lsp.buf.declaration, opts)
-			vim.keymap.set("n", "<leader>li", vim.lsp.buf.implementation, opts)
-			vim.keymap.set("n", "<leader>ltd", vim.lsp.buf.type_definition, opts)
-
-			vim.keymap.set("n", "<leader>fr", require("telescope.builtin").lsp_references)
-			vim.keymap.set("n", "<leader>fd", require("telescope.builtin").lsp_definitions)
+					["<plugleader>fr"] = { require("telescope.builtin").lsp_references },
+					["<plugleader>fd"] = { require("telescope.builtin").lsp_definitions },
+					-- ["<plugleader>le"] = {  vim.diagnostic.open_float },
+				},
+			})
 		end,
 	})
 end
