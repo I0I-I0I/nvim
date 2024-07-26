@@ -10,7 +10,6 @@ local custom = Root .. "custom."
 
 -- Default
 require(default .. "config")
-require(Utils .. "statusline")
 require(default .. "mappings")
 
 -- Plugins/LSP
