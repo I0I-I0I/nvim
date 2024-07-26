@@ -23,7 +23,7 @@ function M.config()
 
 	vim.api.nvim_create_user_command("AddPets", function()
 		vim.cmd([[
-            PetsNewCustom dog being dog-1
+            PetsNewCustom dog beige dog-1
             PetsNewCustom dog gray dog-2
             PetsNewCustom rocky gray rocky-1
             PetsNewCustom rocky gray rocky-2
