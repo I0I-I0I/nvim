@@ -34,6 +34,6 @@ require("typescript-tools").setup({
 
 Bind({
 	["n"] = {
-		["<plugleader>lR"] = { "<cmd>TSToolsRenameFile<cr>", { silent = true, noremap = true } },
+		["<plugleader>lR"] = { "<cmd>TSToolsRenameFile<cr>", { silent = true, noremap = true }, desc = "Rename File" },
 	},
 })

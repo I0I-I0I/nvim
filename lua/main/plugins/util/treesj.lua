@@ -17,11 +17,13 @@ function M.config()
 
 	Bind({
 		["n"] = {
-			["<plugleader>j"] = { require("treesj").toggle, { silent = true } },
+			["<plugleader>j"] = { require("treesj").toggle, { silent = true }, desc = "TreeSJ Toggle" },
 			["<plugleader>J"] = {
 				function()
 					require("treesj").toggle({ split = { recursive = true } })
 				end,
+				{ silent = true },
+				desc = "TreeSJ Toggle (recursive)",
 			},
 		},
 	})

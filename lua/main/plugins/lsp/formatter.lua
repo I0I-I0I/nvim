@@ -21,10 +21,22 @@ function M.config()
 			python = { "black" },
 		},
 		format_on_save = {
-			timeout_ms = 1000,
+			timeout_ms = 500,
 			async = false,
 			quiet = false,
 			lsp_fallback = true,
+		},
+	})
+
+	Bind({
+		["n"] = {
+			["<plugleader>lF"] = {
+				function(args)
+					conform.format({ bufnr = args.buf })
+				end,
+				{ silent = true, noremap = true },
+				desc = "Conform format",
+			},
 		},
 	})
 end

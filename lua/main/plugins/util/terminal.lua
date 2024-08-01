@@ -22,7 +22,7 @@ function M.config()
 		["n"] = {
 			["<plugleader>T"] = {
 				"<cmd>ToggleTerm direction=vertical size=50<cr>",
-				{ silent = true, noremap = true },
+				{ silent = true, noremap = true, desc = "Toggle terminal" },
 			},
 		},
 	})

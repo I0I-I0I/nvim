@@ -22,11 +22,26 @@ function M.config()
 		},
 	})
 
-	vim.keymap.set("n", "<leader>gn", "<cmd>Gitsigns next_hunk<cr>", { silent = true })
-	vim.keymap.set("n", "<leader>gp", "<cmd>Gitsigns prev_hunk<cr>", { silent = true })
-	vim.keymap.set("n", "<leader>gs", "<cmd>Gitsigns preview_hunk<cr>", { silent = true })
-	vim.keymap.set("n", "<leader>gd", "<cmd>Gitsigns toggle_deleted<cr>", { silent = true })
-	vim.keymap.set("n", "<leader>gl", "<cmd>Gitsigns toggle_current_line_blame<cr>", { silent = true })
+	vim.keymap.set("n", "<leader>gn", "<cmd>Gitsigns next_hunk<cr>", { silent = true, desc = "Gitsigns next hunk" })
+	vim.keymap.set("n", "<leader>gp", "<cmd>Gitsigns prev_hunk<cr>", { silent = true, desc = "Gitsigns prev hunk" })
+	vim.keymap.set(
+		"n",
+		"<leader>gs",
+		"<cmd>Gitsigns preview_hunk<cr>",
+		{ silent = true, desc = "Gitsigns preview hunk" }
+	)
+	vim.keymap.set(
+		"n",
+		"<leader>gd",
+		"<cmd>Gitsigns toggle_deleted<cr>",
+		{ silent = true, desc = "Gitsigns toggle deleted" }
+	)
+	vim.keymap.set(
+		"n",
+		"<leader>gl",
+		"<cmd>Gitsigns toggle_current_line_blame<cr>",
+		{ silent = true, desc = "Gitsigns toggle current line blame" }
+	)
 end
 
 return M

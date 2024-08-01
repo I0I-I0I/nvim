@@ -214,7 +214,11 @@ function M.config()
 
 	Bind({
 		["n"] = {
-			["<plugleader>n"] = { "<cmd>NvimTreeToggle .<cr>", { silent = true, noremap = true } },
+			["<plugleader>n"] = {
+				"<cmd>NvimTreeToggle .<cr>",
+				{ silent = true, noremap = true },
+				desc = "Open NvimTree",
+			},
 		},
 	})
 

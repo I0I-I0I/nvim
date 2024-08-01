@@ -48,17 +48,13 @@ function M.config()
 				["v="] = { query = "@assignment.lhs", desc = "Select left hand side of an assignment" },
 				["r="] = { query = "@assignment.rhs", desc = "Select right hand side of an assignment" },
 
-				-- parameters
-				["aa"] = { query = "@parameter.outer", desc = "Select outer part of a parameter/argument" },
-				["ia"] = { query = "@parameter.inner", desc = "Select inner part of a parameter/argument" },
-
 				-- conditional
-				["ai"] = { query = "@conditional.outer", desc = "Select outer part of a conditional" },
-				["ii"] = { query = "@conditional.inner", desc = "Select inner part of a conditional" },
+				-- ["ai"] = { query = "@conditional.outer", desc = "Select outer part of a conditional" },
+				-- ["ii"] = { query = "@conditional.inner", desc = "Select inner part of a conditional" },
 
 				-- loops
-				["al"] = { query = "@loop.outer", desc = "Select outer part of a loop" },
-				["il"] = { query = "@loop.inner", desc = "Select inner part of a loop" },
+				["aL"] = { query = "@loop.outer", desc = "Select outer part of a loop" },
+				["iL"] = { query = "@loop.inner", desc = "Select inner part of a loop" },
 
 				-- functions
 				["am"] = { query = "@call.outer", desc = "Select outer part of a function call" },
@@ -84,9 +80,6 @@ function M.config()
 				-- HTML
 				["ih"] = { query = "@attribute.inner", desc = "Select inner part of a attribute" },
 				["ah"] = { query = "@attribute.outer", desc = "Select inner part of a attribute" },
-
-				-- number
-				["in"] = { query = "@number.inner", desc = "Select inner part of a number" },
 			},
 		},
 

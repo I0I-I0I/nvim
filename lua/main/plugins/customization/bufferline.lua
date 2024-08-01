@@ -27,24 +27,41 @@ function M.config()
 
 	Bind({
 		["n"] = {
-			["<plugleader>m1"] = { "<cmd>ScopeMoveBuf 1<cr>", opts },
-			["<plugleader>m2"] = { "<cmd>ScopeMoveBuf 2<cr>", opts },
-			["<plugleader>m3"] = { "<cmd>ScopeMoveBuf 3<cr>", opts },
-			["<plugleader>m4"] = { "<cmd>ScopeMoveBuf 4<cr>", opts },
+			["<plugleader>m1"] = { "<cmd>ScopeMoveBuf 1<cr>", opts, desc = "Move buffer to tab 1" },
+			["<plugleader>m2"] = { "<cmd>ScopeMoveBuf 2<cr>", opts, desc = "Move buffer to tab 2" },
+			["<plugleader>m3"] = { "<cmd>ScopeMoveBuf 3<cr>", opts, desc = "Move buffer to tab 3" },
+			["<plugleader>m4"] = { "<cmd>ScopeMoveBuf 4<cr>", opts, desc = "Move buffer to tab 4" },
 
-			["<plugleader>1"] = { "<cmd>lua require('bufferline').go_to(1, true)<cr>", opts },
-			["<plugleader>2"] = { "<cmd>lua require('bufferline').go_to(2, true)<cr>", opts },
-			["<plugleader>3"] = { "<cmd>lua require('bufferline').go_to(3, true)<cr>", opts },
-			["<plugleader>4"] = { "<cmd>lua require('bufferline').go_to(4, true)<cr>", opts },
-			["<plugleader>5"] = { "<cmd>lua require('bufferline').go_to(5, true)<cr>", opts },
-			["<plugleader>6"] = { "<cmd>lua require('bufferline').go_to(6, true)<cr>", opts },
-			["<plugleader>7"] = { "<cmd>lua require('bufferline').go_to(7, true)<cr>", opts },
-			["<plugleader>8"] = { "<cmd>lua require('bufferline').go_to(8, true)<cr>", opts },
-			["<plugleader>9"] = { "<cmd>lua require('bufferline').go_to(9, true)<cr>", opts },
-			["<plugleader>$"] = { "<cmd>lua require('bufferline').go_to(-1, true)<cr>", opts },
-
-			-- TODO fix this
-			-- ["<C-w>t"] = { "<cmd>tabnew<cr><cmd>Bdelete<cr><cmd>OpenVeil<cr>", opts },
+			["<plugleader>1"] = {
+				"<cmd>lua require('bufferline').go_to(1, true)<cr>",
+				opts,
+				desc = "Go to buffer 1",
+			},
+			["<plugleader>2"] = {
+				"<cmd>lua require('bufferline').go_to(2, true)<cr>",
+				opts,
+				desc = "Go to buffer 2",
+			},
+			["<plugleader>3"] = {
+				"<cmd>lua require('bufferline').go_to(3, true)<cr>",
+				opts,
+				desc = "Go to buffer 3",
+			},
+			["<plugleader>4"] = {
+				"<cmd>lua require('bufferline').go_to(4, true)<cr>",
+				opts,
+				desc = "Go to buffer 4",
+			},
+			["<plugleader>5"] = {
+				"<cmd>lua require('bufferline').go_to(5, true)<cr>",
+				opts,
+				desc = "Go to buffer 5",
+			},
+			["<plugleader>$"] = {
+				"<cmd>lua require('bufferline').go_to(-1, true)<cr>",
+				opts,
+				desc = "Go to last buffer",
+			},
 		},
 	})
 

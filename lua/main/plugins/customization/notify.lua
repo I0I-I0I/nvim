@@ -6,24 +6,28 @@ local M = {
 function M.config()
 	require("notify").setup({
 		background_colour = "#111111",
-		max_width = 50,
-		render = "compact",
+		max_width = 100,
+		render = "simple",
 		stages = "slide",
 		timeout = 3000,
 		top_down = true,
 
 		icons = {
-			DEBUG = "",
-			ERROR = "",
-			INFO = "",
-			TRACE = "✎",
-			WARN = "",
+			DEBUG = " ",
+			ERROR = " ",
+			INFO = " ",
+			TRACE = "✎ ",
+			WARN = " ",
 		},
 	})
 
 	Bind({
 		["n"] = {
-			["<plugleader>fn"] = { "<cmd>Noice telescope<cr>", { silent = true } },
+			["<plugleader>fn"] = {
+				"<cmd>Telescope notify theme=ivy<cr>",
+				{ silent = true },
+				desc = "List of notifications",
+			},
 		},
 	})
 end

@@ -13,7 +13,7 @@ function M.config()
 
 	Bind({
 		["n"] = {
-			["<plugleader>o"] = { "<cmd>OpenVeil<cr>", { silent = true, noremap = true } },
+			["<plugleader>o"] = { "<cmd>OpenVeil<cr>", { silent = true, noremap = true }, desc = "Open Veil" },
 		},
 	})
 
@@ -24,11 +24,19 @@ function M.config()
 			}),
 			builtin.sections.buttons({
 				{
-					icon = "",
-					text = "Sessions",
+					icon = "",
+					text = "Continue",
 					shortcut = "s",
 					callback = function()
-						vim.cmd("Sessions")
+						vim.cmd("SessionAttach")
+					end,
+				},
+				{
+					icon = "",
+					text = "Sessions",
+					shortcut = "l",
+					callback = function()
+						vim.cmd("SessionsList")
 					end,
 				},
 				{
@@ -139,6 +147,7 @@ function M.config()
             ]])
 		elseif cmd == "wqa" then
 			vim.cmd("NvimTreeClose")
+			vim.cmd("SessionCreate")
 			vim.cmd([[
                 wa!
                 tabonly

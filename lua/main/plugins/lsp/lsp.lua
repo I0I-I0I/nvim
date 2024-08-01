@@ -110,13 +110,35 @@ function M.config()
 
 			Bind({
 				["n"] = {
-					["<plugleader>lD"] = { vim.lsp.buf.declaration, opts },
-					["<plugleader>li"] = { vim.lsp.buf.implementation, opts },
-					["<plugleader>ltd"] = { vim.lsp.buf.type_definition, opts },
-					["<plugleader>lr"] = { vim.lsp.buf.rename, opts },
+					["<plugleader>lD"] = {
+						vim.lsp.buf.declaration,
+						opts,
+						desc = "Lsp declaration",
+					},
+					["<plugleader>li"] = {
+						vim.lsp.buf.implementation,
+						opts,
+						desc = "Lsp implementation",
+					},
+					["<plugleader>ltd"] = {
+						vim.lsp.buf.type_definition,
+						opts,
+						desc = "Lsp type definition",
+					},
+					["<plugleader>lr"] = {
+						vim.lsp.buf.rename,
+						opts,
+						desc = "Lsp rename",
+					},
 
-					["<plugleader>fr"] = { require("telescope.builtin").lsp_references },
-					["<plugleader>fd"] = { require("telescope.builtin").lsp_definitions },
+					["<plugleader>fr"] = {
+						require("telescope.builtin").lsp_references,
+						desc = "Lsp References",
+					},
+					["<plugleader>fd"] = {
+						require("telescope.builtin").lsp_definitions,
+						desc = "Lsp Definitions",
+					},
 					-- ["<plugleader>le"] = {  vim.diagnostic.open_float },
 				},
 			})

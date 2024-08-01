@@ -7,34 +7,34 @@ local M = {
 function M.config()
 	Bind({
 		["nx"] = {
-			["<C-j>"] = { "<Cmd>MultipleCursorsAddDown<CR>", { desc = "Add cursor and move down" } },
-			["<C-k>"] = { "<Cmd>MultipleCursorsAddUp<CR>", { desc = "Add cursor and move up" } },
+			["<C-j>"] = { "<Cmd>MultipleCursorsAddDown<CR>", desc = "Add cursor and move down" },
+			["<C-k>"] = { "<Cmd>MultipleCursorsAddUp<CR>", desc = "Add cursor and move up" },
 
-			["<plugleader>a"] = { "<Cmd>MultipleCursorsAddMatches<CR>", { desc = "Add cursors to cword" } },
+			["<plugleader>a"] = { "<Cmd>MultipleCursorsAddMatches<CR>", desc = "Add cursors to cword" },
 
 			["<plugleader>A"] = {
 				"<Cmd>MultipleCursorsAddMatchesV<CR>",
-				{ desc = "Add cursors to cword in previous area" },
+				desc = "Add cursors to cword in previous area",
 			},
 
 			["<plugleader>d"] = {
 				"<Cmd>MultipleCursorsAddJumpNextMatch<CR>",
-				{ desc = "Add cursor and jump to next cword" },
+				desc = "Add cursor and jump to next cword",
 			},
 
-			["<plugleader>D"] = { "<Cmd>MultipleCursorsJumpNextMatch<CR>", { desc = "Jump to next cword" } },
-			["<plugleader>l"] = { "<Cmd>MultipleCursorsLock<CR>", { desc = "Lock virtual cursors" } },
+			["<plugleader>D"] = { "<Cmd>MultipleCursorsJumpNextMatch<CR>", desc = "Jump to next cword" },
+			["<plugleader>l"] = { "<Cmd>MultipleCursorsLock<CR>", desc = "Lock virtual cursors" },
 		},
 
 		["nix"] = {
-			["<C-Up>"] = { "<Cmd>MultipleCursorsAddUp<CR>", { desc = "Add cursor and move up" } },
-			["<C-Down>"] = { "<Cmd>MultipleCursorsAddDown<CR>", { desc = "Add cursor and move down" } },
+			["<C-Up>"] = { "<Cmd>MultipleCursorsAddUp<CR>", desc = "Add cursor and move up" },
+			["<C-Down>"] = { "<Cmd>MultipleCursorsAddDown<CR>", desc = "Add cursor and move down" },
 		},
 
 		["ni"] = {
 			["<C-LeftMouse>"] = {
 				"<Cmd>MultipleCursorsMouseAddDelete<CR>",
-				{ desc = "Add or remove cursor" },
+				desc = "Add or remove cursor",
 			},
 		},
 	})

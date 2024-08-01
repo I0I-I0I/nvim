@@ -44,14 +44,46 @@ function LspSaga.config()
 
 	Bind({
 		["n"] = {
-			["<plugleader>lk"] = { "<cmd>Lspsaga hover_doc<cr>", opts },
-			["<plugleader>ld"] = { "<cmd>Lspsaga peek_definition<cr>", opts },
-			["<plugleader>lca"] = { "<cmd>Lspsaga code_action<cr>", opts },
-			["<plugleader>lf"] = { "<cmd>Lspsaga finder<cr>", opts },
-			["<plugleader>lo"] = { "<cmd>Lspsaga outline<cr>", opts },
-			["<plugleader>le"] = { "<cmd>Lspsaga show_line_diagnostics<cr>", opts },
-			["]d"] = { "<cmd>Lspsaga diagnostic_jump_next<cr>", opts },
-			["[d"] = { "<cmd>Lspsaga diagnostic_jump_prev<cr>", opts },
+			["<plugleader>lk"] = {
+				"<cmd>Lspsaga hover_doc<cr>",
+				opts,
+				desc = "Lspsaga hover_doc",
+			},
+			["<plugleader>ld"] = {
+				"<cmd>Lspsaga peek_definition<cr>",
+				opts,
+				desc = "Lspsaga peek definition",
+			},
+			["<plugleader>lca"] = {
+				"<cmd>Lspsaga code_action<cr>",
+				opts,
+				desc = "Lspsaga code action",
+			},
+			["<plugleader>lf"] = {
+				"<cmd>Lspsaga finder<cr>",
+				opts,
+				desc = "Lspsaga finder",
+			},
+			["<plugleader>lo"] = {
+				"<cmd>Lspsaga outline<cr>",
+				opts,
+				desc = "Lspsaga outline",
+			},
+			["<plugleader>le"] = {
+				"<cmd>Lspsaga show_line_diagnostics<cr>",
+				opts,
+				desc = "Lspsaga show line diagnostics",
+			},
+			["]d"] = {
+				"<cmd>Lspsaga diagnostic_jump_next<cr>",
+				opts,
+				desc = "Lspsaga diagnostics jump next",
+			},
+			["[d"] = {
+				"<cmd>Lspsaga diagnostic_jump_prev<cr>",
+				opts,
+				desc = "Lspsaga diagnostics jump prev",
+			},
 		},
 	})
 end

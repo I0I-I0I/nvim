@@ -1,14 +1,26 @@
-function _G.check_back_space()
-	local col = vim.fn.col(".") - 1
-	return col == 0 or vim.fn.getline("."):sub(col, col):match("%s") ~= nil
-end
+vim.opt.cmdheight = 1
 
--- Whitespace removal
-
-autocmd("BufWritePre", {
+autocmd("VimEnter", {
 	callback = function()
-		vim.cmd([[ keeppatterns %s/\s\+$//e ]])
+		vim.defer_fn(function()
+			vim.cmd("SessionAttach")
+			vim.cmd("ZenmodeOpenAll")
+		end, 50)
 	end,
 })
 
-vim.opt.cmdheight = 1
+autocmd("ExitPre", {
+	callback = function()
+		vim.cmd("ZenmodeCloseAll")
+	end,
+})
+
+function OnExit()
+	vim.cmd("ZenmodeCloseAll")
+	vim.cmd("SessionCreate")
+	vim.cmd("wqa")
+end
+
+vim.cmd([[
+    cnoreabbrev wqa lua OnExit()
+]])

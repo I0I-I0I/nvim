@@ -1,32 +1,15 @@
-local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
-if not vim.loop.fs_stat(lazypath) then
-	vim.fn.system({
-		"git",
-		"clone",
-		"--filter=blob:none",
-		"https://github.com/folke/lazy.nvim.git",
-		"--branch=stable", -- latest stable release
-		lazypath,
-	})
-end
-vim.opt.rtp:prepend(lazypath)
-
 -- Plugins
+local custom = PLUGINS_PATH .. "customization."
+local move = PLUGINS_PATH .. "move."
+local util = PLUGINS_PATH .. "util."
+local lsp = PLUGINS_PATH .. "lsp."
+local git = PLUGINS_PATH .. "git."
+local other = PLUGINS_PATH .. "other."
+local integration = PLUGINS_PATH .. "integration."
+local local_plugins = vim.fn.stdpath("config") .. "/plugins/"
 
-local custom = plugins .. "customization."
-local move = plugins .. "move."
-local util = plugins .. "util."
-local lsp = plugins .. "lsp."
-local git = plugins .. "git."
-local other = plugins .. "other."
-local integration = plugins .. "integration."
-
-require("lazy").setup({
-	-- Theme
-	{ import = theme .. "colorscheme" },
-
+local plugins = {
 	-- Customization
-	{ import = custom .. "pets" },
 	{ import = custom .. "indentline" },
 	{ import = custom .. "bufferline" },
 	{ import = custom .. "undo" },
@@ -41,6 +24,7 @@ require("lazy").setup({
 	{ import = move .. "spider" },
 	{ import = move .. "multicursors" },
 	{ import = move .. "quick-scope" },
+	{ import = move .. "mini-ai" },
 
 	-- Utils
 	{ import = util .. "surround" },
@@ -50,7 +34,6 @@ require("lazy").setup({
 	{ import = util .. "illuminate" },
 	{ import = util .. "undotree" },
 	{ import = util .. "todo" },
-	{ import = util .. "terminal" },
 
 	-- LSP
 	{ import = lsp .. "lsp" },
@@ -60,13 +43,13 @@ require("lazy").setup({
 	{ import = lsp .. "lspsaga" },
 	{ import = lsp .. "garbage" },
 	{ import = lsp .. "lsp-lens" },
-	{ import = lsp .. "trouble" },
+	-- { import = lsp .. "trouble" },
 
 	-- Other
-	{ import = other .. "neotest" },
+	-- { import = other .. "neotest" },
 	{ import = other .. "treesitter" },
 	{ import = other .. "telescope" },
-	{ import = other .. "session" },
+	{ import = other .. "which-key" },
 
 	-- What
 	{ import = integration .. "leetcode" },
@@ -75,4 +58,37 @@ require("lazy").setup({
 
 	-- Git
 	{ import = git .. "git" },
+
+	-- Local plugins
+	{ dir = local_plugins .. "set_colors" },
+	{ dir = local_plugins .. "zenmode" },
+	{ dir = local_plugins .. "sessions" },
+	{ dir = local_plugins .. "statusline" },
+
+	-- Theme
+	{ import = COLORSCHEME_PATH .. "init" },
+}
+
+if vim.g.neovide then
+	table.insert(plugins, { import = util .. "terminal" })
+else
+	table.insert(plugins, { import = custom .. "pets" })
+end
+
+local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
+if not vim.loop.fs_stat(lazypath) then
+	vim.fn.system({
+		"git",
+		"clone",
+		"--filter=blob:none",
+		"https://github.com/folke/lazy.nvim.git",
+		"--branch=stable", -- latest stable release
+		lazypath,
+	})
+end
+vim.opt.rtp:prepend(lazypath)
+
+require("lazy").setup({
+	spec = plugins,
+	lockfile = vim.fn.stdpath("config") .. "/lua/main/plugins/lazy-lock.json",
 })

@@ -82,15 +82,23 @@ function M.config()
 						resession.save()
 					end
 				end,
+				desc = "Save Session",
 			},
-			["<plugleader>sl"] = { "<cmd>Sessions<cr>" },
-			["<plugleader>si"] = { "<cmd>lua =require('resession').get_current_session_info()<cr>" },
+			["<plugleader>sl"] = {
+				"<cmd>Sessions<cr>",
+				desc = "List Sessions",
+			},
+			["<plugleader>si"] = {
+				"<cmd>lua =require('resession').get_current_session_info()<cr>",
+				desc = "Info Session",
+			},
 			["<plugleader>sd"] = {
 				function()
 					local current_session = resession.get_current()
 					resession.detach()
 					print('Disconnected from  session "' .. current_session .. '"')
 				end,
+				desc = "Detach Session",
 			},
 			["<plugleader>sD"] = {
 				function()
@@ -98,6 +106,7 @@ function M.config()
 					resession.delete(current_session)
 					print('M "' .. current_session .. '" is deleted')
 				end,
+				desc = "Delete Session",
 			},
 		},
 	})

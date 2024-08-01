@@ -2,6 +2,7 @@ local M = {
 	"nvim-telescope/telescope.nvim",
 	dependencies = {
 		{ "nvim-lua/plenary.nvim" },
+		{ "nvim-telescope/telescope-fzf-native.nvim", build = "make" },
 	},
 }
 
@@ -11,20 +12,19 @@ function M.config()
 
 	Bind({
 		["n"] = {
-			["<plugleader>ff"] = { builtin.find_files, {} },
-			["<plugleader>fw"] = { builtin.live_grep, {} },
-			["<plugleader>fb"] = { builtin.buffers, {} },
-			["<plugleader>fab"] = { "<cmd>M scope buffers<cr>", { silent = true } },
-			["<plugleader>ft"] = { "<cmd>Colors 1<cr>", { silent = true, noremap = true } },
-			["<plugleader>fat"] = { "<cmd>Colors 0.73<cr>", { silent = true, noremap = true } },
-			["<plugleader>fh"] = { builtin.help_tags, {} },
-			["<plugleader>fk"] = { builtin.keymaps, {} },
-			["<plugleader>fR"] = { builtin.registers, {} },
-			["z="] = { builtin.spell_suggest, {} },
+			["<plugleader>ff"] = { builtin.find_files, desc = "Files" },
+			["<plugleader>fw"] = { builtin.live_grep, desc = "Live Grep" },
+			["<plugleader>fb"] = { builtin.buffers, desc = "Buffers" },
+			["<plugleader>fab"] = { "<cmd>Telescope scope buffers<cr>", { silent = true }, desc = "All Buffers" },
+			["<plugleader>fh"] = { builtin.help_tags, desc = "Help Tags" },
+			["<plugleader>fk"] = { builtin.keymaps, desc = "Keymaps" },
+			["<plugleader>fR"] = { builtin.registers, desc = "Registers" },
+			["z="] = { builtin.spell_suggest, desc = "Spell Suggest" },
 			["<plugleader>fs"] = {
 				function()
 					builtin.grep_string({ search = vim.fn.input("Grep -> ") })
 				end,
+				desc = "Grep String",
 			},
 		},
 	})
@@ -49,7 +49,7 @@ function M.config()
 			file_ignore_patterns = {
 				"package-lock.json",
 				"node_modules",
-				".git",
+				"\\.git",
 				"dist",
 			},
 			mappings = {
@@ -120,12 +120,21 @@ function M.config()
 				theme = "ivy",
 			},
 		},
+
+		extensions = {
+			fzf = {
+				fuzzy = true, -- false will only do exact matching
+				override_generic_sorter = true, -- override the generic sorter
+				override_file_sorter = true, -- override the file sorter
+				case_mode = "smart_case", -- or "ignore_case" or "respect_case"
+				-- the default case_mode is "smart_case"
+			},
+		},
 	}
 	require("telescope").setup(opts)
 	require("telescope").load_extension("scope")
 	require("telescope").load_extension("notify")
-
-	require(Theme_utils .. "telescope_theme")
+	require("telescope").load_extension("fzf")
 end
 
 return M

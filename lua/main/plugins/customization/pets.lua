@@ -1,6 +1,7 @@
 local M = {
 	"giusgad/pets.nvim",
 	dependencies = { "MunifTanjim/nui.nvim", "giusgad/hologram.nvim" },
+	cmd = { "AddPets", "PetsNew", "PetsNewCustom" },
 }
 
 function M.config()
@@ -30,7 +31,7 @@ function M.config()
             PetsNewCustom rocky gray rocky-3
             PetsNewCustom rocky gray rocky-4
         ]])
-	end, {})
+	end, { desc = "Add pets" })
 end
 
 return M
