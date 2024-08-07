@@ -1,47 +1,187 @@
--- Capabilities
--- capabilities = vim.lsp.protocol.make_client_capabilities()
-capabilities = require("cmp_nvim_lsp").default_capabilities()
+local M = {
+	"neovim/nvim-lspconfig",
+	dependencies = {
+		"williamboman/mason.nvim",
+		"williamboman/mason-lspconfig.nvim",
+	},
+	event = "VeryLazy",
+}
 
--- Local variables
-local servers = LSP_PATH .. "servers."
+function M.config()
+	local servers = {
+		"lua_ls",
+		"emmet_language_server",
+		"html",
+		"cssls",
+		"tsserver",
+		"cssmodules_ls",
+	}
 
--- lsp servers
--- Python
-require(servers .. "pyright")
+	local ok, cmp_nvim_lsp = pcall(require, "cmp_nvim_lsp")
+	if ok then
+		vim.g.capabilities = cmp_nvim_lsp.default_capabilities()
+	else
+		vim.g.capabilities = vim.lsp.protocol.make_client_capabilities()
+	end
 
--- Lua
-require(servers .. "lua_ls")
+	local server_path = vim.g.lsp_path .. "servers."
 
--- HTML/CSS
-require(servers .. "emmet")
-require(servers .. "html")
-require(servers .. "css")
-
--- JS
-require(servers .. "tsserver")
-require(servers .. "css-modules")
-
--- Attach/Mappings
-autocmd("LspAttach", {
-	callback = function(event)
-		local bufnr = event.buf
-		local client = vim.lsp.get_client_by_id(event.data.client_id)
-
-		Bind({
-			["n"] = {
-				["K"] = { vim.lsp.buf.hover, { desc = "Show hover", buffer = event.buf } },
-				["gd"] = { "<cmd>Telescope lsp_definitions<cr>", { desc = "Go to definition", buffer = event.buf } },
-				["gr"] = { "<cmd>Telescope lsp_references<cr>", { desc = "Go to references", buffer = event.buf } },
-				["<plugleader>li"] = { vim.lsp.buf.implementation, { desc = "Go to references", buffer = event.buf } },
-				["<plugleader>lr"] = { vim.lsp.buf.rename, { desc = "Rename", buffer = event.buf } },
-				["<plugleader>lca"] = { vim.lsp.buf.code_action, { desc = "Show code actions", buffer = event.buf } },
-				["<plugleader>le"] = { "<cmd>lua vim.diagnostic.open_float()<cr>", desc = "Show float diagnostic" },
-				["<plugleader>lf"] = {
-					function()
-						vim.lsp.buf.format({ async = true })
-					end,
-				},
+	require("mason").setup({
+		ui = {
+			icons = {
+				package_pending = " ",
+				package_installed = " ",
+				package_uninstalled = " ",
 			},
-		})
-	end,
-})
+		},
+	})
+	require("mason-lspconfig").setup({
+		ensure_installed = servers,
+	})
+
+	require("mason-lspconfig").setup_handlers({
+		function(server_name)
+			require("lspconfig")[server_name].setup(require(server_path .. server_name))
+		end,
+	})
+
+	vim.diagnostic.config({
+		sighns = true,
+		underline = true,
+		severity_sort = true,
+		update_in_insert = false,
+		virtual_text = {
+			prefix = "",
+			virt_text = {},
+			source = false,
+			format = function(diagnostic)
+				local str = diagnostic.source:gsub("[.]", "")
+				if str == "typescript" then
+					str = "TypeScript server"
+				end
+				str = str .. " "
+				return str
+			end,
+		},
+		float = {
+			focusable = true,
+			border = "rounded",
+			header = "",
+			prefix = "",
+			source = false,
+		},
+	})
+
+	-- Handlers
+	vim.lsp.handlers["textDocument/hover"] = vim.lsp.with(vim.lsp.handlers.hover, {
+		border = "double",
+		title = "hover",
+	})
+
+	vim.lsp.handlers["textDocument/signatureHelp"] = vim.lsp.with(vim.lsp.handlers.signature_help, {
+		border = "double",
+	})
+
+	-- Attach/Mappings
+	autocmd("LspAttach", {
+		callback = function(event)
+			local client = vim.lsp.get_client_by_id(event.data.client_id)
+			local opts = { buffer = event.buf }
+
+			vim.bo[event.buf].omnifunc = "v:lua.vim.lsp.omnifunc"
+
+			if client then
+				if client.supports_method("textDocument/completion") then
+					vim.lsp.completion.enable(true, client.id, event.buf, { autotrigger = false })
+				end
+				if client.server_capabilities.inlayHintProvider then
+					vim.lsp.inlay_hint.enable(true)
+				end
+			end
+
+			Bind({
+				["n"] = {
+					-- remap built-in maps
+					["K"] = {
+						vim.lsp.buf.hover,
+						desc = "Lsp References",
+					},
+					["gd"] = {
+						vim.lsp.buf.definition,
+						desc = "Lsp References",
+					},
+					["gr"] = {
+						require("telescope.builtin").lsp_references,
+						desc = "Lsp Definitions",
+					},
+
+					-- Custom
+					["<leader>lD"] = {
+						vim.lsp.buf.declaration,
+						opts,
+						desc = "Lsp declaration",
+					},
+					["<leader>li"] = {
+						vim.lsp.buf.implementation,
+						opts,
+						desc = "Lsp implementation",
+					},
+					["<leader>ltd"] = {
+						vim.lsp.buf.type_definition,
+						opts,
+						desc = "Lsp type definition",
+					},
+					["<leader>lr"] = {
+						vim.lsp.buf.rename,
+						opts,
+						desc = "Lsp rename",
+					},
+					["<leader>lca"] = {
+						vim.lsp.buf.code_action,
+						opts,
+						desc = "Code actions",
+					},
+
+					-- Telescope
+					["<leader>fr"] = {
+						require("telescope.builtin").lsp_references,
+						desc = "Lsp References",
+					},
+					["<leader>fd"] = {
+						require("telescope.builtin").lsp_definitions,
+						desc = "Lsp Definitions",
+					},
+					["<leader>fD"] = {
+						require("telescope.builtin").diagnostics,
+						desc = "Lsp Definitions",
+					},
+
+					["<leader>le"] = {
+						vim.diagnostic.open_float,
+						opts,
+						desc = "Show line diagnostics",
+					},
+
+					-- Navigate through the diagnostic
+					["]d"] = {
+						function()
+							vim.diagnostic.jump({ float = true, count = 1 })
+						end,
+						desc = "Lsp diagnostic go next",
+					},
+					["[d"] = {
+						function()
+							vim.diagnostic.jump({ float = true, count = -1 })
+						end,
+						desc = "Lsp diagnostic go prev",
+					},
+
+                    -- Restart lsp servers
+					["<leader>ll"] = { "<cmd>LspRestart<cr>", opts, desc = "Restart all lsp" },
+				},
+			})
+		end,
+	})
+end
+
+return M

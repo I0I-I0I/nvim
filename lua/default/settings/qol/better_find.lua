@@ -16,7 +16,7 @@ vim.cmd([[
 
 Bind({
 	["n"] = {
-		["<leader>fg"] = { ":grep ", desc = "Find word" },
-		["<leader>ff"] = { ":find ", desc = "Find File" },
+		["<localleader>fg"] = { ":grep ", desc = "Find word" },
+		["<localleader>ff"] = { ":find ", desc = "Find File" },
 	},
 })

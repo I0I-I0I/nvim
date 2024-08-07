@@ -1,13 +1,11 @@
 local M = {
 	"nvim-treesitter/nvim-treesitter",
 	build = ":TSUpdate",
-	event = { "BufEnter" },
-	lazy = false,
-	-- event = { "BufRead", "BufNewFile" },
+	event = { "BufRead", "BufNewFile" },
 }
 
 function M.config()
-	local installed = {
+	local languages = {
 		"lua",
 		"python",
 		"javascript",
@@ -29,24 +27,20 @@ function M.config()
 	local treesitter = require("nvim-treesitter.configs")
 
 	treesitter.setup({
-		ensure_installed = installed,
+		ensure_installed = languages,
 		sync_install = false,
 		auto_install = true,
+		query_linter = {
+			enable = true,
+			use_virtual_text = true,
+			lint_events = { "BufWrite", "CursorHold" },
+		},
 		highlight = {
 			enable = true,
 			additional_vim_regex_highlighting = false,
 		},
 		indent = {
 			enable = true,
-		},
-		incremental_selection = {
-			enable = true,
-			keymaps = {
-				init_selection = "gnn",
-				node_incremental = "grn",
-				scope_incremental = "grc",
-				node_decremental = "grm",
-			},
 		},
 	})
 end

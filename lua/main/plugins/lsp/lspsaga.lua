@@ -1,12 +1,18 @@
-local LspSaga = {
+local M = {
 	"nvimdev/lspsaga.nvim",
 	event = { "BufRead", "BufNewFile" },
 }
 
-function LspSaga.config()
-	local saga = require("lspsaga")
+function M.init()
+	if not COLOR then
+		vim.cmd("hi DevIconDefault guifg=#d3d7cf")
+	end
+end
 
-	saga.setup({
+function M.config()
+	local lspsaga = require("lspsaga")
+
+	lspsaga.setup({
 		lightbulb = {
 			enable = false,
 		},
@@ -35,57 +41,18 @@ function LspSaga.config()
 			imp_sign = "󰳛 ",
 		},
 	})
-
-	if not COLOR then
-		vim.cmd("hi DevIconDefault guifg=#d3d7cf")
-	end
-
-	local opts = { noremap = true, silent = true }
-
-	Bind({
-		["n"] = {
-			["<plugleader>lk"] = {
-				"<cmd>Lspsaga hover_doc<cr>",
-				opts,
-				desc = "Lspsaga hover_doc",
-			},
-			["<plugleader>ld"] = {
-				"<cmd>Lspsaga peek_definition<cr>",
-				opts,
-				desc = "Lspsaga peek definition",
-			},
-			["<plugleader>lca"] = {
-				"<cmd>Lspsaga code_action<cr>",
-				opts,
-				desc = "Lspsaga code action",
-			},
-			["<plugleader>lf"] = {
-				"<cmd>Lspsaga finder<cr>",
-				opts,
-				desc = "Lspsaga finder",
-			},
-			["<plugleader>lo"] = {
-				"<cmd>Lspsaga outline<cr>",
-				opts,
-				desc = "Lspsaga outline",
-			},
-			["<plugleader>le"] = {
-				"<cmd>Lspsaga show_line_diagnostics<cr>",
-				opts,
-				desc = "Lspsaga show line diagnostics",
-			},
-			["]d"] = {
-				"<cmd>Lspsaga diagnostic_jump_next<cr>",
-				opts,
-				desc = "Lspsaga diagnostics jump next",
-			},
-			["[d"] = {
-				"<cmd>Lspsaga diagnostic_jump_prev<cr>",
-				opts,
-				desc = "Lspsaga diagnostics jump prev",
-			},
-		},
-	})
 end
 
-return LspSaga
+local opts = { noremap = true, silent = true }
+
+M.keys = {
+	{ "<leader>lk", "<cmd>Lspsaga hover_doc<cr>", opts, desc = "Lspsaga hover_doc" },
+	{ "<leader>ld", "<cmd>Lspsaga peek_definition<cr>", opts, desc = "Lspsaga peek definition" },
+	{ "<leader>lca", "<cmd>Lspsaga code_action<cr>", opts, desc = "Lspsaga code action" },
+	{ "<leader>lf", "<cmd>Lspsaga finder<cr>", opts, desc = "Lspsaga finder" },
+	{ "<leader>lo", "<cmd>Lspsaga outline<cr>", opts, desc = "Lspsaga outline" },
+	{ "]d", "<cmd>Lspsaga diagnostic_jump_next<cr>", opts, desc = "Lspsaga diagnostics jump next" },
+	{ "[d", "<cmd>Lspsaga diagnostic_jump_prev<cr>", opts, desc = "Lspsaga diagnostics jump prev" },
+}
+
+return M

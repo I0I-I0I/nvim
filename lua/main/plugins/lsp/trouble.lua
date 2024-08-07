@@ -1,30 +1,31 @@
 local M = {
 	"folke/trouble.nvim",
-	dependencies = { "nvim-tree/nvim-web-devicons" },
-	keys = { ",t" },
+	dependencies = {
+		"nvim-tree/nvim-web-devicons",
+	},
 }
 
-function M.config()
-	require("trouble").setup({})
+M.cmd = { "Trouble" }
 
-	Bind({
-		["n"] = {
-			["<plugleader>tD"] = {
-				"<cmd>Trouble diagnostics toggle focus=true preview.type=float<cr>",
-				{ silent = true, noremap = true, desc = "Buffer Diagnostics (Trouble)" },
-			},
+M.opts = {}
 
-			["<plugleader>td"] = {
-				"<cmd>Trouble diagnostics toggle focus=true preview.type=float filter.buf=0<cr>",
-				desc = "Buffer Diagnostics (Trouble)",
-			},
+M.keys = {
+	{
+		"<leader>tD",
+		"<cmd>Trouble diagnostics toggle focus=true<cr>",
+		{ silent = true, noremap = true },
+		desc = "Project Diagnostics (Trouble)",
+	},
 
-			["<plugleader>tq"] = {
-				"<cmd>Trouble qflist toggle focus=true preview.type=float<cr>",
-				desc = "Buffer Diagnostics (Trouble)",
-			},
-		},
-	})
-end
+	{
+		"<leader>td",
+		"<cmd>Trouble diagnostics toggle focus=true filter.buf=0<cr>",
+		desc = "Buffer Diagnostics (Trouble)",
+	},
+
+	{ "<leader>tq", "<cmd>Trouble qflist toggle focus=true<cr>", desc = "Buffer qflist (Trouble)" },
+
+	{ "<leader>ts", "<cmd>Trouble symbols toggle focus=true<cr>", desc = "Buffer Symbols (Trouble)" },
+}
 
 return M

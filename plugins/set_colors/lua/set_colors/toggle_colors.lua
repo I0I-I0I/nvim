@@ -16,6 +16,10 @@ local SvgColor = "#ffb13b"
 local PyColor = "#ffbc03"
 local PycColor = "#ffe291"
 local ScssColor = "#f55385"
+local TsxColor = "#1354bf"
+local TsColor = "#519aba"
+local TsConfigColor = "#519aba"
+local TsDColor = "#d59855"
 
 local function update_toggle_colors()
 	local inactiveColor
@@ -37,8 +41,13 @@ local function update_toggle_colors()
 		{ "BufferLineDevIconCjsSelected", { fg = inactiveColor or CjsColor } },
 		{ "BufferLineDevIconHtmlSelected", { fg = inactiveColor or HtmlColor } },
 		{ "BufferLineDevIconPackageJsonSelected", { fg = inactiveColor or PackageJsonColor } },
+		{ "BufferLineDevIconPackageLockJsonSelected", { fg = inactiveColor or PackageJsonColor } },
 		{ "BufferLineDevIconJsonSelected", { fg = inactiveColor or JsonColor } },
 		{ "BufferLineDevIconSvgSelected", { fg = inactiveColor or SvgColor } },
+		{ "BufferLineDevIconTsxSelected", { fg = inactiveColor or TsxColor } },
+		{ "BufferLineDevIconTypeScriptSelected", { fg = inactiveColor or TsColor } },
+		{ "BufferLineDevIconTSConfigSelected", { fg = inactiveColor or TsConfigColor } },
+		{ "BufferLineDevIconTypeScriptDeclarationSelected", { fg = inactiveColor or TsDColor } },
 
 		{ "DevIconDefault", { fg = inactiveColor or DefaultColor } },
 		{ "DevIconJs", { fg = inactiveColor or JsColor } },
@@ -56,6 +65,11 @@ local function update_toggle_colors()
 		{ "DevIconGitIgnore", { fg = inactiveColor or GitIgnoreColor } },
 		{ "DevIconEditorConfig", { fg = inactiveColor or EditorConfigColor } },
 		{ "DevIconTxt", { fg = inactiveColor or TxtColor } },
+
+		{ "DevIconTsxSelected", { fg = inactiveColor or TsxColor } },
+		{ "DevIconTypeScriptSelected", { fg = inactiveColor or TsColor } },
+		{ "DevIconTSConfigSelected", { fg = inactiveColor or TsConfigColor } },
+		{ "DevIconTypeScriptDeclarationSelected", { fg = inactiveColor or TsDColor } },
 
 		{ "DevIconPy", { fg = inactiveColor or PyColor } },
 		{ "DevIconPyc", { fg = inactiveColor or PycColor } },

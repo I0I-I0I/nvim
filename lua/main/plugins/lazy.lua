@@ -1,29 +1,37 @@
 -- Plugins
-local custom = PLUGINS_PATH .. "customization."
-local move = PLUGINS_PATH .. "move."
-local util = PLUGINS_PATH .. "util."
-local lsp = PLUGINS_PATH .. "lsp."
-local git = PLUGINS_PATH .. "git."
-local other = PLUGINS_PATH .. "other."
-local integration = PLUGINS_PATH .. "integration."
-local local_plugins = vim.fn.stdpath("config") .. "/plugins/"
+local custom = vim.g.plugins_path .. "customization."
+local move = vim.g.plugins_path .. "move."
+local util = vim.g.plugins_path .. "util."
+local lsp = vim.g.plugins_path .. "lsp."
+local git = vim.g.plugins_path .. "git."
+local other = vim.g.plugins_path .. "other."
+local integration = vim.g.plugins_path .. "integration."
+vim.g.local_plugins_path = vim.fn.stdpath("config") .. "/plugins/"
 
 local plugins = {
+	-- Local
+	{ dir = vim.g.local_plugins_path .. "statusline" },
+	{ import = vim.g.plugins_path .. "local.sessions" },
+	{ import = vim.g.plugins_path .. "local.zenmode" },
+	{ import = vim.g.plugins_path .. "local.set_colors" },
+
+	-- Theme
+	{ import = vim.g.config_path .. ".colorscheme.init" },
+
 	-- Customization
+	{ import = custom .. "icons" },
 	{ import = custom .. "indentline" },
 	{ import = custom .. "bufferline" },
-	{ import = custom .. "undo" },
 	{ import = custom .. "notify" },
 	{ import = custom .. "noice" },
 	{ import = custom .. "veil" },
-	{ import = custom .. "icons" },
 	{ import = custom .. "colorizer" },
+	{ import = custom .. "ts-error-translator" },
+	{ import = custom .. "dressing" },
 
 	-- Move
 	{ import = move .. "nvim-tree" },
 	{ import = move .. "spider" },
-	{ import = move .. "multicursors" },
-	{ import = move .. "quick-scope" },
 	{ import = move .. "mini-ai" },
 
 	-- Utils
@@ -34,6 +42,7 @@ local plugins = {
 	{ import = util .. "illuminate" },
 	{ import = util .. "undotree" },
 	{ import = util .. "todo" },
+	{ import = util .. "scope" },
 
 	-- LSP
 	{ import = lsp .. "lsp" },
@@ -41,9 +50,8 @@ local plugins = {
 	{ import = lsp .. "formatter" },
 	{ import = lsp .. "linter" },
 	{ import = lsp .. "lspsaga" },
-	{ import = lsp .. "garbage" },
-	{ import = lsp .. "lsp-lens" },
-	-- { import = lsp .. "trouble" },
+	-- { import = lsp .. "lsp-lens" },
+	{ import = lsp .. "trouble" },
 
 	-- Other
 	-- { import = other .. "neotest" },
@@ -58,21 +66,10 @@ local plugins = {
 
 	-- Git
 	{ import = git .. "git" },
-
-	-- Local plugins
-	{ dir = local_plugins .. "set_colors" },
-	{ dir = local_plugins .. "zenmode" },
-	{ dir = local_plugins .. "sessions" },
-	{ dir = local_plugins .. "statusline" },
-
-	-- Theme
-	{ import = COLORSCHEME_PATH .. "init" },
 }
 
 if vim.g.neovide then
 	table.insert(plugins, { import = util .. "terminal" })
-else
-	table.insert(plugins, { import = custom .. "pets" })
 end
 
 local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"

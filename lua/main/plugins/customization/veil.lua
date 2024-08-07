@@ -13,7 +13,7 @@ function M.config()
 
 	Bind({
 		["n"] = {
-			["<plugleader>o"] = { "<cmd>OpenVeil<cr>", { silent = true, noremap = true }, desc = "Open Veil" },
+			["<leader>o"] = { "<cmd>OpenVeil<cr>", { silent = true, noremap = true }, desc = "Open Veil" },
 		},
 	})
 
@@ -29,6 +29,8 @@ function M.config()
 					shortcut = "s",
 					callback = function()
 						vim.cmd("SessionAttach")
+						vim.cmd("NvimTreeOpen .")
+						vim.cmd("norm! l")
 					end,
 				},
 				{
@@ -140,19 +142,19 @@ function M.config()
             ]])
 		elseif cmd == "qa" then
 			vim.cmd([[
-                tabonly
-                only
-                bufdo :Bdelete
+                silent tabonly
+                silent only
+                silent bufdo :Bdelete
                 OpenVeil
             ]])
 		elseif cmd == "wqa" then
+			vim.cmd("wa!")
 			vim.cmd("NvimTreeClose")
 			vim.cmd("SessionCreate")
 			vim.cmd([[
-                wa!
-                tabonly
-                only
-                bufdo :Bdelete
+                silent tabonly
+                silent only
+                silent bufdo :Bdelete
                 OpenVeil
             ]])
 		elseif cmd == "c" then

@@ -1,13 +1,9 @@
 local M = {
 	"kylechui/nvim-surround",
 	version = "*",
-	event = "VeryLazy",
+	event = "BufRead",
 }
 
-function M.config()
-	require("nvim-surround").setup({
-		-- Configuration here, or leave empty to use defaults
-	})
-end
+M.opts = {}
 
 return M

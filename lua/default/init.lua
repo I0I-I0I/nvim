@@ -1,3 +1,3 @@
-SETTINGS_PATH = "default.settings."
+vim.g.settings_path = "default.settings."
 
-require(SETTINGS_PATH .. "init")
+require(vim.g.settings_path .. "init")

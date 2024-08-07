@@ -6,6 +6,10 @@ local function update_theme()
 		COLORS = require(colors .. "everforest")
 		STATUSLINE_ICONS = require(icons .. "everforest")
 		return
+	elseif vim.g.colors_name == "rose-pine" then
+		COLORS = require(colors .. "rose-pine")
+		STATUSLINE_ICONS = require(icons .. "rose-pine")
+		return
 	elseif vim.g.colors_name == "kanagawa" then
 		COLORS = require(colors .. "kanagawa")
 		STATUSLINE_ICONS = require(icons .. "kanagawa")
@@ -13,6 +17,10 @@ local function update_theme()
 	elseif vim.g.colors_name == "horizon" then
 		COLORS = require(colors .. "horizon")
 		STATUSLINE_ICONS = require(icons .. "horizon")
+		return
+	elseif vim.g.colors_name == "solarized-osaka" then
+		COLORS = require(colors .. "solarized-osaka")
+		STATUSLINE_ICONS = require(icons .. "solarized-osaka")
 		return
 	end
 

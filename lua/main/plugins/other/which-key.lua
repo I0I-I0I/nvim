@@ -15,6 +15,7 @@ function M.config()
 	})
 
 	wk.add({
+		{ ",t", group = "Trouble" },
 		{ ",f", group = "Telescope" },
 		{ ",g", group = "GitSigns" },
 		{ ",l", group = "LSP" },
@@ -22,21 +23,21 @@ function M.config()
 		{ ",z", group = "Zen Mode" },
 		{ ",s", group = "Session" },
 
+		{ "<space>c", group = "QuikFix list" },
 		{ "<space>f", group = "Find" },
 		{ "<space>t", group = "Toggle" },
 		{ "<space>w", group = "Window" },
 	})
-
-	Bind({
-		["n"] = {
-			["<leader>?"] = {
-				function()
-					require("which-key").show({ global = false })
-				end,
-				desc = "Buffer Local Keymaps (which-key)",
-			},
-		},
-	})
 end
+
+M.keys = {
+	{
+		"<leader>?",
+		function()
+			require("which-key").show({ global = false })
+		end,
+		desc = "Buffer Local Keymaps (which-key)",
+	},
+}
 
 return M

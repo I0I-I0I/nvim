@@ -8,42 +8,57 @@ local action_state = require("telescope.actions.state")
 local dropdown = require("telescope.themes").get_dropdown()
 
 M.marker = "FOR_TELESCOPE"
+M.Path = "/mnt/d/sessions/"
+M.dirs = {}
 
 function M.delete(prompt_bufnr)
 	actions.close(prompt_bufnr)
-	local selected = action_state.get_selected_entry()
+	local selected = action_state.get_selected_entry()[1]
+	local selected_copy = selected:sub(1, -1)
+	selected = selected:gsub(" ", "_")
+	local dir = M.dirs[selected]
+	local file = dir:gsub("/", ":"):sub(1, -1) .. ".vim"
 
-	local file = selected[1]:gsub("/", ":"):sub(1, -1) .. ".vim"
-
-	vim.cmd("!rm -rf ~/sessions/" .. file)
-	vim.cmd("!rm -rf ~/sessions/FOR_TELESCOPE" .. file)
+	vim.cmd("silent !rm -rf " .. M.Path .. file)
+	vim.cmd("silent !rm -rf " .. M.Path .. "FOR_TELESCOPE\\(" .. selected:gsub('"', '\\"'):sub(1, -1) .. "\\)" .. file)
+	print("Session deleted: " .. selected_copy)
 	vim.cmd("SessionsList")
 end
 
 function M.enter(prompt_bufnr)
 	actions.close(prompt_bufnr)
 	local selected = action_state.get_selected_entry()
+	local dir = selected[1]:gsub(" ", "_")
 
-	vim.cmd("cd " .. selected[1])
+	vim.cmd("cd " .. M.dirs[dir])
 end
 
 function M.get_dirs()
 	M.dirs = {}
-	for k, _ in vim.fn.execute("!ls ~/sessions"):gmatch("[A-Za-z_.:|0-9\\-]+.vim") do
+	for k, _ in vim.fn.execute("!ls " .. M.Path):gmatch("[A-Za-z_.:|0-9()\"'\\-]+.vim") do
 		local dir = k:gsub(":", "/"):sub(1, -5)
 		if dir:match(M.marker) then
-			table.insert(M.dirs, dir:gsub(M.marker, ""):sub(1, -1))
+			local session_name = dir:match("[(](.+)[)]")
+			dir = dir:match(M.marker .. "[(].+[)](.*)")
+
+			M.dirs[session_name] = dir
 		end
 	end
 	return M.dirs
 end
 
 function M.opts()
+	local sessions = {}
+	for session_name, dir in pairs(M.get_dirs()) do
+		table.insert(sessions, session_name:gsub("_", " "):sub(1, -1))
+	end
+	table.sort(sessions)
+
 	return {
 		preview = true,
-		prompt_title = "Color Schemes",
+		prompt_title = "🗃️ All sessions",
 		finder = finders.new_table({
-			results = M.get_dirs(),
+			results = sessions,
 		}),
 		sorter = sorters.get_generic_fuzzy_sorter(),
 
@@ -57,14 +72,30 @@ function M.opts()
 end
 
 function M.create_session(flag)
-	vim.cmd("mksession! ~/sessions/" .. vim.fn.getcwd():gsub("/", ":") .. ".vim")
+	vim.cmd("mksession! " .. M.Path .. vim.fn.getcwd():gsub("/", ":") .. ".vim")
 	if flag then
-		vim.cmd("!touch ~/sessions/FOR_TELESCOPE" .. vim.fn.getcwd():gsub("/", ":") .. ".vim")
+		local prompt = vim.fn.input("Enter Session Name: ")
+		local prompt_copy = prompt:sub(1, -1)
+		if prompt == "" then
+			return
+		end
+		prompt = prompt:gsub(" ", "_")
+		prompt = prompt:gsub('"', '\\"')
+		vim.cmd(
+			"silent !touch "
+				.. M.Path
+				.. "FOR_TELESCOPE\\("
+				.. prompt
+				.. "\\)"
+				.. vim.fn.getcwd():gsub("/", ":")
+				.. ".vim"
+		)
+		print("Session created: " .. prompt_copy)
 	end
 end
 
 function M.attach_session()
-	vim.cmd("source ~/sessions/" .. vim.fn.getcwd():gsub("/", ":") .. ".vim")
+	vim.cmd("silent source " .. M.Path .. vim.fn.getcwd():gsub("/", ":") .. ".vim")
 end
 
 function M.open_list()

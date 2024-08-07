@@ -1,28 +1,53 @@
 local M = {
-	"VonHeikemen/lsp-zero.nvim",
+	"neovim/nvim-lspconfig",
 	dependencies = {
-		{ "neovim/nvim-lspconfig" },
-		{
-			"pmizio/typescript-tools.nvim",
-			dependencies = {
-				"nvim-lua/plenary.nvim",
-				"neovim/nvim-lspconfig",
-			},
-		},
-		{
-			"williamboman/mason.nvim",
-			dependencies = { "williamboman/mason-lspconfig.nvim" },
-		},
+		"williamboman/mason.nvim",
+		"williamboman/mason-lspconfig.nvim",
+		"pmizio/typescript-tools.nvim",
 	},
-	branch = "v3.x",
-	event = { "BufReadPre", "BufNewFile" },
+	event = "VeryLazy",
 }
 
 function M.config()
-	lspconfig = require("lspconfig")
-	lsp_zero = require("lsp-zero")
-	capabilities = require("cmp_nvim_lsp").default_capabilities()
+	local ok, cmp_nvim_lsp = pcall(require, "cmp_nvim_lsp")
+	if ok then
+		vim.g.capabilities = cmp_nvim_lsp.default_capabilities()
+	else
+		vim.g.capabilities = vim.lsp.protocol.make_client_capabilities()
+	end
 
+	-- Servers
+
+	local servers = {
+		"lua_ls",
+		"html",
+		"cssls",
+		"emmet_language_server",
+		"tsserver",
+		"cssmodules_ls",
+	}
+
+	local server_path = vim.g.config_path .. ".plugins.lsp.servers."
+
+	require("mason").setup({
+		ui = {
+			icons = {
+				package_pending = " ",
+				package_installed = " ",
+				package_uninstalled = " ",
+			},
+		},
+	})
+	require("mason-lspconfig").setup({
+		ensure_installed = servers,
+	})
+	require("mason-lspconfig").setup_handlers({
+		function(server_name)
+			require("lspconfig")[server_name].setup(require(server_path .. server_name))
+		end,
+	})
+
+	local lspconfig = require("lspconfig")
 	lspconfig.opts = {
 		inlay_hints = {
 			enabled = true,
@@ -32,14 +57,28 @@ function M.config()
 		},
 	}
 
+	-- Diagnostic
+
 	vim.diagnostic.config({
 		sighns = true,
 		underline = true,
 		severity_sort = true,
 		update_in_insert = false,
-		virtual_text = false,
+		virtual_text = {
+			prefix = "",
+			virt_text = {},
+			source = false,
+			format = function(diagnostic)
+				local str = diagnostic.source:gsub("[.]", "")
+				if str == "typescript" then
+					str = "TypeScript server"
+				end
+				str = str .. " "
+				return str
+			end,
+		},
 		float = {
-			focusable = false,
+			focusable = true,
 			border = "rounded",
 			header = "",
 			prefix = "",
@@ -47,52 +86,16 @@ function M.config()
 		},
 	})
 
-	lsp_zero.set_sign_icons({
-		error = LspIcons.error,
-		warn = LspIcons.warn,
-		hint = LspIcons.hint,
-		info = LspIcons.info,
-	})
-
-	-- Servers
-
-	local servers = "main.plugins.lsp.servers."
-	local function importServer(server)
-		return require(servers .. server)
+	local signs = {
+		Error = LspIcons.error,
+		Warn = LspIcons.warn,
+		Hint = LspIcons.hint,
+		Info = LspIcons.info,
+	}
+	for type, icon in pairs(signs) do
+		local hl = "DiagnosticSign" .. type
+		vim.fn.sign_define(hl, { text = icon, texthl = hl, numhl = hl })
 	end
-
-	require("mason").setup()
-	require("mason-lspconfig").setup({
-		ensure_installed = {
-			"lua_ls",
-			"html",
-			"cssls",
-			"emmet_language_server",
-			"pylsp",
-			"stylelint_lsp",
-			"cssmodules_ls",
-		},
-
-		-- "stylua",
-		-- "eslint_d",
-		-- "prettierd",
-		-- "htmlhint",
-		-- "pylint",
-		-- "black",
-
-		handlers = {
-			lsp_zero.default_setup,
-
-			lua_ls = importServer("lua_ls"),
-			html = importServer("html"),
-			cssls = importServer("cssls"),
-			emmet_language_server = importServer("emmet_ls"),
-			pylsp = importServer("pylsp"),
-			tsserver = importServer("tsserver"),
-			stylelint_lsp = importServer("stylelint_lsp"),
-			cssmodules_ls = importServer("cssmodules_ls"),
-		},
-	})
 
 	-- Mappings
 
@@ -104,42 +107,56 @@ function M.config()
 
 			vim.bo[ev.buf].omnifunc = "v:lua.vim.lsp.omnifunc"
 
-			if client.server_capabilities.inlayHintProvider then
-				vim.lsp.inlay_hint.enable(true)
+			if client then
+				-- if client.supports_method("textDocument/completion") then
+				--     vim.lsp.completion.enable(true, client.id, ev.buf, { autotrigger = false })
+				-- end
+				if client.server_capabilities.inlayHintProvider then
+					vim.lsp.inlay_hint.enable(true, {
+						bufnr = ev.buf,
+					})
+				end
 			end
 
 			Bind({
 				["n"] = {
-					["<plugleader>lD"] = {
+					["<leader>lD"] = {
 						vim.lsp.buf.declaration,
 						opts,
 						desc = "Lsp declaration",
 					},
-					["<plugleader>li"] = {
+					["<leader>li"] = {
 						vim.lsp.buf.implementation,
 						opts,
 						desc = "Lsp implementation",
 					},
-					["<plugleader>ltd"] = {
+					["<leader>ltd"] = {
 						vim.lsp.buf.type_definition,
 						opts,
 						desc = "Lsp type definition",
 					},
-					["<plugleader>lr"] = {
+					["<leader>lr"] = {
 						vim.lsp.buf.rename,
 						opts,
 						desc = "Lsp rename",
 					},
 
-					["<plugleader>fr"] = {
+					["<leader>fr"] = {
 						require("telescope.builtin").lsp_references,
 						desc = "Lsp References",
 					},
-					["<plugleader>fd"] = {
+					["<leader>fd"] = {
 						require("telescope.builtin").lsp_definitions,
 						desc = "Lsp Definitions",
 					},
-					-- ["<plugleader>le"] = {  vim.diagnostic.open_float },
+
+					["<leader>le"] = {
+						vim.diagnostic.open_float,
+						opts,
+						desc = "Show line diagnostics",
+					},
+
+					["<leader>ll"] = { "<cmd>LspRestart<cr>", opts, desc = "Restart all lsp" },
 				},
 			})
 		end,

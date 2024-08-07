@@ -9,5 +9,5 @@ return {
 	colorscheme = " ",
 	filesize = " ",
 	sep = " ┃ ",
-	mode = "  ",
+	mode = " ",
 }

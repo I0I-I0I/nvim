@@ -8,45 +8,29 @@ local M = {
 
 		"marilari88/neotest-vitest",
 	},
-	event = "BufRead",
 }
 
-function M.config()
-	local neotest = require("neotest")
+M.opts = {
+	adapters = {
+		require("neotest-vitest"),
+	},
+}
 
-	neotest.setup({
-		adapters = {
-			require("neotest-vitest"),
-		},
-	})
+M.cmd = { "Neotest" }
 
-	Bind({
-		["n"] = {
-			["<plugleader>tr"] = {
-				function()
-					neotest.run.run(vim.fn.expand("%"))
-					vim.cmd("M summary open")
-				end,
-				desc = "Run Test",
-			},
-			["<plugleader>ts"] = {
-				neotest.run.stop,
-				desc = "Stop Test",
-			},
-			["<plugleader>tS"] = {
-				"<cmd>M summary toggle<cr>",
-				desc = "Toggle Summary",
-			},
-			["<plugleader>ta"] = {
-				neotest.run.attach,
-				desc = "Attach Test",
-			},
-			["<plugleader>to"] = {
-				"<cmd>M output<cr>",
-				desc = "Open Output",
-			},
-		},
-	})
-end
+M.keys = {
+	{
+		"<leader>tr",
+		function()
+			require("neotest").run.run(vim.fn.expand("%"))
+			vim.cmd("M summary open")
+		end,
+		desc = "Run Test",
+	},
+	{ "<leader>ts", require("neotest").run.stop, desc = "Stop Test" },
+	{ "<leader>tS", "<cmd>Neotest summary toggle<cr>", desc = "Toggle Summary" },
+	{ "<leader>ta", require("neotest").run.attach, desc = "Attach Test" },
+	{ "<leader>to", "<cmd>Neotest output<cr>", desc = "Open Output" },
+}
 
 return M

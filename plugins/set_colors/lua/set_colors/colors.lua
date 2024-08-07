@@ -235,8 +235,14 @@ local colors = {
 		{ "BufferLineDevIconJsonInactive", { fg = inactiveColor } },
 		{ "BufferLineDevIconSvg", { fg = "#666666" } },
 		{ "BufferLineDevIconSvgInactive", { fg = inactiveColor } },
-
-		{ "NvimTreeWinSeparator", { fg = "#555555" } },
+		{ "BufferLineDevIconTsx", { fg = "#666666" } },
+		{ "BufferLineDevIconTsxInactive", { fg = inactiveColor } },
+		{ "BufferLineDevIconTypeScript", { fg = "#666666" } },
+		{ "BufferLineDevIconTypeScriptInactive", { fg = inactiveColor } },
+		{ "BufferLineDevIconTSConfig", { fg = "#666666" } },
+		{ "BufferLineDevIconTSConfigInactive", { fg = inactiveColor } },
+		{ "BufferLineDevIconTypeScriptDeclaration", { fg = "#666666" } },
+		{ "BufferLineDevIconTypeScriptDeclarationInactive", { fg = inactiveColor } },
 	},
 }
 

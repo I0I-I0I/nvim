@@ -1,13 +1,11 @@
 vim.loader.enable()
 
-autocmd = vim.api.nvim_create_autocmd
-augroup = vim.api.nvim_create_augroup
-
 -- Settings
 vim.g.mapleader = ","
 vim.opt.termguicolors = true
 vim.scriptencoding = "utf-8"
 vim.opt.encoding = "utf-8"
+vim.opt.fillchars = "eob:\\u00A0"
 
 vim.cmd([[
 	cnoreabbrev W w
@@ -74,7 +72,9 @@ vim.g.formatoptions = "qrn1"
 vim.opt.updatetime = 50
 
 -- Display invisible characters
-vim.opt.list = false
+vim.opt.list = true
+vim.opt.listchars = { tab = "┆ ", trail = "·", nbsp = "␣" }
+vim.cmd.hi("Whitespace guifg=#333333")
 
 -- Wrap
 vim.opt.linebreak = true
@@ -118,3 +118,16 @@ vim.opt.cmdheight = 0
 
 -- Signcolumn
 vim.opt.signcolumn = "yes"
+
+autocmd("FileType", {
+	pattern = { "json", "jsons" },
+	callback = function()
+		vim.wo.spell = false
+		vim.wo.conceallevel = 0
+	end,
+})
+
+autocmd({ "BufWritePre" }, {
+	pattern = "*.*",
+	command = [[%s/\s\+$//e]],
+})

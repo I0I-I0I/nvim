@@ -1,21 +1,21 @@
 local M = {
 	"moll/vim-bbye",
-	event = "VeryLazy",
 }
 
-function M.config()
-	local opts = { silent = true, noremap = true }
+M.cmd = {
+	"Bdelete",
+	"Bwipeout",
+}
 
-	Bind({
-		["n"] = {
-			["<plugleader>q"] = { "<cmd>Bdelete<cr>", opts, desc = "Close buffer" },
-			["<plugleader>Q"] = { "<cmd>Bdelete!<cr>", opts, desc = "Close buffer!" },
-			["<plugleader>aq"] = { "<cmd>bufdo :Bdelete<cr>", opts, desc = "Close all buffers" },
-			["<plugleader>aQ"] = { "<cmd>bufdo :Bdelete!<cr>", opts, desc = "Close all buffers!" },
-			["<plugleader>c"] = { "<cmd>Bdelete<cr><cmd>close<cr>", opts, desc = "Close buffer and window" },
-			["<plugleader>C"] = { "<cmd>Bdelete!<cr><cmd>close<cr>", opts, desc = "Close buffer and window!" },
-		},
-	})
-end
+local opts = { silent = true, noremap = true }
+
+M.keys = {
+	{ "<leader>q", "<cmd>Bdelete<cr>", opts, desc = "Close buffer" },
+	{ "<leader>Q", "<cmd>Bdelete!<cr>", opts, desc = "Close buffer!" },
+	{ "<leader>aq", "<cmd>bufdo :Bdelete<cr>", opts, desc = "Close all buffers" },
+	{ "<leader>aQ", "<cmd>bufdo :Bdelete!<cr>", opts, desc = "Close all buffers!" },
+	{ "<leader>c", "<cmd>Bdelete<cr><cmd>close<cr>", opts, desc = "Close buffer and window" },
+	{ "<leader>C", "<cmd>Bdelete!<cr><cmd>close<cr>", opts, desc = "Close buffer and window!" },
+}
 
 return M

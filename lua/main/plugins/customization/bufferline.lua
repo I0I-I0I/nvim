@@ -3,69 +3,11 @@ local M = {
 	event = "VeryLazy",
 	dependencies = {
 		{ "nvim-tree/nvim-web-devicons" },
-		{ "tiagovla/scope.nvim" },
 	},
 }
 
 function M.config()
-	local opts = { silent = true, noremap = true }
-
-	--
-	-- Scope
-	--
-	local scope = require("scope")
-
-	vim.opt.sessionoptions = {
-		"buffers",
-		"tabpages",
-		"globals",
-	}
-
-	scope.setup({})
-
 	local bufferline = require("bufferline")
-
-	Bind({
-		["n"] = {
-			["<plugleader>m1"] = { "<cmd>ScopeMoveBuf 1<cr>", opts, desc = "Move buffer to tab 1" },
-			["<plugleader>m2"] = { "<cmd>ScopeMoveBuf 2<cr>", opts, desc = "Move buffer to tab 2" },
-			["<plugleader>m3"] = { "<cmd>ScopeMoveBuf 3<cr>", opts, desc = "Move buffer to tab 3" },
-			["<plugleader>m4"] = { "<cmd>ScopeMoveBuf 4<cr>", opts, desc = "Move buffer to tab 4" },
-
-			["<plugleader>1"] = {
-				"<cmd>lua require('bufferline').go_to(1, true)<cr>",
-				opts,
-				desc = "Go to buffer 1",
-			},
-			["<plugleader>2"] = {
-				"<cmd>lua require('bufferline').go_to(2, true)<cr>",
-				opts,
-				desc = "Go to buffer 2",
-			},
-			["<plugleader>3"] = {
-				"<cmd>lua require('bufferline').go_to(3, true)<cr>",
-				opts,
-				desc = "Go to buffer 3",
-			},
-			["<plugleader>4"] = {
-				"<cmd>lua require('bufferline').go_to(4, true)<cr>",
-				opts,
-				desc = "Go to buffer 4",
-			},
-			["<plugleader>5"] = {
-				"<cmd>lua require('bufferline').go_to(5, true)<cr>",
-				opts,
-				desc = "Go to buffer 5",
-			},
-			["<plugleader>$"] = {
-				"<cmd>lua require('bufferline').go_to(-1, true)<cr>",
-				opts,
-				desc = "Go to last buffer",
-			},
-		},
-	})
-
-	-- Create tab
 
 	local bufferlineLspIcons = {
 		error = " " .. LspIcons.error,
@@ -117,5 +59,16 @@ function M.config()
 		},
 	})
 end
+
+local opts = { silent = true, noremap = true }
+
+M.keys = {
+	{ "<leader>1", "<cmd>lua require('bufferline').go_to(1, true)<cr>", opts, desc = "Go to buffer 1" },
+	{ "<leader>2", "<cmd>lua require('bufferline').go_to(2, true)<cr>", opts, desc = "Go to buffer 2" },
+	{ "<leader>3", "<cmd>lua require('bufferline').go_to(3, true)<cr>", opts, desc = "Go to buffer 3" },
+	{ "<leader>4", "<cmd>lua require('bufferline').go_to(4, true)<cr>", opts, desc = "Go to buffer 4" },
+	{ "<leader>5", "<cmd>lua require('bufferline').go_to(5, true)<cr>", opts, desc = "Go to buffer 5" },
+	{ "<leader>$", "<cmd>lua require('bufferline').go_to(-1, true)<cr>", opts, desc = "Go to last buffer" },
+}
 
 return M

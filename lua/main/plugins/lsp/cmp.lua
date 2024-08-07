@@ -18,8 +18,6 @@ local M = {
 
 function M.config()
 	local cmp = require("cmp")
-	local lspkind = require("lspkind")
-	local cmp_action = require("lsp-zero").cmp_action()
 
 	require("luasnip.loaders.from_vscode").lazy_load()
 
@@ -33,21 +31,21 @@ function M.config()
 		sources = cmp.config.sources({
 			{ name = "nvim_lua", max_item_count = 10 },
 			{ name = "nvim_lsp", max_item_count = 10 },
-			{ name = "path", max_item_count = 10 },
 			{ name = "luasnip", option = { show_autosnippets = true }, max_item_count = 10 },
-			{ name = "buffer" },
+			{ name = "buffer", keyword_length = 3 },
+		}, {
+			{ name = "path", max_item_count = 10 },
 		}),
 
 		window = {
 			cmp.config.window.bordered(),
-			-- completion = cmp.config.window.bordered(),
-			-- documentation = cmp.config.window.bordered(),
 
 			completion = {
-				border = nil,
+				winhighlight = "Normal:Pmenu,FloatBorder:Pmenu,Search:None",
 				col_offset = -3,
-				side_padding = 1,
-				scrollbar = true,
+				border = nil,
+				side_padding = 0,
+				scrollbar = false,
 				scrolloff = 3,
 			},
 			documentation = {
@@ -64,30 +62,17 @@ function M.config()
 			["<C-f>"] = cmp.mapping.scroll_docs(4),
 			["<C-e>"] = cmp.mapping.abort(),
 			["<CR>"] = cmp.mapping.confirm({ select = true }),
-			-- ["<Tab>"] = cmp_action.tab_complete(),
-			-- ["<S-Tab>"] = cmp_action.select_prev_or_fallback(),
 		}),
 
 		formatting = {
 			fields = { "kind", "abbr", "menu" },
-			format = lspkind.cmp_format({
-				-- options: 'text', 'text_symbol', 'symbol_text', 'symbol'
-				mode = "symbol",
-				show_labelDetails = true,
-				preset = "default",
-				-- preset = "codicons",
-				ellipsis_char = "...",
-				menu = {
-					buffer = "[BUF]",
-					nvim_lsp = "[LSP]",
-					path = "[PTH]",
-					luasnip = "[SNP]",
-					nvim_lua = "[LUA]",
-				},
-				symbol_map = {
-					Snippet = "",
-				},
-			}),
+			format = function(entry, vim_item)
+				local kind = require("lspkind").cmp_format({ mode = "symbol_text", maxwidth = 50 })(entry, vim_item)
+				local strings = vim.split(kind.kind, "%s", { trimempty = true })
+				kind.kind = " " .. (strings[1] or "") .. " "
+				kind.menu = "    (" .. (strings[2] or "") .. ")"
+				return kind
+			end,
 		},
 
 		experimental = {
@@ -127,8 +112,54 @@ function M.config()
 			{ name = "buffer" },
 		},
 	})
-
-	vim.api.nvim_set_hl(0, "CmpItemMenu", { fg = "#666666" })
 end
+
+vim.g.cmp_colors = {
+	-- Customization for Pmenu
+	{ "PmenuSel", { bg = "#282C34", fg = "NONE" } },
+	{ "Pmenu", { fg = "#C5CDD9", bg = "#22252A" } },
+
+	{ "CmpItemAbbrDeprecated", { fg = "#7E8294", bg = "NONE", strikethrough = true } },
+	{ "CmpItemAbbrMatch", { fg = "#82AAFF", bg = "NONE", bold = true } },
+	{ "CmpItemAbbrMatchFuzzy", { fg = "#82AAFF", bg = "NONE", bold = true } },
+	{ "CmpItemMenu", { fg = "#C792EA", bg = "NONE", italic = true } },
+
+	{ "CmpItemKindField", { fg = "#EED8DA", bg = "#B5585F" } },
+	{ "CmpItemKindProperty", { fg = "#EED8DA", bg = "#B5585F" } },
+	{ "CmpItemKindEvent", { fg = "#EED8DA", bg = "#B5585F" } },
+
+	{ "CmpItemKindText", { fg = "#C3E88D", bg = "#9FBD73" } },
+	{ "CmpItemKindEnum", { fg = "#C3E88D", bg = "#9FBD73" } },
+	{ "CmpItemKindKeyword", { fg = "#C3E88D", bg = "#9FBD73" } },
+
+	{ "CmpItemKindConstant", { fg = "#FFE082", bg = "#D4BB6C" } },
+	{ "CmpItemKindConstructor", { fg = "#FFE082", bg = "#D4BB6C" } },
+	{ "CmpItemKindReference", { fg = "#FFE082", bg = "#D4BB6C" } },
+
+	--
+
+	{ "CmpItemKindFunction", { fg = "#EADFF0", bg = "#A377BF" } },
+	{ "CmpItemKindStruct", { fg = "#EADFF0", bg = "#A377BF" } },
+	{ "CmpItemKindClass", { fg = "#EADFF0", bg = "#A377BF" } },
+	{ "CmpItemKindModule", { fg = "#EADFF0", bg = "#A377BF" } },
+	{ "CmpItemKindOperator", { fg = "#EADFF0", bg = "#A377BF" } },
+
+	{ "CmpItemKindVariable", { fg = "#C5CDD9", bg = "#7E8294" } },
+	{ "CmpItemKindFile", { fg = "#C5CDD9", bg = "#7E8294" } },
+
+	{ "CmpItemKindUnit", { fg = "#F5EBD9", bg = "#D4A959" } },
+	{ "CmpItemKindSnippet", { fg = "#F5EBD9", bg = "#D4A959" } },
+	{ "CmpItemKindFolder", { fg = "#F5EBD9", bg = "#D4A959" } },
+
+	{ "CmpItemKindMethod", { fg = "#DDE5F5", bg = "#6C8ED4" } },
+	{ "CmpItemKindValue", { fg = "#DDE5F5", bg = "#6C8ED4" } },
+	{ "CmpItemKindEnumMember", { fg = "#DDE5F5", bg = "#6C8ED4" } },
+
+	{ "CmpItemKindInterface", { fg = "#D8EEEB", bg = "#58B5A8" } },
+	{ "CmpItemKindColor", { fg = "#D8EEEB", bg = "#58B5A8" } },
+	{ "CmpItemKindTypeParameter", { fg = "#D8EEEB", bg = "#58B5A8" } },
+
+	{ "NvimTreeWinSeparator", { fg = "#555555" } },
+}
 
 return M

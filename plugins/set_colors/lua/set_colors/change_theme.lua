@@ -5,7 +5,7 @@ local finders = require("telescope.finders")
 local sorters = require("telescope.sorters")
 local actions = require("telescope.actions")
 local action_state = require("telescope.actions.state")
-local dropdown = require("telescope.themes").get_dropdown()
+local dropdown = require("telescope.themes").get_cursor()
 
 local get_colorscheme_names = require("set_colors.utils.get_colorscheme_names").get_colorscheme_names
 
@@ -28,7 +28,7 @@ function M.enter(prompt_bufnr)
 	local selected = action_state.get_selected_entry()
 
 	local cmd = "SetColor " .. selected[1] .. M.transparency
-	local init = vim.fn.expand(vim.fn.stdpath("config") .. "/lua/default/colorscheme/theme.lua")
+	local init = vim.fn.expand(vim.fn.stdpath("config") .. "/lua/" .. (vim.g.config_path or "default") .. "/colorscheme/theme.lua")
 	local job_cmd = "sed -i '$ d' " .. init .. " && echo 'vim.cmd(\"" .. cmd .. "\")' >> " .. init
 	vim.fn.jobstart(job_cmd)
 
@@ -37,7 +37,6 @@ end
 
 function M.update_opts(arr)
 	return {
-		preview = true,
 		prompt_title = "Color Schemes",
 		finder = finders.new_table({
 			results = arr,

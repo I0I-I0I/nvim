@@ -1,6 +1,7 @@
 local M = {
 	"akinsho/toggleterm.nvim",
 	version = "*",
+	event = "VeryLazy",
 }
 
 function M.config()
@@ -17,15 +18,15 @@ function M.config()
 		end,
 		direction = "vertical",
 	})
-
-	Bind({
-		["n"] = {
-			["<plugleader>T"] = {
-				"<cmd>ToggleTerm direction=vertical size=50<cr>",
-				{ silent = true, noremap = true, desc = "Toggle terminal" },
-			},
-		},
-	})
 end
+
+M.keys = {
+	{
+		"<leader>T",
+		"<cmd>ToggleTerm direction=vertical size=50<cr>",
+		{ silent = true, noremap = true },
+		desc = "Toggle terminal",
+	},
+}
 
 return M

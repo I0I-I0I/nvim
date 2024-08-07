@@ -4,8 +4,6 @@ local M = {
 	event = "BufRead",
 }
 
-function M.config()
-	require("nvim-surround").setup()
-end
+M.opts = {}
 
 return M

@@ -7,6 +7,21 @@ local function set_colorscheme(colorscheme, transparent)
 	vim.cmd.colorscheme(colorscheme)
 	update_no_color()
 
+	local NormalColor = vim.api.nvim_get_hl_by_name("Normal", true)
+
+	local defaultColors = {
+		{ "WinSeparator", { fg = NormalColor.background } },
+		{ "Whitespace", { fg = "#333333" } },
+	}
+
+	for _, value in ipairs(vim.g.cmp_colors or {}) do
+		vim.api.nvim_set_hl(0, value[1], value[2])
+	end
+
+	for _, value in ipairs(defaultColors) do
+		vim.api.nvim_set_hl(0, value[1], value[2])
+	end
+
 	if transparent == 1 then
 		vim.cmd([[
 		          try
@@ -18,7 +33,10 @@ local function set_colorscheme(colorscheme, transparent)
 			vim.g.neovide_transparency = 1
 		end
 		if colorscheme == "horizon" then
-			vim.cmd("hi NonText guifg=#777777")
+			vim.cmd.hi("NonText guifg=#777777")
+		elseif colorscheme == "rose-pine" then
+			vim.cmd.hi("Normal guibg=#111111")
+			vim.cmd.hi("NormalNC guibg=#101010")
 		end
 		return
 	end
@@ -32,9 +50,6 @@ local function set_colorscheme(colorscheme, transparent)
 
 	if vim.g.neovide then
 		vim.g.neovide_transparency = transparent
-		vim.cmd("hi! CursorLine guibg=#333333")
-	else
-		vim.cmd("hi! CursorLine gui=underline cterm=underline guibg=NONE ctermfg=None guifg=None")
 	end
 
 	vim.cmd([[

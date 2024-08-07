@@ -4,37 +4,28 @@ local M = {
 		{ "nvim-lua/plenary.nvim" },
 		{ "nvim-telescope/telescope-fzf-native.nvim", build = "make" },
 	},
+	lazy = true,
 }
 
-function M.config()
-	local builtin = require("telescope.builtin")
-	local actions = require("telescope.actions")
+M.builtin = require("telescope.builtin")
 
-	Bind({
-		["n"] = {
-			["<plugleader>ff"] = { builtin.find_files, desc = "Files" },
-			["<plugleader>fw"] = { builtin.live_grep, desc = "Live Grep" },
-			["<plugleader>fb"] = { builtin.buffers, desc = "Buffers" },
-			["<plugleader>fab"] = { "<cmd>Telescope scope buffers<cr>", { silent = true }, desc = "All Buffers" },
-			["<plugleader>fh"] = { builtin.help_tags, desc = "Help Tags" },
-			["<plugleader>fk"] = { builtin.keymaps, desc = "Keymaps" },
-			["<plugleader>fR"] = { builtin.registers, desc = "Registers" },
-			["z="] = { builtin.spell_suggest, desc = "Spell Suggest" },
-			["<plugleader>fs"] = {
-				function()
-					builtin.grep_string({ search = vim.fn.input("Grep -> ") })
-				end,
-				desc = "Grep String",
-			},
-		},
-	})
+function M.config()
+	local actions = require("telescope.actions")
 
 	local opts = {
 		defaults = {
 			prompt_prefix = "  ",
-			selection_caret = "  ",
-			-- selection_caret = "  ",
+			selection_caret = " ",
 
+			sorting_strategy = "ascending",
+			layout_config = {
+				horizontal = {
+					prompt_position = "top",
+					preview_width = 0.55,
+				},
+				width = 0.87,
+				height = 0.80,
+			},
 			vimgrep_arguments = {
 				"rg",
 				"--color=never",
@@ -113,12 +104,12 @@ function M.config()
 					},
 				},
 			},
-			lsp_references = {
-				theme = "ivy",
-			},
-			lsp_definitions = {
-				theme = "ivy",
-			},
+			-- lsp_references = {
+			-- 	theme = "ivy",
+			-- },
+			-- lsp_definitions = {
+			-- 	theme = "ivy",
+			-- },
 		},
 
 		extensions = {
@@ -131,10 +122,61 @@ function M.config()
 			},
 		},
 	}
+
 	require("telescope").setup(opts)
 	require("telescope").load_extension("scope")
 	require("telescope").load_extension("notify")
 	require("telescope").load_extension("fzf")
 end
+
+local get_visual_selection = require("default.utils").get_visual_selection
+
+M.keys = {
+	{ "<leader>ff", M.builtin.find_files, desc = "Files" },
+	{ "<leader>fb", M.builtin.buffers, desc = "Buffers" },
+	{ "<leader>fab", "<cmd>Telescope scope buffers<cr>", { silent = true }, desc = "All Buffers" },
+	{ "<leader>fh", M.builtin.help_tags, desc = "Help Tags" },
+	{ "<leader>fk", M.builtin.keymaps, desc = "Keymaps" },
+	{ "<leader>fR", M.builtin.registers, desc = "Registers" },
+	{ "z=", M.builtin.spell_suggest, desc = "Spell Suggest" },
+	{
+		"<leader>fs",
+		function()
+            local text = vim.fn.input("Grep -> ")
+            if text == "" then
+                return
+            end
+			M.builtin.grep_string({ search = text })
+		end,
+		desc = "Grep String",
+	},
+	{ "<leader>fw", M.builtin.live_grep, desc = "Live Grep" },
+	{
+		"<leader>fw",
+		function()
+			vim.cmd.norm("")
+			local text = get_visual_selection()
+			require("telescope.builtin").grep_string({ search = text, prompt_title = "Search By Selection" })
+		end,
+		mode = { "v", "o", "x" },
+		{},
+	},
+	{
+		"<leader>fiw",
+		function()
+			local word = vim.fn.expand("<cword>")
+			M.builtin.grep_string({ search = word })
+		end,
+		{},
+	},
+	{
+		"<leader>faw",
+		function()
+			local word = vim.fn.expand("<cWORD>")
+			M.builtin.grep_string({ search = word })
+		end,
+		{},
+	},
+}
 
 return M

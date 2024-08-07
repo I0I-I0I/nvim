@@ -1,7 +1,5 @@
-local leaders = {
-	["<plugleader>"] = ",",
-	["<leader>"] = "<space>",
-}
+vim.g.mapleader = ","
+vim.g.maplocalleader = " "
 
 function Bind(all_binds)
 	for modes, binds in pairs(all_binds) do
@@ -13,10 +11,6 @@ function Bind(all_binds)
 			local rhs = bind[1]
 			local opts = bind[2] or {}
 			opts.desc = bind.desc or ""
-
-			for key, value in pairs(leaders) do
-				lhs = lhs:gsub(key, value)
-			end
 
 			vim.keymap.set(mode, lhs, rhs, opts)
 		end
