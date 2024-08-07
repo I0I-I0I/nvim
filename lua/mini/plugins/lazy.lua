@@ -24,6 +24,7 @@ local plugins = {
 	-- Other
 	{ import = other .. "telescope" },
 	{ import = other .. "treesitter" },
+	{ import = other .. "git" },
 
 	-- LSP
 	{ import = vim.g.lsp_path .. "lsp" },
