@@ -3,6 +3,7 @@ local M = {
 	dependencies = {
 		"williamboman/mason.nvim",
 		"williamboman/mason-lspconfig.nvim",
+		-- "hrsh7th/cmp-nvim-lsp",
 	},
 	event = "VeryLazy",
 }
@@ -18,10 +19,9 @@ function M.config()
 	}
 
 	local ok, cmp_nvim_lsp = pcall(require, "cmp_nvim_lsp")
+    vim.g.capabilities = vim.lsp.protocol.make_client_capabilities()
 	if ok then
 		vim.g.capabilities = cmp_nvim_lsp.default_capabilities()
-	else
-		vim.g.capabilities = vim.lsp.protocol.make_client_capabilities()
 	end
 
 	local server_path = vim.g.lsp_path .. "servers."
@@ -88,11 +88,12 @@ function M.config()
 			local client = vim.lsp.get_client_by_id(event.data.client_id)
 			local opts = { buffer = event.buf }
 
-			vim.bo[event.buf].omnifunc = "v:lua.vim.lsp.omnifunc"
+			-- vim.bo[event.buf].omnifunc = "v:lua.vim.lsp.omnifunc"
 
 			if client then
 				if client.supports_method("textDocument/completion") then
-					vim.lsp.completion.enable(true, client.id, event.buf, { autotrigger = false })
+					vim.lsp.completion.enable(true, client.id, event.buf, { autotrigger = true })
+                    vim.opt.completeopt = { "menu", "menuone", "noselect" }
 				end
 				if client.server_capabilities.inlayHintProvider then
 					vim.lsp.inlay_hint.enable(true)
@@ -176,7 +177,7 @@ function M.config()
 						desc = "Lsp diagnostic go prev",
 					},
 
-                    -- Restart lsp servers
+					-- Restart lsp servers
 					["<leader>ll"] = { "<cmd>LspRestart<cr>", opts, desc = "Restart all lsp" },
 				},
 			})
