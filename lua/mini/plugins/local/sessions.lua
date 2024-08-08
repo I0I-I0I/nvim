@@ -2,7 +2,7 @@ local M = {
 	dir = vim.g.local_plugins_path .. "sessions",
 }
 
-M.cmd = { "SessionAttach", "SessionsList" }
+M.cmd = { "SessionAttach", "SessionsList", "SessionCreate" }
 
 M.keys = {
 	{
