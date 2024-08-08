@@ -1,9 +1,8 @@
 local M = {
 	"NeogitOrg/neogit",
 	dependencies = {
-		"nvim-lua/plenary.nvim", -- required
-		"sindrets/diffview.nvim", -- optional
-		"nvim-telescope/telescope.nvim", -- optional
+		"nvim-lua/plenary.nvim",
+		"nvim-telescope/telescope.nvim",
 	},
 	config = true,
 }
