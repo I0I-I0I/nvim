@@ -26,7 +26,11 @@ function M.zenmode_open(c, current_tab)
 
 	M.buf[current_tab] = vim.api.nvim_create_buf(false, false)
 
-	local width = c or 30
+    local width = 30
+    if c then
+        width = tonumber(c)
+    end
+
 	local cur_win = vim.fn.win_getid()
 
 	create_window(width, "H", current_tab)
