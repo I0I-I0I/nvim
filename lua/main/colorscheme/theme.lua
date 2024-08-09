@@ -1,1 +1,1 @@
-vim.cmd("SetColor sonokai 0.73")
+vim.cmd("SetColor everforest 1")

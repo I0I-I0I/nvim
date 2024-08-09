@@ -1,9 +1,17 @@
 local colorschemes = {
 	{
-		"sainnhe/everforest",
-		name = "everforest",
+		"neanias/everforest-nvim",
+		version = false,
 		lazy = false,
 		priority = 1000,
+		config = function()
+			require("everforest").setup({
+				background = "hard",
+				italics = true,
+				dim_inactive_windows = true,
+				diagnostic_text_highlight = true,
+			})
+		end,
 		theme_names = {
 			"everforest",
 		},
