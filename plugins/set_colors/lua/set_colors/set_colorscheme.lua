@@ -1,6 +1,7 @@
 local update_no_color = require("set_colors.utils.update_no_color")
 local set_colors = require("set_colors.set_colors")
 local get_colorscheme_names = require("set_colors.utils.get_colorscheme_names").get_colorscheme_names
+local set_telescope_colors = require("set_colors.set_telescope_colors")
 
 local function set_colorscheme(colorscheme, transparent)
 	vim.opt.background = "dark"
@@ -32,11 +33,12 @@ local function set_colorscheme(colorscheme, transparent)
 		if vim.g.neovide then
 			vim.g.neovide_transparency = 1
 		end
-		if colorscheme == "horizon" then
-			vim.cmd.hi("NonText guifg=#777777")
-		elseif colorscheme == "rose-pine" then
-			vim.cmd.hi("Normal guibg=#111111")
-			vim.cmd.hi("NormalNC guibg=#101010")
+
+		set_telescope_colors(colorscheme)
+
+		if colorscheme == "rose-pine" then
+			vim.cmd.hi("Normal guibg=#151515")
+			vim.cmd.hi("NormalNC guibg=#151515")
 		end
 		return
 	end
