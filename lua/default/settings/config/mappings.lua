@@ -63,6 +63,13 @@ Bind({
 		["<localleader>cc"] = { "<cmd>cclose<cr>", opts, desc = "Close qfix" },
 		["]c"] = { "<cmd>cnext<cr>", opts, desc = "Next qfix" },
 		["[c"] = { "<cmd>cprevious<cr>", opts, desc = "Previous qfix" },
+
+        -- Tmux
+		["<C-f>"] = { "<cmd>silent !tmux neww tmux-sessionizer<cr>" },
+		["<localleader>st"] = { "<cmd>silent !tmux-start-job Development 1 npm run tests<cr>" },
+		["<localleader>sd"] = { "<cmd>silent !tmux-start-job Development 0 npm run dev<cr>" },
+		["<localleader>sb"] = { "<cmd>silent !tmux-start-job Development 0 npm run build<cr>" },
+		["<localleader>sr"] = { ":silent !tmux-start-job Development 0 " },
 	},
 
 	["ic"] = {
@@ -78,8 +85,8 @@ Bind({
 		-- Move strings
 		["<C-k>"] = { ":m '<-2<cr>gv=gv", opts },
 		["<C-j>"] = { ":m '>+1<cr>gv=gv", opts },
-        ["K"] = { "k", { noremap = true } },
-        ["J"] = { "j", { noremap = true } },
+		["K"] = { "k", { noremap = true } },
+		["J"] = { "j", { noremap = true } },
 
 		-- Move tabs
 		["<"] = { "<gv" },
