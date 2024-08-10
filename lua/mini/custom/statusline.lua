@@ -76,7 +76,7 @@ local function create_status_line()
 end
 
 autocmd("CursorMoved", {
-	pattern = "*.*",
+	pattern = "*",
 	callback = function()
 		update_count_lines()
 		create_status_line()
@@ -84,7 +84,7 @@ autocmd("CursorMoved", {
 })
 
 autocmd("BufEnter", {
-	pattern = "*.*",
+	pattern = "*",
 	callback = function()
 		update_buffers()
 		create_status_line()
@@ -92,11 +92,17 @@ autocmd("BufEnter", {
 })
 
 autocmd({ "BufDelete" }, {
-	pattern = "*.*",
+	pattern = "*",
 	callback = function()
 		vim.defer_fn(function()
 			update_buffers()
 			create_status_line()
 		end, 50)
+	end,
+})
+
+autocmd("VimEnter", {
+	callback = function()
+		create_status_line()
 	end,
 })
