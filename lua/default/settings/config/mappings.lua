@@ -11,10 +11,13 @@ Bind({
 		},
 
 		-- Movement
+        ["<C-u>"] = { "<C-u>zz" },
 		["<C-d>"] = { "<C-d>zz" },
-		["<C-u>"] = { "<C-u>zz" },
+		["<C-y>"] = { "3<C-y>" },
+        ["<C-e>"] = { "3<C-e>" },
 		["n"] = { "nzzzv" },
 		["N"] = { "Nzzzv" },
+		["\'\'"] = { "\'\'zz" },
 
 		-- Wrap
 		["<localleader>tw"] = {

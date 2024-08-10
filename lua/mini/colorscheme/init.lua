@@ -6,7 +6,7 @@ local colorschemes = {
 		opts = {
 			transparent = false,
 			dim_inactive = true,
-            day_brightness = 0.3,
+			day_brightness = 0.3,
 		},
 		theme_names = {
 			"solarized-osaka",

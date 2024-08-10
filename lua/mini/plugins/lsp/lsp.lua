@@ -3,23 +3,22 @@ local M = {
 	dependencies = {
 		"williamboman/mason.nvim",
 		"williamboman/mason-lspconfig.nvim",
-		-- "hrsh7th/cmp-nvim-lsp",
 	},
 	event = "VeryLazy",
 }
 
-function M.config()
-	local servers = {
-		"lua_ls",
-		"emmet_language_server",
-		"html",
-		"cssls",
-		"tsserver",
-		"cssmodules_ls",
-	}
+local servers = {
+	"lua_ls",
+	"emmet_language_server",
+	"html",
+	"cssls",
+	"tsserver",
+	"cssmodules_ls",
+}
 
+function M.config()
 	local ok, cmp_nvim_lsp = pcall(require, "cmp_nvim_lsp")
-    vim.g.capabilities = vim.lsp.protocol.make_client_capabilities()
+	vim.g.capabilities = vim.lsp.protocol.make_client_capabilities()
 	if ok then
 		vim.g.capabilities = cmp_nvim_lsp.default_capabilities()
 	end
@@ -38,7 +37,6 @@ function M.config()
 	require("mason-lspconfig").setup({
 		ensure_installed = servers,
 	})
-
 	require("mason-lspconfig").setup_handlers({
 		function(server_name)
 			require("lspconfig")[server_name].setup(require(server_path .. server_name))
@@ -88,13 +86,13 @@ function M.config()
 			local client = vim.lsp.get_client_by_id(event.data.client_id)
 			local opts = { buffer = event.buf }
 
-			-- vim.bo[event.buf].omnifunc = "v:lua.vim.lsp.omnifunc"
+			if client.supports_method("textDocument/completion") then
+				vim.lsp.completion.enable(true, client.id, event.buf, { autotrigger = true })
+			else
+				vim.bo[event.buf].omnifunc = "v:lua.vim.lsp.omnifunc"
+			end
 
 			if client then
-				if client.supports_method("textDocument/completion") then
-					vim.lsp.completion.enable(true, client.id, event.buf, { autotrigger = true })
-                    vim.opt.completeopt = { "menu", "menuone", "noselect" }
-				end
 				if client.server_capabilities.inlayHintProvider then
 					vim.lsp.inlay_hint.enable(true)
 				end
@@ -108,30 +106,30 @@ function M.config()
 						desc = "Lsp References",
 					},
 					["gd"] = {
-						vim.lsp.buf.definition,
-						desc = "Lsp References",
+						require("telescope.builtin").lsp_definitions,
+						desc = "Lsp Definitions",
 					},
 					["gr"] = {
 						require("telescope.builtin").lsp_references,
-						desc = "Lsp Definitions",
+						desc = "Lsp References",
 					},
-
-					-- Custom
-					["<leader>lD"] = {
+					["gD"] = {
 						vim.lsp.buf.declaration,
 						opts,
 						desc = "Lsp declaration",
 					},
-					["<leader>li"] = {
+					["gi"] = {
 						vim.lsp.buf.implementation,
 						opts,
 						desc = "Lsp implementation",
 					},
-					["<leader>ltd"] = {
+					["gtd"] = {
 						vim.lsp.buf.type_definition,
 						opts,
 						desc = "Lsp type definition",
 					},
+
+					-- Custom
 					["<leader>lr"] = {
 						vim.lsp.buf.rename,
 						opts,
@@ -142,6 +140,12 @@ function M.config()
 						opts,
 						desc = "Code actions",
 					},
+					["<leader>le"] = {
+						vim.diagnostic.open_float,
+						opts,
+						desc = "Show line diagnostics",
+					},
+					["<leader>ll"] = { "<cmd>LspRestart<cr>", opts, desc = "Restart all lsp" },
 
 					-- Telescope
 					["<leader>fr"] = {
@@ -157,12 +161,6 @@ function M.config()
 						desc = "Lsp Definitions",
 					},
 
-					["<leader>le"] = {
-						vim.diagnostic.open_float,
-						opts,
-						desc = "Show line diagnostics",
-					},
-
 					-- Navigate through the diagnostic
 					["]d"] = {
 						function()
@@ -176,9 +174,6 @@ function M.config()
 						end,
 						desc = "Lsp diagnostic go prev",
 					},
-
-					-- Restart lsp servers
-					["<leader>ll"] = { "<cmd>LspRestart<cr>", opts, desc = "Restart all lsp" },
 				},
 			})
 		end,

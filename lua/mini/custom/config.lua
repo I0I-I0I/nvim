@@ -1,31 +1,22 @@
 vim.opt.cmdheight = 1
 
--- autocmd("VimEnter", {
--- 	callback = function()
--- 		vim.defer_fn(function()
--- 			vim.cmd("SessionAttach")
--- 			vim.cmd("ZenmodeOpenAll")
--- 		end, 50)
--- 	end,
--- })
-
 function OnExitAndSave()
 	vim.cmd("ZenmodeCloseAll")
 	vim.cmd("SessionCreate")
 	vim.cmd("wqa")
 end
 
-function OnExit()
+vim.api.nvim_create_user_command("CloseAll", function()
 	vim.cmd("ZenmodeCloseAll")
 	vim.cmd("silent tabonly")
 	vim.cmd("silent only")
 	vim.cmd("bufdo :Bdelete")
-end
+end, {})
 
 vim.cmd([[
-    cnoreabbrev wqa silent lua OnExitAndSave()
-    cnoreabbrev qa silent lua OnExit()
-    cnoreabbrev c silent close
+    cnoreabbrev wqa lua OnExitAndSave()
+    cnoreabbrev c close
+    cnoreabbrev C CloseAll
 ]])
 
 vim.opt.fillchars = "eob:\\u00A0,vert:\\u00A0"

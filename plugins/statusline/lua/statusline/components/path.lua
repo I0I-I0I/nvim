@@ -62,7 +62,7 @@ local function get_path_to_file(full_path, root_path)
 		return printed_message .. full_path .. "/"
 	end
 
-	return printed_message .. " ./" .. path_from_workflow
+	return printed_message .. path_from_workflow
 end
 
 local function get_path()

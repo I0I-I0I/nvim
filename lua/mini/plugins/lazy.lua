@@ -4,7 +4,6 @@ vim.g.local_plugins_path = vim.fn.stdpath("config") .. "/plugins/"
 
 local plugins = {
 	-- Local
-	{ dir = vim.g.local_plugins_path .. "statusline" },
 	{ dir = vim.g.local_plugins_path .. "tabline" },
 	{ import = vim.g.plugins_path .. "local.sessions" },
 	{ import = vim.g.plugins_path .. "local.zenmode" },
@@ -28,7 +27,7 @@ local plugins = {
 
 	-- LSP
 	{ import = vim.g.lsp_path .. "lsp" },
-	{ import = vim.g.lsp_path .. "cmp" },
+	-- { import = vim.g.lsp_path .. "cmp" },
 	{ import = vim.g.lsp_path .. "formatter" },
 	{ import = vim.g.lsp_path .. "linter" },
 

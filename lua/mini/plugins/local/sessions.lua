@@ -4,42 +4,46 @@ local M = {
 
 M.cmd = { "SessionAttach", "SessionsList", "SessionCreate" }
 
-M.keys = {
-	{
-		"<leader>sl",
-		function()
-			require("sessions").open_list()
-		end,
-		{ silent = true },
-		desc = "Open sessions list",
-	},
+M.keys = function()
+    local sessions = require("sessions")
 
-	{
-		"<leader>sc",
-		function()
-			require("sessions").create_session(true)
-		end,
-		{ silent = true },
-		desc = "Create session",
-	},
+	return {
+		{
+			"<leader>sl",
+			function()
+				sessions.open_list()
+			end,
+			{ silent = true },
+			desc = "Open sessions list",
+		},
 
-	{
-		"<leader>sS",
-		function()
-			require("sessions").create_session()
-		end,
-		{ silent = true },
-		desc = "Create session",
-	},
+		{
+			"<leader>sc",
+			function()
+				sessions.create_session(true)
+			end,
+			{ silent = true },
+			desc = "Create session",
+		},
 
-	{
-		"<leader>ss",
-		function()
-			require("sessions").attach_session()
-		end,
-		{ silent = true },
-		desc = "Attach session",
-	},
-}
+		{
+			"<leader>sS",
+			function()
+				sessions.create_session()
+			end,
+			{ silent = true },
+			desc = "Create session",
+		},
+
+		{
+			"<leader>ss",
+			function()
+				sessions.attach_session()
+			end,
+			{ silent = true },
+			desc = "Attach session",
+		},
+	}
+end
 
 return M

@@ -1,1 +1,1 @@
-vim.cmd("SetColor everforest 1")
+vim.cmd("SetColor everforest 0.73")

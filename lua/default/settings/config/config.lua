@@ -1,7 +1,6 @@
 vim.loader.enable()
 
 -- Settings
-vim.g.mapleader = ","
 vim.opt.termguicolors = true
 vim.scriptencoding = "utf-8"
 vim.opt.encoding = "utf-8"
@@ -41,7 +40,6 @@ vim.api.nvim_create_autocmd("BufEnter", {
 
 -- Explorer
 vim.g.netrw_banner = 0
--- vim.g.netrw_liststyle = 3
 vim.g.netrw_browse_split = 0
 vim.g.netrw_winsize = 20
 vim.g.netrw_list_hide = "node_modules/,^\\.\\=/\\=$"
@@ -61,6 +59,9 @@ vim.opt.softtabstop = 0
 
 -- Color column
 vim.opt.colorcolumn = "80"
+
+-- Completeion
+vim.opt.completeopt = { "menu", "menuone", "noselect" }
 
 -- word separators
 -- vim.cmd("set iskeyword+=!,^34,^_")
@@ -109,7 +110,7 @@ vim.opt.mousefocus = true
 vim.opt.mouse = "a"
 
 -- Folding
-vim.opt.foldmethod = "indent"
+vim.opt.foldmethod = "manual"
 vim.opt.foldcolumn = "0"
 vim.opt.foldlevel = 99
 
