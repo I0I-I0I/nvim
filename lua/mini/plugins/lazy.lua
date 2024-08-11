@@ -13,22 +13,22 @@ local plugins = {
 	{ import = vim.g.config_path .. ".colorscheme.init" },
 
 	-- Utils
-	{ import = utils .. "scope" },
+	-- { import = utils .. "scope" },
 	{ import = utils .. "undotree" },
 	{ import = utils .. "bbye" },
 	{ import = utils .. "surround" },
-	{ import = utils .. "ai" },
-	{ import = utils .. "spider" },
+	-- { import = utils .. "spider" },
 
 	-- Other
 	{ import = other .. "telescope" },
 	{ import = other .. "treesitter" },
 	{ import = other .. "git" },
+	{ import = other .. "harpoon" },
 
 	-- LSP
 	{ import = vim.g.lsp_path .. "lsp" },
-	-- { import = vim.g.lsp_path .. "cmp" },
-	{ import = vim.g.lsp_path .. "formatter" },
+    { import = vim.g.lsp_path .. "formatter" },
+	{ import = vim.g.lsp_path .. "cmp" },
 	{ import = vim.g.lsp_path .. "linter" },
 
 	-- AI

@@ -4,9 +4,9 @@ local M = {
 	dependencies = { "nvim-lua/plenary.nvim" },
 }
 
-function M.init()
-	require("telescope").load_extension("scope")
-end
+-- function M.init()
+-- require("telescope").load_extension("scope")
+-- end
 
 M.opts = function()
 	local actions = require("telescope.actions")

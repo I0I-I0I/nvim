@@ -19,7 +19,8 @@ vim.cmd([[
 ]])
 
 -- Undo
-vim.opt.undodir = os.getenv("HOME") .. "/.vim/undodir"
+-- vim.opt.undodir = os.getenv("HOME") .. "/.vim/undodir"
+vim.opt.undodir = "/mnt/d/undo"
 vim.opt.undofile = true
 
 -- Spell
@@ -64,7 +65,7 @@ vim.opt.colorcolumn = "80"
 vim.opt.completeopt = { "menu", "menuone", "noselect" }
 
 -- word separators
--- vim.cmd("set iskeyword+=!,^34,^_")
+vim.cmd("set iskeyword+=!,^34,^_")
 
 -- Format options
 vim.g.formatoptions = "qrn1"

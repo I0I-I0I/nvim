@@ -18,7 +18,6 @@ function M.config()
 		window = {
 			cmp.config.window.bordered(),
 			completion = {
-				winhighlight = "Normal:Pmenu,Normal:Pmenu,Normal:None",
 				border = "rounded",
 				col_offset = -3,
 				side_padding = 1,

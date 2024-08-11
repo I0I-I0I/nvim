@@ -10,7 +10,7 @@ function Bind(all_binds)
 		for lhs, bind in pairs(binds) do
 			local rhs = bind[1]
 			local opts = bind[2] or {}
-			opts.desc = bind.desc or ""
+            opts.desc = bind.desc or ""
 
 			vim.keymap.set(mode, lhs, rhs, opts)
 		end

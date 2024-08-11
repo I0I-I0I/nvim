@@ -23,14 +23,18 @@ local colorschemes = {
 		opts = {
 			variant = "main", -- auto, main, moon, or dawn
 			dark_variant = "main", -- main, moon, or dawn
-			dim_inactive_windows = true,
+			dim_inactive_windows = false,
 			extend_background_behind_borders = true,
-			disable_background = false,
+			disable_background = true,
 		},
 	},
 }
 
-require("set_colors").add_colorschemes(colorschemes)
+local ok, set_colors = pcall(require, "set_colors")
+
+if ok then
+	set_colors.add_colorschemes(colorschemes)
+end
 
 autocmd("ColorScheme", {
 	pattern = "*",

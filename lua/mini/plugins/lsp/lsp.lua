@@ -80,17 +80,22 @@ function M.config()
 		border = "double",
 	})
 
+	vim.keymap.del("n", "grr")
+	vim.keymap.del("n", "grn")
+	vim.keymap.del({ "n", "v" }, "gra")
+
 	-- Attach/Mappings
 	autocmd("LspAttach", {
 		callback = function(event)
 			local client = vim.lsp.get_client_by_id(event.data.client_id)
 			local opts = { buffer = event.buf }
 
-			if client.supports_method("textDocument/completion") then
-				vim.lsp.completion.enable(true, client.id, event.buf, { autotrigger = true })
-			else
-				vim.bo[event.buf].omnifunc = "v:lua.vim.lsp.omnifunc"
-			end
+			-- built-in completion for lsp
+			-- if client.supports_method("textDocument/completion") then
+			-- 	vim.lsp.completion.enable(true, client.id, event.buf, { autotrigger = true })
+			-- else
+			-- 	vim.bo[event.buf].omnifunc = "v:lua.vim.lsp.omnifunc"
+			-- end
 
 			if client then
 				if client.server_capabilities.inlayHintProvider then

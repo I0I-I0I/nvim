@@ -64,12 +64,26 @@ Bind({
 		["]c"] = { "<cmd>cnext<cr>", opts, desc = "Next qfix" },
 		["[c"] = { "<cmd>cprevious<cr>", opts, desc = "Previous qfix" },
 
-        -- Tmux
+		-- Tmux
 		["<C-f>"] = { "<cmd>silent !tmux neww tmux-sessionizer<cr>" },
-		["<localleader>st"] = { "<cmd>silent !tmux-start-job Development 1 npm run tests<cr>" },
+		["<C-g>"] = { "<cmd>silent !tmux-lazygit<cr>" },
+		["<localleader>st"] = { "<cmd>silent !tmux-start-job Development 1 npm run test<cr>" },
 		["<localleader>sd"] = { "<cmd>silent !tmux-start-job Development 0 npm run dev<cr>" },
 		["<localleader>sb"] = { "<cmd>silent !tmux-start-job Development 0 npm run build<cr>" },
 		["<localleader>sr"] = { ":silent !tmux-start-job Development 0 " },
+
+		["cin{"] = { "f{ci{" },
+		["cin["] = { "f[ci[" },
+		["cin("] = { "f(ci(" },
+		['cin"'] = { 'f"ci"' },
+		["cin'"] = { "f'ci'" },
+		["cin`"] = { "f`ci`" },
+		["can{"] = { "f{ca{" },
+		["can["] = { "f[ca[" },
+		["can("] = { "f(ca(" },
+		['can"'] = { 'f"ca"' },
+		["can'"] = { "f'ca'" },
+		["can`"] = { "f`ca`" },
 	},
 
 	["ic"] = {
@@ -110,10 +124,10 @@ Bind({
 		["P"] = { '"_dp' },
 	},
 
-	["vni"] = {
-		-- Save
-		["<C-s>"] = { "<cmd>w<cr><Esc>", opts },
-	},
+	-- ["vni"] = {
+	-- 	-- Save
+	-- 	["<C-s>"] = { "<cmd>w<cr><Esc>", opts },
+	-- },
 })
 
 -- Run

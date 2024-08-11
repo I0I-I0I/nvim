@@ -23,6 +23,8 @@ local function set_colorscheme(colorscheme, transparent)
 		vim.api.nvim_set_hl(0, value[1], value[2])
 	end
 
+    set_telescope_colors(colorscheme)
+
 	if transparent == 1 then
 		vim.cmd([[
 		          try
@@ -34,14 +36,13 @@ local function set_colorscheme(colorscheme, transparent)
 			vim.g.neovide_transparency = 1
 		end
 
-		set_telescope_colors(colorscheme)
 
 		if colorscheme == "rose-pine" then
 			vim.cmd.hi("Normal guibg=#151515")
-			vim.cmd.hi("NormalNC guibg=#151515")
 		end
 		return
 	end
+
 
 	if not transparent then
 		transparent = 0.7
