@@ -12,8 +12,8 @@ function M.config()
 		javascriptreact = { "eslint_d" },
 		typescriptreact = { "eslint_d" },
 		python = { "pylint" },
-		css = { "stylelint" },
 		html = { "htmlhint" },
+		-- css = { "stylelint" },
 	}
 
 	local lint_augroup = augroup("lint", { clear = true })

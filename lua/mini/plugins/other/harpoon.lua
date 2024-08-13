@@ -5,10 +5,7 @@ local M = {
 
 function M.config()
 	local harpoon = require("harpoon")
-
-	-- REQUIRED
 	harpoon:setup()
-	-- REQUIRED
 end
 
 M.keys = function()
@@ -44,35 +41,35 @@ M.keys = function()
 			desc = "Select 2 (Harpoon)",
 		},
 		{
-			"<C-t>",
+			"<C-j>",
 			function()
 				harpoon:list():select(3)
 			end,
 			desc = "Select 3 (Harpoon)",
 		},
 		{
-			"<C-n>",
+			"<C-k>",
 			function()
 				harpoon:list():select(4)
 			end,
 			desc = "Select 4 (Harpoon)",
 		},
 		{
-			"<C-p>",
+			"<C-l>",
 			function()
 				harpoon:list():select(5)
 			end,
 			desc = "Select 5 (Harpoon)",
 		},
 		{
-			"<C-j>",
+			"<C-n>",
 			function()
 				harpoon:list():prev()
 			end,
 			desc = "Go to Previous file (Harpoon)",
 		},
 		{
-			"<C-k>",
+			"<C-p>",
 			function()
 				harpoon:list():next()
 			end,

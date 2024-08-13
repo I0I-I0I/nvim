@@ -5,7 +5,7 @@ local colorschemes = {
 		priority = 1000,
 		opts = {
 			transparent = false,
-			dim_inactive = true,
+			dim_inactive = false,
 			day_brightness = 0.3,
 		},
 		theme_names = {
@@ -25,13 +25,12 @@ local colorschemes = {
 			dark_variant = "main", -- main, moon, or dawn
 			dim_inactive_windows = false,
 			extend_background_behind_borders = true,
-			disable_background = true,
+			disable_background = false,
 		},
 	},
 }
 
 local ok, set_colors = pcall(require, "set_colors")
-
 if ok then
 	set_colors.add_colorschemes(colorschemes)
 end

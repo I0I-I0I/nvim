@@ -1,6 +1,3 @@
-vim.g.mapleader = ","
-vim.g.maplocalleader = " "
-
 function Bind(all_binds)
 	for modes, binds in pairs(all_binds) do
 		local mode = {}

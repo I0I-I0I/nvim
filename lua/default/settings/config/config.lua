@@ -11,15 +11,16 @@ vim.cmd([[
 	cnoreabbrev W! w!
 	cnoreabbrev Q q
 	cnoreabbrev Q! q!
-    cnoreabbrev Wq wq
+	cnoreabbrev Wq wq
 	cnoreabbrev Wa wa
 	cnoreabbrev Qa qa
 
-    cnoreabbrev n norm
+	cnoreabbrev n norm
+
+	abbr vitewsl CHOKIDAR_USEPOLLING=true
 ]])
 
 -- Undo
--- vim.opt.undodir = os.getenv("HOME") .. "/.vim/undodir"
 vim.opt.undodir = "/mnt/d/undo"
 vim.opt.undofile = true
 
@@ -33,11 +34,12 @@ vim.opt.backup = false
 
 -- Disable auto comments
 vim.api.nvim_create_autocmd("BufEnter", {
-	pattern = "*.*",
+	pattern = "*",
 	callback = function()
-		vim.cmd("set formatoptions-=cro")
+		vim.cmd("set formatoptions=jcrql")
 	end,
 })
+vim.cmd("set formatoptions=jcrql")
 
 -- Explorer
 vim.g.netrw_banner = 0
@@ -52,9 +54,8 @@ vim.bo.autoread = true
 vim.opt.autoindent = true
 vim.opt.smartindent = true
 vim.opt.smarttab = true
-vim.opt.showtabline = 1
+vim.opt.expandtab = false
 vim.opt.shiftwidth = 4
-vim.opt.expandtab = true
 vim.opt.tabstop = 4
 vim.opt.softtabstop = 0
 
@@ -75,7 +76,7 @@ vim.opt.updatetime = 50
 
 -- Display invisible characters
 vim.opt.list = true
-vim.opt.listchars = { tab = "┆ ", trail = "·", nbsp = "␣" }
+vim.opt.listchars = { tab = "┆ ", trail = "·", leadmultispace = "·", nbsp = "␣" }
 vim.cmd.hi("Whitespace guifg=#333333")
 
 -- Wrap

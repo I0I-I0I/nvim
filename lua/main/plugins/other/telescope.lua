@@ -134,7 +134,6 @@ local get_visual_selection = require("default.utils").get_visual_selection
 M.keys = {
 	{ "<leader>ff", M.builtin.find_files, desc = "Files" },
 	{ "<leader>fb", M.builtin.buffers, desc = "Buffers" },
-	{ "<leader>fab", "<cmd>Telescope scope buffers<cr>", { silent = true }, desc = "All Buffers" },
 	{ "<leader>fh", M.builtin.help_tags, desc = "Help Tags" },
 	{ "<leader>fk", M.builtin.keymaps, desc = "Keymaps" },
 	{ "<leader>fR", M.builtin.registers, desc = "Registers" },

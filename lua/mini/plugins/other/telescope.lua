@@ -16,6 +16,10 @@ M.opts = function()
 			prompt_prefix = "  ",
 			selection_caret = " ",
 
+			preview = {
+				treesitter = false
+			},
+
 			sorting_strategy = "ascending",
 			layout_config = {
 				horizontal = {
@@ -34,15 +38,19 @@ M.opts = function()
 				"--line-number",
 				"--column",
 				"--smart-case",
+				"--hidden",
 				"--ignore-file",
 				"/home/i0i/.config/nvim/ignore.files",
 			},
+
 			file_ignore_patterns = {
-				"package-lock.json",
 				"node_modules",
+				"package-lock.json",
 				"\\.git",
 				"dist",
+				"env",
 			},
+
 			mappings = {
 				i = {
 					["<C-j>"] = actions.cycle_history_next,
@@ -66,16 +74,19 @@ M.opts = function()
 				prompt_title = "~ Words ~",
 				-- theme = "ivy",
 				border = true,
+				hidden = true,
 			},
 			grep_string = {
 				-- theme = "ivy",
 				border = true,
+				hidden = true,
 			},
 			find_files = {
+				sorting_strategy = "descending",
 				previewer = false,
 				border = true,
 				prompt_title = "~ Files ~",
-				shorten_path = true,
+				hidden = true,
 
 				layout_config = {
 					horizontal = {
@@ -133,15 +144,14 @@ M.keys = function()
 	local get_visual_selection = require("default.utils").get_visual_selection
 
 	return {
-		{ "<leader>ff", builtin.find_files, {} },
-		{ "<leader>fb", builtin.buffers, {} },
-		{ "<leader>fab", "<cmd>Telescope scope buffers<cr>", { silent = true } },
-		{ "<leader>fh", builtin.help_tags, {} },
-		{ "<leader>fk", builtin.keymaps, {} },
-		{ "<leader>fR", builtin.registers, {} },
-		{ "<leader>fw", builtin.live_grep, {} },
+		{ "", builtin.find_files, {} },
+		{ "tb", builtin.buffers, {} },
+		{ "th", builtin.help_tags, {} },
+		{ "tk", builtin.keymaps, {} },
+		{ "tR", builtin.registers, {} },
+		{ "tw", builtin.live_grep, {} },
 		{
-			"<leader>fw",
+			"tw",
 			function()
 				vim.cmd.norm("")
 				local text = get_visual_selection()
@@ -151,7 +161,7 @@ M.keys = function()
 			{},
 		},
 		{
-			"<leader>fiw",
+			"tiw",
 			function()
 				local word = vim.fn.expand("<cword>")
 				builtin.grep_string({ search = word })
@@ -159,7 +169,7 @@ M.keys = function()
 			{},
 		},
 		{
-			"<leader>faw",
+			"taw",
 			function()
 				local word = vim.fn.expand("<cWORD>")
 				builtin.grep_string({ search = word })
@@ -168,7 +178,7 @@ M.keys = function()
 		},
 		{ "z=", builtin.spell_suggest, {} },
 		{
-			"<leader>fs",
+			"ts",
 			function()
 				local text = vim.fn.input("Grep -> ")
 				if text == "" then

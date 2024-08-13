@@ -7,9 +7,6 @@ local function set_telescope_colors(colorscheme)
 			title_bg = "#e58d91",
 			title_preview_bg = "#908caa",
 		}
-
-		vim.cmd.hi("Normal guibg=#212121")
-		vim.cmd.hi("NormalNC guibg=#101010")
 	elseif colorscheme == "solarized-osaka" then
 		telescope_colors = {
 			prompt_border = "#191f26",
@@ -32,7 +29,7 @@ local function set_telescope_colors(colorscheme)
 		)
 		vim.cmd.hi("TelescopePromptNormal guibg=" .. telescope_colors.prompt_border)
 	end
-    return telescope_colors
+	return telescope_colors
 end
 
 return set_telescope_colors

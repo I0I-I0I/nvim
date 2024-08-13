@@ -6,9 +6,7 @@ local M = {
 		{ "hrsh7th/cmp-buffer" },
 		{ "hrsh7th/cmp-path" },
 	},
-	event = {
-		"BufRead",
-	},
+	event = { "BufRead" },
 }
 
 function M.config()
@@ -18,14 +16,14 @@ function M.config()
 		window = {
 			cmp.config.window.bordered(),
 			completion = {
-				border = "rounded",
+				border = nil,
 				col_offset = -3,
 				side_padding = 1,
 				scrollbar = false,
 				scrolloff = 3,
 			},
 			documentation = {
-				border = "single",
+				border = nil,
 				col_offset = -3,
 				side_padding = 1,
 				scrollbar = true,

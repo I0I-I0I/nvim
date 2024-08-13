@@ -1,5 +1,30 @@
 local opts = { noremap = true, silent = true }
 
+vim.g.mapleader = ","
+vim.g.maplocalleader = " "
+
+local function bind_ai(keys, targets)
+	local modes = { "i", "a" }
+	for _, key in ipairs(keys) do
+		for _, target in ipairs(targets) do
+			local bind_i = key .. modes[1] .. "n" .. target
+			local bind_a = key .. modes[2] .. "n" .. target
+
+			Bind({
+				["n"] = {
+					[bind_i] = { "f" .. target .. key .. modes[1] .. target },
+					[bind_a] = { "f" .. target .. key .. modes[2] .. target },
+				}
+			})
+		end
+	end
+end
+
+bind_ai(
+	{ "c", "d", "y" },
+	{ "(", ")", "{", "}", "[", "]", '"', "'", "`" }
+)
+
 Bind({
 	["n"] = {
 		-- Toggle paste mode
@@ -72,18 +97,6 @@ Bind({
 		["<localleader>sb"] = { "<cmd>silent !tmux-start-job Development 0 npm run build<cr>" },
 		["<localleader>sr"] = { ":silent !tmux-start-job Development 0 " },
 
-		["cin{"] = { "f{ci{" },
-		["cin["] = { "f[ci[" },
-		["cin("] = { "f(ci(" },
-		['cin"'] = { 'f"ci"' },
-		["cin'"] = { "f'ci'" },
-		["cin`"] = { "f`ci`" },
-		["can{"] = { "f{ca{" },
-		["can["] = { "f[ca[" },
-		["can("] = { "f(ca(" },
-		['can"'] = { 'f"ca"' },
-		["can'"] = { "f'ca'" },
-		["can`"] = { "f`ca`" },
 	},
 
 	["ic"] = {
@@ -115,19 +128,11 @@ Bind({
 		["X"] = { '"_x' },
 		["s"] = { '"_s' },
 		["S"] = { '"_S' },
-
-		["0"] = { "^", { noremap = true } },
-		["^"] = { "0", { noremap = true } },
 	},
 
 	["x"] = {
 		["P"] = { '"_dp' },
 	},
-
-	-- ["vni"] = {
-	-- 	-- Save
-	-- 	["<C-s>"] = { "<cmd>w<cr><Esc>", opts },
-	-- },
 })
 
 -- Run

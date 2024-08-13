@@ -7,7 +7,7 @@ M.keys = function()
 
 	return {
 		{
-			"<leader>ft",
+			"tt",
 			function()
 				set_colors.change_colorscheme(1)
 			end,
@@ -15,7 +15,7 @@ M.keys = function()
 			desc = "Colorchemes",
 		},
 		{
-			"<leader>fat",
+			"tat",
 			function()
 				set_colors.change_colorscheme(0.73)
 			end,
@@ -24,7 +24,7 @@ M.keys = function()
 		},
 
 		{
-			"<leader>tt",
+			"tT",
 			function()
 				set_colors.toggle_theme_style()
 			end,

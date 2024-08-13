@@ -80,9 +80,9 @@ function M.config()
 		border = "double",
 	})
 
-	vim.keymap.del("n", "grr")
-	vim.keymap.del("n", "grn")
-	vim.keymap.del({ "n", "v" }, "gra")
+	vim.keymap.set("n", "grr", "<nop>")
+	vim.keymap.set("n", "grn", "<nop>")
+	vim.keymap.set({ "n", "v" }, "gra", "<nop>")
 
 	-- Attach/Mappings
 	autocmd("LspAttach", {
@@ -97,11 +97,11 @@ function M.config()
 			-- 	vim.bo[event.buf].omnifunc = "v:lua.vim.lsp.omnifunc"
 			-- end
 
-			if client then
-				if client.server_capabilities.inlayHintProvider then
-					vim.lsp.inlay_hint.enable(true)
-				end
-			end
+			-- if client then
+				-- if client.server_capabilities.inlayHintProvider then
+				-- 	vim.lsp.inlay_hint.enable(true)
+				-- end
+			-- end
 
 			Bind({
 				["n"] = {
@@ -153,15 +153,7 @@ function M.config()
 					["<leader>ll"] = { "<cmd>LspRestart<cr>", opts, desc = "Restart all lsp" },
 
 					-- Telescope
-					["<leader>fr"] = {
-						require("telescope.builtin").lsp_references,
-						desc = "Lsp References",
-					},
-					["<leader>fd"] = {
-						require("telescope.builtin").lsp_definitions,
-						desc = "Lsp Definitions",
-					},
-					["<leader>fD"] = {
+					["tD"] = {
 						require("telescope.builtin").diagnostics,
 						desc = "Lsp Definitions",
 					},

@@ -98,5 +98,3 @@ autocmd({ "TabEnter", "BufEnter", "WinResized" }, {
 		end
 	end,
 })
-
-vim.opt.showtabline = 3
