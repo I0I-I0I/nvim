@@ -110,10 +110,8 @@ Bind({
 
 	["v"] = {
 		-- Move strings
-		["<C-k>"] = { ":m '<-2<cr>gv=gv", opts },
-		["<C-j>"] = { ":m '>+1<cr>gv=gv", opts },
-		["K"] = { "k", { noremap = true } },
-		["J"] = { "j", { noremap = true } },
+		["K"] = { ":m '<-2<cr>gv=gv", opts },
+		["J"] = { ":m '>+1<cr>gv=gv", opts },
 
 		-- Move tabs
 		["<"] = { "<gv" },
