@@ -5,12 +5,29 @@ local M = {
 		{ "hrsh7th/cmp-cmdline" },
 		{ "hrsh7th/cmp-buffer" },
 		{ "hrsh7th/cmp-path" },
+		{
+			"saadparwaiz1/cmp_luasnip",
+			dependencies = {
+				{ "L3MON4D3/LuaSnip", version = "v2.*", build = "make install_jsregexp" },
+				{ "rafamadriz/friendly-snippets" },
+			},
+		},
 	},
 	event = { "BufRead" },
 }
 
 function M.config()
 	local cmp = require("cmp")
+	local ls = require("luasnip")
+
+	require("luasnip.loaders.from_vscode").lazy_load()
+
+	vim.keymap.set({ "i", "s" }, "<A-n>", function()
+		ls.jump(1)
+	end, { silent = true })
+	vim.keymap.set({ "i", "s" }, "<A-p>", function()
+		ls.jump(-1)
+	end, { silent = true })
 
 	cmp.setup({
 		window = {
@@ -37,7 +54,13 @@ function M.config()
 			["<C-e>"] = cmp.mapping.abort(),
 			["<CR>"] = cmp.mapping.confirm({ select = true }),
 		}),
+		snippet = {
+			expand = function(args)
+				require("luasnip").lsp_expand(args.body)
+			end,
+		},
 		sources = cmp.config.sources({
+			{ name = "luasnip" },
 			{ name = "nvim_lsp" },
 			{ name = "buffer", keyword_length = 3 },
 		}, {

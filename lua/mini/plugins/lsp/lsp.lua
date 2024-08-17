@@ -9,7 +9,6 @@ local M = {
 
 local servers = {
 	"lua_ls",
-	"emmet_language_server",
 	"html",
 	"cssls",
 	"tsserver",
@@ -50,23 +49,14 @@ function M.config()
 		update_in_insert = false,
 		virtual_text = {
 			prefix = "",
-			virt_text = {},
 			source = false,
-			format = function(diagnostic)
-				local str = diagnostic.source:gsub("[.]", "")
-				if str == "typescript" then
-					str = "TypeScript server"
-				end
-				str = str .. " "
-				return str
-			end,
 		},
 		float = {
 			focusable = true,
 			border = "rounded",
 			header = "",
 			prefix = "",
-			source = false,
+			source = true,
 		},
 	})
 
@@ -80,9 +70,9 @@ function M.config()
 		border = "double",
 	})
 
-	vim.keymap.set("n", "grr", "<nop>")
-	vim.keymap.set("n", "grn", "<nop>")
-	vim.keymap.set({ "n", "v" }, "gra", "<nop>")
+	vim.keymap.del("n", "grr")
+	vim.keymap.del("n", "grn")
+	vim.keymap.del({ "n", "v" }, "gra")
 
 	-- Attach/Mappings
 	autocmd("LspAttach", {

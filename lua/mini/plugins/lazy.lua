@@ -24,9 +24,10 @@ local plugins = {
 
 	-- LSP
 	{ import = vim.g.lsp_path .. "lsp" },
-	-- { import = vim.g.lsp_path .. "formatter" },
+	{ import = vim.g.lsp_path .. "formatter" },
 	{ import = vim.g.lsp_path .. "cmp" },
 	{ import = vim.g.lsp_path .. "linter" },
+	{ import = vim.g.lsp_path .. "emmet" },
 
 	-- AI
 	-- { import = plugins .. "codeium" },
