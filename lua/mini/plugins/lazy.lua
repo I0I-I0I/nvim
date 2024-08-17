@@ -6,7 +6,7 @@ local plugins = {
 	-- Local
 	{ import = vim.g.plugins_path .. "local.sessions" },
 	{ import = vim.g.plugins_path .. "local.zenmode" },
-	-- { import = vim.g.plugins_path .. "local.set_colors" },
+	{ import = vim.g.plugins_path .. "local.set_colors" },
 
 	-- Colorscheme
 	{ import = vim.g.config_path .. ".colorscheme.init" },

@@ -16,4 +16,4 @@ require(vim.g.plugins_path .. "lazy")
 require(custom_path .. "config")
 
 -- Current color scheme
--- require(vim.g.config_path .. ".colorscheme.theme")
+require(vim.g.config_path .. ".colorscheme.theme")
