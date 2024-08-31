@@ -4,10 +4,6 @@ local M = {
 	dependencies = { "nvim-lua/plenary.nvim" },
 }
 
--- function M.init()
--- require("telescope").load_extension("scope")
--- end
-
 M.opts = function()
 	local actions = require("telescope.actions")
 
@@ -17,7 +13,7 @@ M.opts = function()
 			selection_caret = " ",
 
 			preview = {
-				treesitter = false
+				treesitter = false,
 			},
 
 			sorting_strategy = "ascending",
@@ -145,10 +141,10 @@ M.keys = function()
 
 	return {
 		{ "", builtin.find_files, {} },
+		{ "<C-p>", builtin.registers, {} },
 		{ "tb", builtin.buffers, {} },
 		{ "th", builtin.help_tags, {} },
 		{ "tk", builtin.keymaps, {} },
-		{ "tR", builtin.registers, {} },
 		{ "tw", builtin.live_grep, {} },
 		{
 			"tw",
@@ -186,6 +182,11 @@ M.keys = function()
 				end
 				builtin.grep_string({ search = text })
 			end,
+		},
+		{
+			"td",
+			require("telescope.builtin").diagnostics,
+			desc = "Lsp diagnostics",
 		},
 	}
 end

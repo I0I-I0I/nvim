@@ -14,9 +14,17 @@ local function set_telescope_colors(colorscheme)
 			title_bg = "#849900",
 			title_preview_bg = "#268bd3",
 		}
+	elseif colorscheme == "everforest" then
+		telescope_colors = {
+			prompt_border = "#121212",
+			border = "#2a2a2a",
+			title_bg = "#82a882",
+			title_preview_bg = "#b47575",
+		}
 	end
 
 	if telescope_colors then
+		vim.cmd.hi("TelescopeNormal" .. " guibg=" .. telescope_colors.border)
 		vim.cmd.hi("TelescopeBorder guifg=" .. telescope_colors.border .. " guibg=" .. telescope_colors.border)
 		vim.cmd.hi("TelescopeResultsTitle guifg=" .. telescope_colors.border)
 		vim.cmd.hi("TelescopePromptTitle guibg=" .. telescope_colors.title_bg)

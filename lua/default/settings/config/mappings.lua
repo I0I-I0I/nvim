@@ -9,7 +9,6 @@ local function bind_ai(keys, targets)
 		for _, target in ipairs(targets) do
 			local bind_i = key .. modes[1] .. "n" .. target
 			local bind_a = key .. modes[2] .. "n" .. target
-
 			Bind({
 				["n"] = {
 					[bind_i] = { "f" .. target .. key .. modes[1] .. target },
@@ -47,26 +46,21 @@ Bind({
 		-- Movement
 		["<C-u>"] = { "<C-u>zz" },
 		["<C-d>"] = { "<C-d>zz" },
-		["<C-y>"] = { "3<C-y>" },
-		["<C-e>"] = { "3<C-e>" },
 		["n"] = { "nzzzv" },
 		["N"] = { "Nzzzv" },
 		["''"] = { "''zz" },
+		["<C-y>"] = { "3<C-y>" },
+		["<C-e>"] = { "3<C-e>" },
 
 		-- Netrw
-		["<localleader>n"] = { "<cmd>Ex<cr>", opts, desc = "Toggle netrw" },
+		["-"] = { "<cmd>Ex<cr>", opts, desc = "Toggle netrw" },
 
 		-- Rename
 		["R"] = { ":%s/\\<<C-r><C-w>\\>/<C-r><C-w>/gI<Left><Left><Left>", desc = "Replace word" },
+		["<localleader>r"] = { ":s/\\<<C-r><C-w>\\>/<C-r><C-w>/gI<Left><Left><Left>", desc = "Replace word on the line" },
 
 		-- Turn off search highlight
 		["<localleader><localleader>"] = { "<cmd>nohlsearch<cr>", opts, desc = "Turn off search highlight" },
-
-		-- Move by splits
-		["<localleader>h"] = { "<C-w>h", opts, desc = "Move to left window" },
-		["<localleader>j"] = { "<C-w>j", opts, desc = "Move to down window" },
-		["<localleader>k"] = { "<C-w>k", opts, desc = "Move to up window" },
-		["<localleader>l"] = { "<C-w>l", opts, desc = "Move to right window" },
 
 		-- Tabs
 		["<C-w>t"] = { "<cmd>tabnew<cr>", opts, desc = "Create a new tab" },
@@ -100,12 +94,8 @@ Bind({
 	},
 
 	["ic"] = {
-		["<C-h>"] = { "<C-Left>" },
-		["<C-l>"] = { "<C-Right>" },
 		["<A-h>"] = { "<left>" },
 		["<A-l>"] = { "<right>" },
-		["<A-k>"] = { "<up>" },
-		["<A-j>"] = { "<down>" },
 	},
 
 	["v"] = {
@@ -116,20 +106,18 @@ Bind({
 		-- Move tabs
 		["<"] = { "<gv" },
 		[">"] = { ">gv" },
-
-		-- Not yank
-		["x"] = { '"_x' },
 	},
 
 	["vn"] = {
 		-- Not yank
-		["X"] = { '"_x' },
+		["x"] = { '"_x' },
+		["X"] = { '"_X' },
 		["s"] = { '"_s' },
 		["S"] = { '"_S' },
 	},
 
 	["x"] = {
-		["P"] = { '"_dp' },
+		["P"] = { '"_dP' },
 	},
 })
 

@@ -8,15 +8,8 @@ vim.opt.fillchars = "eob:\\u00A0"
 
 vim.cmd([[
 	cnoreabbrev W w
-	cnoreabbrev W! w!
-	cnoreabbrev Q q
-	cnoreabbrev Q! q!
-	cnoreabbrev Wq wq
-	cnoreabbrev Wa wa
-	cnoreabbrev Qa qa
 
 	cnoreabbrev n norm
-
 	abbr vitewsl CHOKIDAR_USEPOLLING=true
 ]])
 
@@ -48,7 +41,6 @@ vim.g.netrw_winsize = 20
 vim.g.netrw_list_hide = "node_modules/,^\\.\\=/\\=$"
 
 vim.opt.autoread = true
-vim.bo.autoread = true
 
 -- Tabs
 vim.opt.autoindent = true
@@ -63,16 +55,7 @@ vim.opt.softtabstop = 0
 vim.opt.colorcolumn = "80"
 
 -- Completeion
-vim.opt.completeopt = { "menu", "menuone", "noselect" }
-
--- word separators
-vim.cmd("set iskeyword+=!,^34,^_")
-
--- Format options
-vim.g.formatoptions = "qrn1"
-
--- Update time
-vim.opt.updatetime = 50
+vim.opt.completeopt = { "menu", "menuone", "noinsert", "fuzzy" }
 
 -- Display invisible characters
 vim.opt.list = true
@@ -81,10 +64,10 @@ vim.cmd.hi("Whitespace guifg=#333333")
 
 -- Wrap
 vim.opt.linebreak = true
-autocmd("VimEnter", { command = "set wrap" })
+vim.opt.wrap = true
 
 -- Shell
-vim.opt.shell = "/bin/zsh"
+vim.opt.shell = "/usr/local/bin/fish"
 
 vim.opt.hidden = true
 
@@ -101,22 +84,20 @@ vim.opt.scrolloff = 3
 -- Search
 vim.opt.hlsearch = true
 vim.opt.incsearch = true
-vim.opt.ignorecase = true
 vim.opt.smartcase = true
 
 -- Showmode
 vim.opt.showmode = false
 
+-- Cursor
+vim.opt.guicursor = "i:blinkwait700-blinkoff400-blinkon250,r-cr:hor20,o:hor50"
+
 -- Mouse
 vim.opt.mousefocus = true
 vim.opt.mouse = "a"
 
--- Folding
-vim.opt.foldmethod = "manual"
-vim.opt.foldcolumn = "0"
-vim.opt.foldlevel = 99
-
-vim.opt.laststatus = 3
+-- Status line
+vim.opt.laststatus = 0
 vim.opt.cmdheight = 0
 
 -- Signcolumn

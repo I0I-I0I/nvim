@@ -5,7 +5,7 @@ local M = {
 M.cmd = { "SessionAttach", "SessionsList", "SessionCreate" }
 
 M.keys = function()
-    local sessions = require("sessions")
+	local sessions = require("sessions")
 
 	return {
 		{
@@ -32,13 +32,14 @@ M.keys = function()
 				sessions.create_session()
 			end,
 			{ silent = true },
-			desc = "Create session",
+			desc = "Update session",
 		},
 
 		{
 			"<leader>ss",
 			function()
 				sessions.attach_session()
+				vim.cmd("ZenmodeOpenAll 15")
 			end,
 			{ silent = true },
 			desc = "Attach session",

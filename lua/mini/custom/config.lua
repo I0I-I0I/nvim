@@ -20,3 +20,22 @@ vim.cmd([[
 	cnoreabbrev c close
 	cnoreabbrev C CloseAll
 ]])
+
+-- Win bar
+local function set_winbar()
+	local filetype = vim.bo.filetype
+	if filetype and filetype ~= "" then
+		return "%=%f%="
+	end
+	return ""
+end
+
+autocmd("BufEnter", {
+	callback = function()
+		vim.opt_local.winbar = set_winbar()
+	end,
+})
+
+vim.keymap.del("n", "grr")
+vim.keymap.del("n", "grn")
+vim.keymap.del("n", "gra")

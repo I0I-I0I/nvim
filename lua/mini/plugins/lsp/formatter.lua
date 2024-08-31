@@ -21,7 +21,7 @@ M.opts = {
 
 M.keys = {
 	{
-		"<leader>lf",
+		"<leader>f",
 		function()
 			require("conform").format({ async = true })
 		end,

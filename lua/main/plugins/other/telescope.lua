@@ -64,25 +64,42 @@ function M.config()
 		pickers = {
 			live_grep = {
 				prompt_title = "~ Words ~",
-				theme = "ivy",
+				-- theme = "ivy",
 				border = true,
+				hidden = true,
 			},
 			grep_string = {
-				theme = "ivy",
+				-- theme = "ivy",
 				border = true,
+				hidden = true,
 			},
 			find_files = {
-				theme = "dropdown",
+				sorting_strategy = "descending",
 				previewer = false,
 				border = true,
 				prompt_title = "~ Files ~",
-				shorten_path = false,
+				hidden = true,
+
+				layout_config = {
+					horizontal = {
+						prompt_position = "bottom",
+					},
+					width = 0.45,
+					height = 0.35,
+				},
 			},
 			buffers = {
-				theme = "dropdown",
 				prompt_title = "~ Buffers ~",
 				previewer = false,
 				initial_mode = "normal",
+
+				layout_config = {
+					horizontal = {
+						prompt_position = "bottom",
+					},
+					width = 0.45,
+					height = 0.35,
+				},
 			},
 			registers = {
 				theme = "cursor",
@@ -132,26 +149,27 @@ end
 local get_visual_selection = require("default.utils").get_visual_selection
 
 M.keys = {
-	{ "<leader>ff", M.builtin.find_files, desc = "Files" },
-	{ "<leader>fb", M.builtin.buffers, desc = "Buffers" },
-	{ "<leader>fh", M.builtin.help_tags, desc = "Help Tags" },
-	{ "<leader>fk", M.builtin.keymaps, desc = "Keymaps" },
-	{ "<leader>fR", M.builtin.registers, desc = "Registers" },
+	{ "<C-/>", M.builtin.find_files, desc = "Files" },
+	{ "tb", M.builtin.buffers, desc = "Buffers" },
+	{ "th", M.builtin.help_tags, desc = "Help Tags" },
+	{ "tk", M.builtin.keymaps, desc = "Keymaps" },
+	{ "tR", M.builtin.registers, desc = "Registers" },
+	{ "tD", M.builtin.diagnostics, desc = "Registers" },
 	{ "z=", M.builtin.spell_suggest, desc = "Spell Suggest" },
 	{
-		"<leader>fs",
+		"ts",
 		function()
-            local text = vim.fn.input("Grep -> ")
-            if text == "" then
-                return
-            end
+			local text = vim.fn.input("Grep -> ")
+			if text == "" then
+				return
+			end
 			M.builtin.grep_string({ search = text })
 		end,
 		desc = "Grep String",
 	},
-	{ "<leader>fw", M.builtin.live_grep, desc = "Live Grep" },
+	{ "tw", M.builtin.live_grep, desc = "Live Grep" },
 	{
-		"<leader>fw",
+		"tw",
 		function()
 			vim.cmd.norm("")
 			local text = get_visual_selection()
@@ -161,7 +179,7 @@ M.keys = {
 		{},
 	},
 	{
-		"<leader>fiw",
+		"tiw",
 		function()
 			local word = vim.fn.expand("<cword>")
 			M.builtin.grep_string({ search = word })
@@ -169,7 +187,7 @@ M.keys = {
 		{},
 	},
 	{
-		"<leader>faw",
+		"taw",
 		function()
 			local word = vim.fn.expand("<cWORD>")
 			M.builtin.grep_string({ search = word })

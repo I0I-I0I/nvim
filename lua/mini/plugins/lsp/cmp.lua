@@ -5,29 +5,29 @@ local M = {
 		{ "hrsh7th/cmp-cmdline" },
 		{ "hrsh7th/cmp-buffer" },
 		{ "hrsh7th/cmp-path" },
-		{
-			"saadparwaiz1/cmp_luasnip",
-			dependencies = {
-				{ "L3MON4D3/LuaSnip", version = "v2.*", build = "make install_jsregexp" },
-				{ "rafamadriz/friendly-snippets" },
-			},
-		},
+		-- {
+		-- 	"saadparwaiz1/cmp_luasnip",
+		-- 	dependencies = {
+		-- 		{ "L3MON4D3/LuaSnip", version = "v2.*", build = "make install_jsregexp" },
+		-- 		{ "rafamadriz/friendly-snippets" },
+		-- 	},
+		-- },
 	},
 	event = { "BufRead" },
 }
 
 function M.config()
 	local cmp = require("cmp")
-	local ls = require("luasnip")
+	-- local ls = require("luasnip")
 
-	require("luasnip.loaders.from_vscode").lazy_load()
+	-- require("luasnip.loaders.from_vscode").lazy_load()
 
-	vim.keymap.set({ "i", "s" }, "<A-n>", function()
-		ls.jump(1)
-	end, { silent = true })
-	vim.keymap.set({ "i", "s" }, "<A-p>", function()
-		ls.jump(-1)
-	end, { silent = true })
+	-- vim.keymap.set({ "i", "s" }, "<A-n>", function()
+	-- 	ls.jump(1)
+	-- end, { silent = true })
+	-- vim.keymap.set({ "i", "s" }, "<A-p>", function()
+	-- 	ls.jump(-1)
+	-- end, { silent = true })
 
 	cmp.setup({
 		window = {
@@ -50,20 +50,19 @@ function M.config()
 		mapping = cmp.mapping.preset.insert({
 			["<C-b>"] = cmp.mapping.scroll_docs(-4),
 			["<C-f>"] = cmp.mapping.scroll_docs(4),
-			["<C-Space>"] = cmp.mapping.complete(),
+			-- ["<C-Space>"] = cmp.mapping.complete(),
 			["<C-e>"] = cmp.mapping.abort(),
 			["<CR>"] = cmp.mapping.confirm({ select = true }),
 		}),
-		snippet = {
-			expand = function(args)
-				require("luasnip").lsp_expand(args.body)
-			end,
-		},
+		-- snippet = {
+		-- 	expand = function(args)
+		-- 		require("luasnip").lsp_expand(args.body)
+		-- 	end,
+		-- },
 		sources = cmp.config.sources({
-			{ name = "luasnip" },
+			-- { name = "luasnip" },
 			{ name = "nvim_lsp" },
 			{ name = "buffer", keyword_length = 3 },
-		}, {
 			{ name = "cmp-path" },
 		}),
 		formatting = {

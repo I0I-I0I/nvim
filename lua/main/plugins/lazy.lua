@@ -31,8 +31,6 @@ local plugins = {
 
 	-- Move
 	{ import = move .. "nvim-tree" },
-	{ import = move .. "spider" },
-	{ import = move .. "mini-ai" },
 
 	-- Utils
 	{ import = util .. "surround" },
@@ -43,6 +41,7 @@ local plugins = {
 	{ import = util .. "undotree" },
 	{ import = util .. "todo" },
 	{ import = util .. "scope" },
+	{ import = util .. "terminal" },
 
 	-- LSP
 	{ import = lsp .. "lsp" },
@@ -50,11 +49,11 @@ local plugins = {
 	{ import = lsp .. "formatter" },
 	{ import = lsp .. "linter" },
 	{ import = lsp .. "lspsaga" },
+	-- { import = lsp .. "trouble" },
 	-- { import = lsp .. "lsp-lens" },
-	{ import = lsp .. "trouble" },
 
 	-- Other
-	-- { import = other .. "neotest" },
+	{ import = other .. "neotest" },
 	{ import = other .. "treesitter" },
 	{ import = other .. "telescope" },
 	{ import = other .. "which-key" },
@@ -65,12 +64,9 @@ local plugins = {
 	{ import = integration .. "codeium" },
 
 	-- Git
+	{ import = git .. "gitsigns" },
 	{ import = git .. "git" },
 }
-
-if vim.g.neovide then
-	table.insert(plugins, { import = util .. "terminal" })
-end
 
 local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
 if not vim.loop.fs_stat(lazypath) then
