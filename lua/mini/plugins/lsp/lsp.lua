@@ -74,7 +74,7 @@ function M.config()
 			-- built-in completion for lsp
 			if client then
 				if client.supports_method("textDocument/completion") then
-					vim.lsp.completion.enable(true, client.id, event.buf, { autotrigger = true })
+					vim.lsp.completion.enable(true, client.id, event.buf, { autotrigger = false })
 				else
 					vim.bo[event.buf].omnifunc = "v:lua.vim.lsp.omnifunc"
 				end
@@ -84,9 +84,9 @@ function M.config()
 				end
 			end
 
-			vim.keymap.set("i", "<C-n>", function()
+			vim.keymap.set("i", "<C-y>", function()
 				if pumvisible() then
-					feedkeys "<C-n>"
+					feedkeys "<C-y>"
 				else
 					if next(vim.lsp.get_clients { bufnr = 0 }) then
 						vim.lsp.completion.trigger()

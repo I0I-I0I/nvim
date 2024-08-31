@@ -57,7 +57,9 @@ Bind({
 
 		-- Rename
 		["R"] = { ":%s/\\<<C-r><C-w>\\>/<C-r><C-w>/gI<Left><Left><Left>", desc = "Replace word" },
-		["<localleader>r"] = { ":s/\\<<C-r><C-w>\\>/<C-r><C-w>/gI<Left><Left><Left>", desc = "Replace word on the line" },
+
+		["<localleader>s"] = { ":s/\\v" },
+		["<localleader>S"] = { ":%s/\\v" },
 
 		-- Turn off search highlight
 		["<localleader><localleader>"] = { "<cmd>nohlsearch<cr>", opts, desc = "Turn off search highlight" },
@@ -73,23 +75,21 @@ Bind({
 		["]b"] = { "<cmd>bn<cr>", opts, desc = "Next buffer" },
 		["[b"] = { "<cmd>bp<cr>", opts, desc = "Previous buffer" },
 
+		-- QFix
+		["]c"] = { "<cmd>cnext<cr>", opts, desc = "Next qfix" },
+		["[c"] = { "<cmd>cprevious<cr>", opts, desc = "Previous qfix" },
+
 		-- Resizing
 		["<C-w>m"] = { "<C-w>|<C-w>_", opts, desc = "Maximize window" },
 		["<C-w>="] = { "<C-w>=", opts, desc = "Equalize window" },
 
-		-- QFix
-		["<localleader>co"] = { "<cmd>copen<cr>", opts, desc = "Open qfix" },
-		["<localleader>cc"] = { "<cmd>cclose<cr>", opts, desc = "Close qfix" },
-		["]c"] = { "<cmd>cnext<cr>", opts, desc = "Next qfix" },
-		["[c"] = { "<cmd>cprevious<cr>", opts, desc = "Previous qfix" },
-
 		-- Tmux
 		["<C-f>"] = { "<cmd>silent !tmux neww tmux-sessionizer<cr>" },
 		["<C-g>"] = { "<cmd>silent !tmux-lazygit<cr>" },
-		["<localleader>st"] = { "<cmd>silent !tmux-start-job Development 1 npm run test<cr>" },
-		["<localleader>sd"] = { "<cmd>silent !tmux-start-job Development 0 npm run dev<cr>" },
-		["<localleader>sb"] = { "<cmd>silent !tmux-start-job Development 0 npm run build<cr>" },
-		["<localleader>sr"] = { ":silent !tmux-start-job Development 0 " },
+		["<localleader>rt"] = { "<cmd>silent !tmux-start-job Development 1 npm run test<cr>" },
+		["<localleader>rd"] = { "<cmd>silent !tmux-start-job Development 0 npm run dev<cr>" },
+		["<localleader>rb"] = { "<cmd>silent !tmux-start-job Development 0 npm run build<cr>" },
+		["<localleader>rr"] = { ":silent !tmux-start-job Development 0 " },
 
 	},
 
@@ -106,6 +106,8 @@ Bind({
 		-- Move tabs
 		["<"] = { "<gv" },
 		[">"] = { ">gv" },
+
+		["<localleader>s"] = { ":s/\\v" },
 	},
 
 	["vn"] = {
@@ -119,31 +121,4 @@ Bind({
 	["x"] = {
 		["P"] = { '"_dP' },
 	},
-})
-
--- Run
-autocmd("BufRead", {
-	pattern = "*.js",
-	callback = function()
-		Bind({
-			["n"] = {
-				["<localleader>r"] = { "<cmd>w<cr><cmd>exec '!node' shellescape(@%, 1)<cr>", opts, desc = "Run node" },
-			},
-		})
-	end,
-})
-
-autocmd("BufRead", {
-	pattern = "*.py",
-	callback = function()
-		Bind({
-			["n"] = {
-				["<localleader>r"] = {
-					"<cmd>w<cr><cmd>exec '!python3.11' shellescape(@%, 1)<cr>",
-					opts,
-					desc = "Run python",
-				},
-			},
-		})
-	end,
 })
