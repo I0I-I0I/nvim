@@ -201,10 +201,6 @@ local colors = {
 		{ "CybuFocus", { bg = "#e4e4e4", fg = "#1c1c1c" } },
 		{ "NvimTreeEndOfBuffer", { fg = "#111111" } },
 
-		{ "TabLine", { bg = "#111111" } },
-		{ "TabLineFill", { bg = "#111111" } },
-		{ "StatusLine", { bg = "#111111", fg = "#999999" } },
-
 		{ "BufferLineDevIconLua", { fg = "#666666" } },
 		{ "BufferLineDevIconLuaInactive", { fg = inactiveColor } },
 		{ "BufferLineDevIconJsx", { fg = "#666666" } },

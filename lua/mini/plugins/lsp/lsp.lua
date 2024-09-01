@@ -15,15 +15,6 @@ local servers = {
 	"css_variables",
 }
 
-local function feedkeys(keys)
-	vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes(keys, true, false, true), 'n', true)
-end
-
----Is the completion menu open?
-local function pumvisible()
-	return tonumber(vim.fn.pumvisible()) ~= 0
-end
-
 function M.config()
 	local ok, cmp_nvim_lsp = pcall(require, "cmp_nvim_lsp")
 	vim.g.capabilities = vim.lsp.protocol.make_client_capabilities()
@@ -83,23 +74,6 @@ function M.config()
 					vim.lsp.inlay_hint.enable(true)
 				end
 			end
-
-			vim.keymap.set("i", "<C-y>", function()
-				if pumvisible() then
-					feedkeys "<C-y>"
-				else
-					if next(vim.lsp.get_clients { bufnr = 0 }) then
-						vim.lsp.completion.trigger()
-					else
-						if vim.bo.omnifunc == "" then
-							feedkeys "<C-x><C-n>"
-						else
-							feedkeys "<C-x><C-o>"
-						end
-					end
-				end
-			end)
-			vim.keymap.set("i", "<C-u>", "<C-x><C-n>", { desc = "Buffer completions" })
 
 			Bind({
 				["n"] = {

@@ -27,9 +27,9 @@ local plugins = {
 
 	-- LSP
 	{ import = vim.g.lsp_path .. "lsp" },
-	{ import = vim.g.lsp_path .. "emmet" },
 	{ import = vim.g.lsp_path .. "ts-tools" },
-	-- { import = vim.g.lsp_path .. "cmp" },
+	{ import = vim.g.lsp_path .. "emmet" },
+	{ import = vim.g.lsp_path .. "cmp" },
 }
 
 require(vim.g.plugins_path .. "lazy_init")(plugins)

@@ -68,12 +68,10 @@ M.opts = function()
 		pickers = {
 			live_grep = {
 				prompt_title = "~ Words ~",
-				-- theme = "ivy",
 				border = true,
 				hidden = true,
 			},
 			grep_string = {
-				-- theme = "ivy",
 				border = true,
 				hidden = true,
 			},
@@ -95,7 +93,6 @@ M.opts = function()
 			buffers = {
 				prompt_title = "~ Buffers ~",
 				previewer = false,
-				initial_mode = "normal",
 
 				layout_config = {
 					horizontal = {
@@ -125,12 +122,6 @@ M.opts = function()
 					},
 				},
 			},
-			-- lsp_references = {
-			-- 	theme = "ivy",
-			-- },
-			-- lsp_definitions = {
-			-- 	theme = "ivy",
-			-- },
 		},
 	}
 end
@@ -145,9 +136,9 @@ M.keys = function()
 		{ "tb", builtin.buffers, {} },
 		{ "th", builtin.help_tags, {} },
 		{ "tk", builtin.keymaps, {} },
-		{ "tw", builtin.live_grep, {} },
+		{ "", builtin.live_grep, {} },
 		{
-			"tw",
+			"",
 			function()
 				vim.cmd.norm("")
 				local text = get_visual_selection()

@@ -16,8 +16,8 @@ vim.cmd([[
 -- Undo
 vim.opt.undodir = "/mnt/d/undo"
 vim.opt.undofile = true
-vim.opt.undolevels = 10000
-vim.opt.undoreload = 100000
+vim.opt.undolevels = 1000000
+vim.opt.undoreload = 1000000
 
 -- Spell
 vim.opt.spelllang = "en_us"
