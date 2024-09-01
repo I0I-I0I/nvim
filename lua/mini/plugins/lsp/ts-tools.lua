@@ -1,6 +1,7 @@
 local M = {
 	"pmizio/typescript-tools.nvim",
 	dependencies = { "nvim-lua/plenary.nvim", "neovim/nvim-lspconfig" },
+	event = "VeryLazy",
 	opts = {
 		settings = {
 			-- spawn additional tsserver instance to calculate diagnostics on it
