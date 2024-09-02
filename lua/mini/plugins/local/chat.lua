@@ -6,7 +6,9 @@ local M = {
 }
 
 M.keys = {
-	{ "<leader>c", "<cmd>Rupilot<cr>", desc = "Rupilot", { silent = true } },
+	{ "<leader>c", function ()
+		vim.cmd("Rupilot " .. vim.fn.input("How I can help you? "))
+	end, desc = "Rupilot", { silent = true } },
 }
 
 return M

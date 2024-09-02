@@ -53,7 +53,7 @@ function M.config()
 			enabled = true,
 		},
 		codelens = {
-			enabled = false,
+			enabled = true,
 		},
 	}
 

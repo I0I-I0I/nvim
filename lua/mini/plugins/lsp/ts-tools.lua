@@ -23,8 +23,6 @@ local M = {
 			-- memory limit in megabytes or "auto"(basically no limit)
 			tsserver_max_memory = "auto",
 			-- described below
-			tsserver_format_options = {},
-			tsserver_file_preferences = {},
 			-- locale of all tsserver messages, supported locales you can find here:
 			-- https://github.com/microsoft/TypeScript/blob/3c221fc086be52b19801f6e8d82596d04607ede6/src/compiler/utilitiesPublic.ts#L620
 			tsserver_locale = "en",
@@ -34,28 +32,39 @@ local M = {
 			-- CodeLens
 			-- WARNING: Experimental feature also in VSCode, because it might hit performance of server.
 			-- possible values: ("off"|"all"|"implementations_only"|"references_only")
-			code_lens = "off",
+			code_lens = "references_only",
 			-- by default code lenses are displayed on all referencable values and for some of you it can
 			-- be too much this option reduce count of them by removing member references from lenses
-			disable_member_code_lens = true,
+			disable_member_code_lens = false,
 			-- JSXCloseTag
 			-- WARNING: it is disabled by default (maybe you configuration or distro already uses nvim-ts-autotag,
 			-- that maybe have a conflict if enable this feature. )
 			jsx_close_tag = {
 				enable = true,
 				filetypes = { "javascriptreact", "typescriptreact" },
-			}
-		},
-		tsserver_file_preferences = {
-			includeInlayParameterNameHints = "all",
-			includeCompletionsForModuleExports = true,
-			quotePreference = "double",
-		},
-		tsserver_format_options = {
-			allowIncompleteCompletions = true,
-			allowRenameOfImportPath = true,
+			},
+			tsserver_format_options = {
+				allowIncompleteCompletions = true,
+				allowRenameOfImportPath = true,
+				convertTabsToSpaces = false,
+			},
+			tsserver_file_preferences = {
+				includeCompletionsForModuleExports = true,
+				quotePreference = "double",
+				displayPartsForJSDoc = true,
+				generateReturnInDocTemplate = true,
+
+				includeInlayParameterNameHints = "all",
+				includeInlayVariableTypeHintsWhenTypeMatchesName = true,
+				includeInlayFunctionParameterTypeHints = true,
+				includeInlayEnumMemberValueHints = true,
+				includeInlayFunctionLikeReturnTypeHints = true,
+				includeInlayPropertyDeclarationTypeHints = true,
+				includeInlayParameterNameHintsWhenArgumentMatchesName = true,
+				includeInlayVariableTypeHints = false,
+			},
 		}
-	},
+	}
 }
 
 return M
