@@ -1,4 +1,4 @@
-local utils = "default.utils."
+local utils = vim.g.utils_path .. "."
 
 local M = {}
 

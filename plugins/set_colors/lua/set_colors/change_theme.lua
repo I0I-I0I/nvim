@@ -28,8 +28,8 @@ function M.enter(prompt_bufnr)
 	local selected = action_state.get_selected_entry()
 
 	local cmd = "SetColor " .. selected[1] .. M.transparency
-	local init = vim.fn.expand(vim.fn.stdpath("config") .. "/lua/" .. (vim.g.config_path or "default") .. "/colorscheme/theme.lua")
-	local job_cmd = "sed -i '$ d' " .. init .. " && echo 'vim.cmd(\"" .. cmd .. "\")' > " .. init
+	local init = vim.fn.expand(vim.fn.stdpath("config") .. "/lua/colorscheme/theme.lua")
+	local job_cmd = "echo 'vim.cmd(\"" .. cmd .. "\")' > " .. init
 	vim.fn.jobstart(job_cmd)
 
 	vim.cmd(cmd)

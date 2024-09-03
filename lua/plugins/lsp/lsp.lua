@@ -56,6 +56,10 @@ function M.config()
 		border = "double",
 	})
 
+	vim.keymap.del("n", "grr")
+	vim.keymap.del("n", "grn")
+	vim.keymap.del("n", "gra")
+
 	-- Attach/Mappings
 	autocmd("LspAttach", {
 		callback = function(event)
@@ -75,76 +79,28 @@ function M.config()
 				end
 			end
 
-			Bind({
-				["n"] = {
-					-- remap built-in maps
-					["K"] = {
-						vim.lsp.buf.hover,
-						desc = "Lsp References",
-					},
-					["gd"] = {
-						require("telescope.builtin").lsp_definitions,
-						desc = "Lsp Definitions",
-					},
-					["gr"] = {
-						require("telescope.builtin").lsp_references,
-						desc = "Lsp References",
-					},
-					["gD"] = {
-						vim.lsp.buf.declaration,
-						opts,
-						desc = "Lsp declaration",
-					},
-					["gi"] = {
-						vim.lsp.buf.implementation,
-						opts,
-						desc = "Lsp implementation",
-					},
-					["gtd"] = {
-						vim.lsp.buf.type_definition,
-						opts,
-						desc = "Lsp type definition",
-					},
-					["<leader>f"] = {
-						function ()
-							vim.lsp.buf.format({ async = true, timeout_ms = 500 })
-						end,
-						desc = "Format file",
-					},
-
-					-- Custom
-					["<leader>r"] = {
-						vim.lsp.buf.rename,
-						opts,
-						desc = "Lsp rename",
-					},
-					["<leader>lc"] = {
-						vim.lsp.buf.code_action,
-						opts,
-						desc = "Code actions",
-					},
-					["<leader>e"] = {
-						vim.diagnostic.open_float,
-						opts,
-						desc = "Show line diagnostics",
-					},
-					["<leader>ll"] = { "<cmd>LspRestart<cr>", opts, desc = "Restart all lsp" },
-
-					-- Navigate through the diagnostic
-					["]d"] = {
-						function()
-							vim.diagnostic.jump({ float = true, count = 1 })
-						end,
-						desc = "Lsp diagnostic go next",
-					},
-					["[d"] = {
-						function()
-							vim.diagnostic.jump({ float = true, count = -1 })
-						end,
-						desc = "Lsp diagnostic go prev",
-					},
-				},
-			})
+			vim.keymap.set("n", "K", vim.lsp.buf.hover, { desc = "Lsp References" })
+			vim.keymap.set("n", "gd", require("telescope.builtin").lsp_definitions, { desc = "Lsp Definitions" })
+			vim.keymap.set("n", "gr", require("telescope.builtin").lsp_references, { desc = "Lsp References" })
+			vim.keymap.set("n", "gD", vim.lsp.buf.declaration, { table.insert(opts, {desc = "Lsp declaration"}) })
+			vim.keymap.set("n", "gi", vim.lsp.buf.implementation, { table.insert(opts, {desc = "Lsp implementation"}) })
+			vim.keymap.set("n", "gtd", vim.lsp.buf.type_definition, { table.insert(opts, {desc = "Lsp type definition"}) })
+			vim.keymap.set("n", "<leader>f", function()
+				vim.lsp.buf.format({ async = true, timeout_ms = 500 }) end,
+				{ desc = "Format file" }
+			)
+			vim.keymap.set("n", "<leader>r", vim.lsp.buf.rename, { table.insert(opts, {desc = "Lsp rename"}) })
+			vim.keymap.set("n", "<leader>lc", vim.lsp.buf.code_action, { table.insert(opts, {desc = "Code actions"}) })
+			vim.keymap.set("n", "<leader>e", vim.diagnostic.open_float, { table.insert(opts, {desc = "Show line diagnostics"}) })
+			vim.keymap.set("n", "<leader>ll", "<cmd>LspRestart<cr>", { table.insert(opts, {desc = "Restart all lsp"}) })
+			vim.keymap.set("n", "]d", function()
+				vim.diagnostic.jump({ float = true, count = 1 }) end,
+				{ desc = "Lsp diagnostic go next" }
+			)
+			vim.keymap.set("n", "[d", function()
+				vim.diagnostic.jump({ float = true, count = -1 }) end,
+				{ desc = "Lsp diagnostic go prev" }
+			)
 		end,
 	})
 end

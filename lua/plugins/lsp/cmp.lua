@@ -2,13 +2,9 @@ local M = {
 	"hrsh7th/nvim-cmp",
 	dependencies = {
 		{ "hrsh7th/cmp-nvim-lsp" },
-		-- { "hrsh7th/cmp-path" },
-		{
-			"saadparwaiz1/cmp_luasnip",
-			dependencies = {
-				{ "L3MON4D3/LuaSnip", version = "v2.*", build = "make install_jsregexp" },
-				{ "rafamadriz/friendly-snippets" },
-			},
+		{ "saadparwaiz1/cmp_luasnip", dependencies = {
+			{ "L3MON4D3/LuaSnip", version = "v2.*", build = "make install_jsregexp" },
+			{ "rafamadriz/friendly-snippets" } },
 		},
 	},
 	event = { "BufRead" },
@@ -38,6 +34,7 @@ function M.config()
 			["<C-f>"] = cmp.mapping.scroll_docs(4),
 			["<C-e>"] = cmp.mapping.abort(),
 			["<CR>"] = cmp.mapping.confirm({ select = true }),
+			["<C-space>"] = cmp.mapping.complete(),
 		}),
 		snippet = {
 			expand = function(args)
@@ -45,9 +42,8 @@ function M.config()
 			end,
 		},
 		sources = cmp.config.sources({
-			{ name = "luasnip" },
 			{ name = "nvim_lsp" },
-			-- { name = "cmp-path" },
+			{ name = "luasnip" },
 		}),
 		formatting = {
 			format = function(_, vim_item)

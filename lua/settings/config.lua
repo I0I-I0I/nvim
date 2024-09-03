@@ -1,17 +1,13 @@
 vim.loader.enable()
 
+autocmd = vim.api.nvim_create_autocmd
+augroup = vim.api.nvim_create_augroup
+
 -- Settings
 vim.opt.termguicolors = true
 vim.scriptencoding = "utf-8"
 vim.opt.encoding = "utf-8"
-vim.opt.fillchars = "eob:\\u00A0"
-
-vim.cmd([[
-	cnoreabbrev W w
-
-	cnoreabbrev n norm
-	abbr vitewsl CHOKIDAR_USEPOLLING=true
-]])
+vim.opt.fillchars = "eob:\\u00A0,vert:\\u00A0"
 
 -- Undo
 vim.opt.undodir = "/mnt/d/undo"
@@ -23,18 +19,9 @@ vim.opt.undoreload = 1000000
 vim.opt.spelllang = "en_us"
 vim.opt.spell = true
 
--- swapfile/backup
+-- Disable swapfile/backup
 vim.opt.swapfile = false
 vim.opt.backup = false
-
--- Disable auto comments
-vim.api.nvim_create_autocmd("BufEnter", {
-	pattern = "*",
-	callback = function()
-		vim.cmd("set formatoptions=jcrql")
-	end,
-})
-vim.cmd("set formatoptions=jcrql")
 
 -- Explorer
 vim.g.netrw_banner = 0
@@ -42,16 +29,13 @@ vim.g.netrw_browse_split = 0
 vim.g.netrw_winsize = 20
 vim.g.netrw_list_hide = "node_modules/,^\\.\\=/\\=$"
 
-vim.opt.autoread = true
-
 -- Tabs
 vim.opt.autoindent = true
 vim.opt.smartindent = true
 vim.opt.smarttab = true
-vim.opt.expandtab = false
+vim.opt.expandtab = false -- false == tabs
 vim.opt.shiftwidth = 4
 vim.opt.tabstop = 4
-vim.opt.softtabstop = 0
 
 -- Color column
 vim.opt.colorcolumn = "80"
@@ -70,10 +54,6 @@ vim.opt.wrap = true
 
 -- Shell
 vim.opt.shell = "/usr/local/bin/fish"
-
-vim.opt.hidden = true
-
-vim.opt.visualbell.t_vb = false
 
 -- Numbers
 vim.opt.number = true
@@ -99,12 +79,21 @@ vim.opt.mousefocus = true
 vim.opt.mouse = "a"
 
 -- Status line
-vim.opt.laststatus = 0
-vim.opt.cmdheight = 0
+vim.opt.laststatus = 3
 
 -- Signcolumn
 vim.opt.signcolumn = "yes"
 
+-- Disable auto comments
+vim.api.nvim_create_autocmd("BufEnter", {
+	pattern = "*",
+	callback = function()
+		vim.cmd("set formatoptions=jcrql")
+	end,
+})
+vim.cmd("set formatoptions=jcrql")
+
+-- Disable spell in json files
 autocmd("FileType", {
 	pattern = { "json", "jsons" },
 	callback = function()
@@ -117,3 +106,46 @@ autocmd({ "BufWritePre" }, {
 	pattern = "*.*",
 	command = [[%s/\s\+$//e]],
 })
+
+-- Yank
+autocmd("TextYankPost", {
+	pattern = "*",
+	callback = function()
+		vim.highlight.on_yank({
+			higroup = "IncSearch",
+			timeout = 100,
+		})
+	end,
+})
+
+-- Resize
+autocmd("VimResized", {
+	group = augroup("WinResize", { clear = true }),
+	pattern = "*",
+	command = "wincmd =",
+})
+
+function OnExitAndSave()
+	vim.cmd("ZenmodeCloseAll")
+	vim.cmd("SessionCreate")
+	vim.cmd("wqa")
+end
+
+vim.api.nvim_create_user_command("CloseAll", function()
+	vim.cmd("ZenmodeCloseAll")
+	vim.cmd("silent tabonly")
+	vim.cmd("silent only")
+	vim.cmd("bufdo :bd!")
+end, {})
+
+vim.cmd([[
+	cnoreabbrev W w
+	cnoreabbrev Wa wa
+	cnoreabbrev Wq wq
+	cnoreabbrev sq lua OnExitAndSave()
+	cnoreabbrev c close
+	cnoreabbrev C CloseAll
+	cnoreabbrev n norm
+
+	abbr vitewsl CHOKIDAR_USEPOLLING=true
+]])

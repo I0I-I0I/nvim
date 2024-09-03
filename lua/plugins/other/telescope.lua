@@ -128,11 +128,11 @@ end
 
 M.keys = function()
 	local builtin = require("telescope.builtin")
-	local get_visual_selection = require("default.utils").get_visual_selection
+	local get_visual_selection = require(vim.g.utils_path).get_visual_selection
 
 	return {
 		{ "", builtin.find_files, {} },
-		{ "<C-p>", builtin.registers, {} },
+		{ "tr", builtin.registers, {} },
 		{ "tb", builtin.buffers, {} },
 		{ "th", builtin.help_tags, {} },
 		{ "tk", builtin.keymaps, {} },

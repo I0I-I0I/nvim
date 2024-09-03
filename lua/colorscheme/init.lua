@@ -18,36 +18,23 @@ local colorschemes = {
 		end,
 	},
 
-	{
-		"dgox16/oldworld.nvim",
-		name = "ColorScheme_oldworld",
-		lazy = false,
-		priority = 1000,
-		theme_names = {
-			"oldworld",
-		},
-	},
-
 	-- {
-	-- 	"sainnhe/gruvbox-material",
-	-- 	name = "ColorScheme_gruvbox-material",
+	-- 	"dgox16/oldworld.nvim",
+	-- 	name = "ColorScheme_oldworld",
 	-- 	lazy = false,
 	-- 	priority = 1000,
 	-- 	theme_names = {
-	-- 		"gruvbox-material",
+	-- 		"oldworld",
 	-- 	},
 	-- },
 
 	{
-		"olivercederborg/poimandres.nvim",
-		name = "ColorScheme_poimandres",
+		"sainnhe/gruvbox-material",
+		name = "ColorScheme_gruvbox-material",
 		lazy = false,
 		priority = 1000,
-		config = function()
-			require('poimandres').setup({})
-		end,
 		theme_names = {
-			"poimandres",
+			"gruvbox-material",
 		},
 	},
 }

@@ -10,7 +10,7 @@ local plugins = {
 	{ import = vim.g.plugins_path .. "local.chat" },
 
 	-- Colorscheme
-	{ import = vim.g.config_path .. ".colorscheme.init" },
+	{ import = "colorscheme.init" },
 
 	-- Utils
 	{ import = utils .. "undotree" },
