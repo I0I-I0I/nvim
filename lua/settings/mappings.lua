@@ -48,3 +48,7 @@ vim.keymap.set({ "v", "n" }, "S", '"_S')
 
 -- Don't yank on paste
 vim.keymap.set("x", "P", '"_dP')
+
+-- C++
+vim.keymap.set("n", "<localleader>m", "<cmd>make<cr>", { silent = true })
+vim.keymap.set("n", "<localleader>M", ":make ")

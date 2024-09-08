@@ -9,6 +9,7 @@ local M = {
 
 local servers = {
 	"lua_ls",
+	"clangd",
 	"html",
 	"cssls",
 	"cssmodules_ls",
@@ -28,7 +29,9 @@ function M.config()
 	})
 	require("mason-lspconfig").setup_handlers({
 		function(server_name)
-			require("lspconfig")[server_name].setup(require(vim.g.lsp_path .. "servers." .. server_name))
+			require("lspconfig")[server_name].setup(
+				require(vim.g.lsp_path .. "servers." .. server_name)
+			)
 		end,
 	})
 

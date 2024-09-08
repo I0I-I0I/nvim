@@ -6,6 +6,7 @@ local M = {
 M.config = function()
 	local neocodeium = require("neocodeium")
 	neocodeium.setup({
+		enabled = false,
 		silent = true,
 	})
 
