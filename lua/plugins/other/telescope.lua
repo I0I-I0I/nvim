@@ -6,7 +6,6 @@ local M = {
 
 M.opts = function()
 	local actions = require("telescope.actions")
-
 	return {
 		defaults = {
 			prompt_prefix = "  ",
@@ -131,14 +130,11 @@ M.keys = function()
 	local get_visual_selection = require(vim.g.utils_path).get_visual_selection
 
 	return {
-		{ "", builtin.find_files, {} },
-		{ "tr", builtin.registers, {} },
-		{ "tb", builtin.buffers, {} },
-		{ "th", builtin.help_tags, {} },
-		{ "tk", builtin.keymaps, {} },
-		{ "", builtin.live_grep, {} },
+		{ "", builtin.find_files, {} },
+		{ "<leader>b", builtin.buffers, {} },
+		{ "", builtin.live_grep, {} },
 		{
-			"",
+			"",
 			function()
 				vim.cmd.norm("")
 				local text = get_visual_selection()
@@ -179,6 +175,9 @@ M.keys = function()
 			require("telescope.builtin").diagnostics,
 			desc = "Lsp diagnostics",
 		},
+		{ "tr", builtin.registers, {} },
+		{ "th", builtin.help_tags, {} },
+		{ "tk", builtin.keymaps, {} },
 	}
 end
 

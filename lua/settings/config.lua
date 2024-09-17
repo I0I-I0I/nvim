@@ -15,24 +15,21 @@ vim.opt.undofile = true
 vim.opt.undolevels = 1000000
 vim.opt.undoreload = 1000000
 
--- Spell
-vim.opt.spelllang = "en_us"
-vim.opt.spell = true
-
 -- Disable swapfile/backup
 vim.opt.swapfile = false
 vim.opt.backup = false
 
+-- Spell
+vim.opt.spelllang = "en_us"
+vim.opt.spell = true
+
 -- Explorer
 vim.g.netrw_banner = 0
 vim.g.netrw_browse_split = 0
-vim.g.netrw_winsize = 20
-vim.g.netrw_list_hide = "node_modules/,^\\.\\=/\\=$"
+vim.g.netrw_list_hide = "node_modules/,^\\.\\=/\\=$,^\\.\\.\\=/\\=$"
 
 -- Tabs
-vim.opt.autoindent = true
 vim.opt.smartindent = true
-vim.opt.smarttab = true
 vim.opt.expandtab = false -- false == tabs
 vim.opt.shiftwidth = 4
 vim.opt.tabstop = 4
@@ -41,7 +38,7 @@ vim.opt.tabstop = 4
 vim.opt.colorcolumn = "80"
 
 -- Completeion
-vim.opt.completeopt = { "menu", "menuone", "noinsert", "fuzzy" }
+vim.opt.completeopt = { "menu", "menuone", "fuzzy" }
 
 -- Display invisible characters
 vim.opt.list = true
@@ -50,7 +47,6 @@ vim.cmd.hi("Whitespace guifg=#333333")
 
 -- Wrap
 vim.opt.linebreak = true
-vim.opt.wrap = true
 
 -- Shell
 vim.opt.shell = "/usr/local/bin/fish"
@@ -67,9 +63,6 @@ vim.opt.scrolloff = 3
 vim.opt.hlsearch = true
 vim.opt.incsearch = true
 vim.opt.smartcase = true
-
--- Showmode
-vim.opt.showmode = false
 
 -- Cursor
 vim.opt.guicursor = "i:blinkwait700-blinkoff400-blinkon250,r-cr:hor20,o:hor50"
@@ -92,15 +85,6 @@ vim.api.nvim_create_autocmd("BufEnter", {
 	end,
 })
 vim.cmd("set formatoptions=jcrql")
-
--- Disable spell in json files
-autocmd("FileType", {
-	pattern = { "json", "jsons" },
-	callback = function()
-		vim.wo.spell = false
-		vim.wo.conceallevel = 0
-	end,
-})
 
 autocmd({ "BufWritePre" }, {
 	pattern = "*.*",
@@ -131,20 +115,12 @@ function OnExitAndSave()
 	vim.cmd("wqa")
 end
 
-vim.api.nvim_create_user_command("CloseAll", function()
-	vim.cmd("ZenmodeCloseAll")
-	vim.cmd("silent tabonly")
-	vim.cmd("silent only")
-	vim.cmd("bufdo :bd!")
-end, {})
-
 vim.cmd([[
 	cnoreabbrev W w
 	cnoreabbrev Wa wa
 	cnoreabbrev Wq wq
 	cnoreabbrev sq lua OnExitAndSave()
 	cnoreabbrev c close
-	cnoreabbrev C CloseAll
 	cnoreabbrev n norm
 
 	abbr vitewsl CHOKIDAR_USEPOLLING=true

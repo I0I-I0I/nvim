@@ -52,16 +52,10 @@ function M.config()
 	-- Handlers
 	vim.lsp.handlers["textDocument/hover"] = vim.lsp.with(vim.lsp.handlers.hover, {
 		border = "double",
-		title = "hover",
 	})
-
 	vim.lsp.handlers["textDocument/signatureHelp"] = vim.lsp.with(vim.lsp.handlers.signature_help, {
 		border = "double",
 	})
-
-	vim.keymap.del("n", "grr")
-	vim.keymap.del("n", "grn")
-	vim.keymap.del("n", "gra")
 
 	-- Attach/Mappings
 	autocmd("LspAttach", {
@@ -82,26 +76,27 @@ function M.config()
 				end
 			end
 
-			vim.keymap.set("n", "K", vim.lsp.buf.hover, { desc = "Lsp References" })
-			vim.keymap.set("n", "gd", require("telescope.builtin").lsp_definitions, { desc = "Lsp Definitions" })
-			vim.keymap.set("n", "gr", require("telescope.builtin").lsp_references, { desc = "Lsp References" })
-			vim.keymap.set("n", "gD", vim.lsp.buf.declaration, { table.insert(opts, {desc = "Lsp declaration"}) })
-			vim.keymap.set("n", "gi", vim.lsp.buf.implementation, { table.insert(opts, {desc = "Lsp implementation"}) })
-			vim.keymap.set("n", "gtd", vim.lsp.buf.type_definition, { table.insert(opts, {desc = "Lsp type definition"}) })
-			vim.keymap.set("n", "<leader>f", function()
-				vim.lsp.buf.format({ async = true, timeout_ms = 500 }) end,
-				{ desc = "Format file" }
-			)
-			vim.keymap.set("n", "<leader>r", vim.lsp.buf.rename, { table.insert(opts, {desc = "Lsp rename"}) })
-			vim.keymap.set("n", "<leader>lc", vim.lsp.buf.code_action, { table.insert(opts, {desc = "Code actions"}) })
-			vim.keymap.set("n", "<leader>e", vim.diagnostic.open_float, { table.insert(opts, {desc = "Show line diagnostics"}) })
-			vim.keymap.set("n", "<leader>ll", "<cmd>LspRestart<cr>", { table.insert(opts, {desc = "Restart all lsp"}) })
+			vim.keymap.set("n", "gd", vim.lsp.buf.definition, { desc = "Lsp Definitions" })
+			vim.keymap.set("n", "gD", vim.lsp.buf.declaration, { table.insert(opts, { desc = "Lsp declaration" }) })
+			vim.keymap.set("n", "gi", vim.lsp.buf.implementation, { table.insert(opts, { desc = "Lsp implementation" }) })
+			vim.keymap.set("n", "gtd", vim.lsp.buf.type_definition,
+				{ table.insert(opts, { desc = "Lsp type definition" }) })
+			vim.keymap.set("n", "<leader>e", vim.diagnostic.open_float,
+				{ table.insert(opts, { desc = "Show line diagnostics" }) })
+			vim.keymap.set("n", "<leader>ll", "<cmd>LspRestart<cr>", { table.insert(opts, { desc = "Restart all lsp" }) })
 			vim.keymap.set("n", "]d", function()
-				vim.diagnostic.jump({ float = true, count = 1 }) end,
+				vim.keymap.set("n", "<leader>f", function()
+					vim.lsp.buf.format({ async = true, timeout_ms = 500 })
+				end,
+					{ desc = "Format file" }
+				)
+				vim.diagnostic.jump({ float = true, count = 1 })
+			end,
 				{ desc = "Lsp diagnostic go next" }
 			)
 			vim.keymap.set("n", "[d", function()
-				vim.diagnostic.jump({ float = true, count = -1 }) end,
+				vim.diagnostic.jump({ float = true, count = -1 })
+			end,
 				{ desc = "Lsp diagnostic go prev" }
 			)
 		end,

@@ -20,7 +20,7 @@ M.keys = function()
 			desc = "Add file (Harpoon)",
 		},
 		{
-			"<C-m>",
+			"<C-space>",
 			function()
 				harpoon.ui:toggle_quick_menu(harpoon:list())
 			end,

@@ -1,15 +1,19 @@
+vim.g.local_plugins_path = vim.fn.stdpath("config") .. "/plugins/"
+
+local colorscheme = "colorscheme."
+local local_plugin = vim.g.plugins_path .. "local."
 local other = vim.g.plugins_path .. "other."
 local utils = vim.g.plugins_path .. "utils."
-vim.g.local_plugins_path = vim.fn.stdpath("config") .. "/plugins/"
+local lsp = vim.g.lsp_path
 
 local plugins = {
 	-- Local
-	{ import = vim.g.plugins_path .. "local.sessions" },
-	{ import = vim.g.plugins_path .. "local.zenmode" },
-	{ import = vim.g.plugins_path .. "local.set_colors" },
+	{ import = local_plugin .. "sessions" },
+	{ import = local_plugin .. "zenmode" },
+	{ import = local_plugin .. "set_colors" },
 
 	-- Colorscheme
-	{ import = "colorscheme.init" },
+	{ import = colorscheme .. "init" },
 
 	-- Utils
 	{ import = utils .. "undotree" },
@@ -22,13 +26,12 @@ local plugins = {
 	{ import = other .. "git" },
 	{ import = other .. "harpoon" },
 	{ import = other .. "codeium" },
-	{ import = other .. "time" },
 
 	-- LSP
-	{ import = vim.g.lsp_path .. "lsp" },
-	{ import = vim.g.lsp_path .. "cmp" },
-	{ import = vim.g.lsp_path .. "ts-tools" },
-	{ import = vim.g.lsp_path .. "emmet" },
+	{ import = lsp .. "lsp" },
+	{ import = lsp .. "cmp" },
+	{ import = lsp .. "ts-tools" },
+	{ import = lsp .. "emmet" },
 }
 
 require(vim.g.plugins_path .. "lazy_init")(plugins)

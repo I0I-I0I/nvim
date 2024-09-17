@@ -13,24 +13,34 @@ vim.keymap.set("n", "<C-y>", "3<C-y>")
 vim.keymap.set("n", "<C-e>", "3<C-e>")
 
 -- Netrw
-vim.keymap.set("n", "-", "<cmd>Ex<cr>", { table.insert(opts, {desc = "Toggle netrw"}) })
-
--- Rename
-vim.keymap.set("n", "R", ":%s/\\<<C-r><C-w>\\>/<C-r><C-w>/gI<Left><Left><Left>", { desc = "Replace word" })
+vim.keymap.set("n", "-", "<cmd>Ex<cr>", { table.insert(opts, { desc = "Toggle netrw" }) })
 
 -- Turn off search highlight
-vim.keymap.set("n", "<localleader><localleader>", "<cmd>nohlsearch<cr>", { table.insert(opts, {desc = "Turn off search highlight"}) })
+vim.keymap.set("n", "<localleader><localleader>", "<cmd>nohlsearch<cr>",
+	{ table.insert(opts, { desc = "Turn off search highlight" }) })
 
 -- QFix
-vim.keymap.set("n", "<C-n>", "<cmd>cnext<cr>", { table.insert(opts, {desc = "Next qfix"}) })
-vim.keymap.set("n", "<C-p>", "<cmd>cprevious<cr>", { table.insert(opts, {desc = "Previous qfix"}) })
+vim.keymap.set("n", "<C-n>", "<cmd>cnext<cr>", { table.insert(opts, { desc = "Next qfix" }) })
+vim.keymap.set("n", "<C-p>", "<cmd>cprevious<cr>", { table.insert(opts, { desc = "Previous qfix" }) })
+vim.keymap.set("n", "]c", "<cmd>cnewer<cr>", { table.insert(opts, { desc = "Next qfix" }) })
+vim.keymap.set("n", "[c", "<cmd>colder<cr>", { table.insert(opts, { desc = "Previous qfix" }) })
 
 -- Tmux
 vim.keymap.set("n", "<C-f>", "<cmd>silent !tmux neww tmux-sessionizer<cr>")
-vim.keymap.set("n", "<localleader>rt", "<cmd>silent !tmux-start-job Development 1 npm run test<cr>")
-vim.keymap.set("n", "<localleader>rd", "<cmd>silent !tmux-start-job Development 0 npm run dev<cr>")
-vim.keymap.set("n", "<localleader>rb", "<cmd>silent !tmux-start-job Development 0 npm run build<cr>")
-vim.keymap.set("n", "<localleader>rr", ":silent !tmux-start-job Development 0 ")
+vim.keymap.set("n", "<localleader>rr", function()
+	vim.ui.input({ prompt = "Command: " }, function(input)
+		if input then
+			vim.cmd("silent !tmux-start-job Development 0 " .. input)
+		end
+	end)
+end)
+vim.keymap.set("n", "<localleader>rm", function()
+	vim.ui.input({ prompt = "Select file: " }, function(input)
+		if input then
+			vim.cmd("!tmux-start-job Development 0 make && ./build/" .. input)
+		end
+	end)
+end)
 
 -- Move lines
 vim.keymap.set("v", "K", ":m '<-2<cr>gv=gv", { silent = true })
@@ -47,8 +57,7 @@ vim.keymap.set({ "v", "n" }, "s", '"_s')
 vim.keymap.set({ "v", "n" }, "S", '"_S')
 
 -- Don't yank on paste
-vim.keymap.set("x", "P", '"_dP')
+vim.keymap.set("x", "P", '"0P')
 
 -- C++
 vim.keymap.set("n", "<localleader>m", "<cmd>make<cr>", { silent = true })
-vim.keymap.set("n", "<localleader>M", ":make ")
