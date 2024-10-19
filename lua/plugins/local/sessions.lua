@@ -2,44 +2,41 @@ local M = {
 	dir = vim.g.local_plugins_path .. "sessions",
 }
 
-M.cmd = { "SessionAttach", "SessionsList", "SessionCreate" }
+M.cmd = { "SessionAttach", "SessionsList", "SessionCreate", "SessionSave" }
+
+function M.config()
+	require("sessions").setup({
+		path = "/mnt/d/sessions/",
+		attach_after_enter = false,
+	})
+end
 
 M.keys = function()
 	local sessions = require("sessions")
 
+	function ExitAndSave()
+		local ok, _ = pcall(require, "zenmode")
+		if ok then
+			vim.cmd("ZenmodeCloseAll")
+		end
+		vim.cmd("SessionSave")
+		vim.cmd("wqa")
+	end
+
+	vim.cmd.cnoreabbrev("sq lua ExitAndSave()")
+	vim.cmd.cnoreabbrev("ss SessionSave")
+	vim.cmd.cnoreabbrev("sl SessionsList")
+	vim.cmd.cnoreabbrev("sc SessionCreate")
+
 	return {
 		{
-			"<leader>sl",
-			function()
-				sessions.open_list()
-			end,
-			{ silent = true },
-			desc = "Open sessions list",
-		},
-
-		{
-			"<leader>sc",
-			function()
-				sessions.create_session(true)
-			end,
-			{ silent = true },
-			desc = "Create session",
-		},
-
-		{
-			"<leader>sS",
-			function()
-				sessions.create_session()
-			end,
-			{ silent = true },
-			desc = "Update session",
-		},
-
-		{
-			"<leader>ss",
+			"<leader>s",
 			function()
 				sessions.attach_session()
-				vim.cmd("ZenmodeOpenAll 15")
+				local ok, _ = pcall(require, "zenmode")
+				if ok then
+					vim.cmd("ZenmodeOpenAll 15")
+				end
 			end,
 			{ silent = true },
 			desc = "Attach session",

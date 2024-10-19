@@ -7,15 +7,6 @@ local M = {
 	event = "VeryLazy",
 }
 
-local servers = {
-	"lua_ls",
-	"clangd",
-	"html",
-	"cssls",
-	"cssmodules_ls",
-	"css_variables",
-}
-
 function M.config()
 	local ok, cmp_nvim_lsp = pcall(require, "cmp_nvim_lsp")
 	vim.g.capabilities = vim.lsp.protocol.make_client_capabilities()
@@ -25,7 +16,7 @@ function M.config()
 
 	require("mason").setup()
 	require("mason-lspconfig").setup({
-		ensure_installed = servers,
+		ensure_installed = vim.g.lsp_servers,
 	})
 	require("mason-lspconfig").setup_handlers({
 		function(server_name)

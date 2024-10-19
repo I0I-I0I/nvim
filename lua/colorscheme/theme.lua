@@ -1,1 +1,1 @@
-vim.cmd("SetColor rose-pine 1")
+vim.cmd("SetColor rose-pine 0.73")

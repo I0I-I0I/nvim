@@ -109,17 +109,10 @@ autocmd("VimResized", {
 	command = "wincmd =",
 })
 
-function OnExitAndSave()
-	vim.cmd("ZenmodeCloseAll")
-	vim.cmd("SessionCreate")
-	vim.cmd("wqa")
-end
-
 vim.cmd([[
 	cnoreabbrev W w
 	cnoreabbrev Wa wa
 	cnoreabbrev Wq wq
-	cnoreabbrev sq lua OnExitAndSave()
 	cnoreabbrev c close
 	cnoreabbrev n norm
 

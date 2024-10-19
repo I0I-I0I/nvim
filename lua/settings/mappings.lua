@@ -34,6 +34,7 @@ vim.keymap.set("n", "<localleader>rr", function()
 		end
 	end)
 end)
+	-- C++
 vim.keymap.set("n", "<localleader>rm", function()
 	vim.ui.input({ prompt = "Select file: " }, function(input)
 		if input then
@@ -41,6 +42,7 @@ vim.keymap.set("n", "<localleader>rm", function()
 		end
 	end)
 end)
+vim.keymap.set("n", "<localleader>m", "<cmd>make<cr>", { silent = true })
 
 -- Move lines
 vim.keymap.set("v", "K", ":m '<-2<cr>gv=gv", { silent = true })
@@ -58,6 +60,3 @@ vim.keymap.set({ "v", "n" }, "S", '"_S')
 
 -- Don't yank on paste
 vim.keymap.set("x", "P", '"0P')
-
--- C++
-vim.keymap.set("n", "<localleader>m", "<cmd>make<cr>", { silent = true })

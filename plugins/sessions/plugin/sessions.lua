@@ -4,6 +4,10 @@ vim.api.nvim_create_user_command("SessionsList", function()
 	sessions.open_list()
 end, {})
 
+vim.api.nvim_create_user_command("SessionSave", function()
+	sessions.save_session()
+end, {})
+
 vim.api.nvim_create_user_command("SessionCreate", function()
 	sessions.create_session()
 end, {})

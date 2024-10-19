@@ -7,20 +7,36 @@ local actions = require("telescope.actions")
 local action_state = require("telescope.actions.state")
 local dropdown = require("telescope.themes").get_dropdown()
 
-M.marker = "FOR_TELESCOPE"
-M.Path = "/mnt/d/sessions/"
-M.dirs = {}
+M.var = {}
 
-function M.delete(prompt_bufnr)
+M.var.marker = "FOR_TELESCOPE"
+M.var.dirs = {}
+
+function M.setup(opts)
+	M.var.path = opts.path or "~/sessions/"
+	M.var.attach_after_enter = opts.attach_after_enter or false
+end
+
+function M.attach_session()
+	vim.cmd("silent source " .. M.var.path .. vim.fn.getcwd():gsub("/", ":") .. ".vim")
+end
+
+local function delete_session(prompt_bufnr)
 	actions.close(prompt_bufnr)
 	local selected = action_state.get_selected_entry()[1]
 	local selected_copy = selected:sub(1, -1)
 	selected = selected:gsub(" ", "_")
-	local dir = M.dirs[selected]
+	local dir = M.var.dirs[selected]
 	local file = dir:gsub("/", ":"):sub(1, -1) .. ".vim"
 
-	vim.cmd("silent !rm -rf " .. M.Path .. file)
-	vim.cmd("silent !rm -rf " .. M.Path .. "FOR_TELESCOPE\\(" .. selected:gsub('"', '\\"'):sub(1, -1) .. "\\)" .. file)
+	vim.cmd("silent !rm -rf " .. M.var.path .. file)
+	vim.cmd(
+		"silent !rm -rf "
+		.. M.var.path
+		.. M.var.marker
+		.. "\\(" .. selected:gsub('"', '\\"'):sub(1, -1) .. "\\)"
+		.. file
+	)
 	print("Session deleted: " .. selected_copy)
 	vim.cmd("SessionsList")
 end
@@ -30,26 +46,30 @@ function M.enter(prompt_bufnr)
 	local selected = action_state.get_selected_entry()
 	local dir = selected[1]:gsub(" ", "_")
 
-	vim.cmd("cd " .. M.dirs[dir])
+	vim.cmd("cd " .. M.var.dirs[dir])
+
+	if M.var.attach_after_enter then
+		M.attach_session()
+	end
 end
 
-function M.get_dirs()
-	M.dirs = {}
-	for k, _ in vim.fn.execute("!ls " .. M.Path):gmatch("[A-Za-z_.:|0-9()\"'\\-]+.vim") do
+local function get_dirs()
+	M.var.dirs = {}
+	for k, _ in vim.fn.execute("!ls " .. M.var.path):gmatch("[A-Za-z_.:|0-9()\"'\\-]+.vim") do
 		local dir = k:gsub(":", "/"):sub(1, -5)
-		if dir:match(M.marker) then
+		if dir:match(M.var.marker) then
 			local session_name = dir:match("[(](.+)[)]")
-			dir = dir:match(M.marker .. "[(].+[)](.*)")
+			dir = dir:match(M.var.marker .. "[(].+[)](.*)")
 
-			M.dirs[session_name] = dir
+			M.var.dirs[session_name] = dir
 		end
 	end
-	return M.dirs
+	return M.var.dirs
 end
 
-function M.opts()
+local function get_options()
 	local sessions = {}
-	for session_name, dir in pairs(M.get_dirs()) do
+	for session_name, dir in pairs(get_dirs()) do
 		table.insert(sessions, session_name:gsub("_", " "):sub(1, -1))
 	end
 	table.sort(sessions)
@@ -64,42 +84,39 @@ function M.opts()
 
 		attach_mappings = function(prompt_bufnr, map)
 			map({ "n", "i" }, "<CR>", M.enter)
-			map("n", "dd", M.delete)
-			map("i", "<C-d>", M.delete)
+			map("n", "dd", delete_session)
+			map("i", "<C-d>", delete_session)
 			return true
 		end,
 	}
 end
 
-function M.create_session(flag)
-	vim.cmd("mksession! " .. M.Path .. vim.fn.getcwd():gsub("/", ":") .. ".vim")
-	if flag then
-		local prompt = vim.fn.input("Enter Session Name: ")
-		local prompt_copy = prompt:sub(1, -1)
-		if prompt == "" then
-			return
-		end
-		prompt = prompt:gsub(" ", "_")
-		prompt = prompt:gsub('"', '\\"')
-		vim.cmd(
-			"silent !touch "
-				.. M.Path
-				.. "FOR_TELESCOPE\\("
-				.. prompt
-				.. "\\)"
-				.. vim.fn.getcwd():gsub("/", ":")
-				.. ".vim"
-		)
-		print("Session created: " .. prompt_copy)
-	end
+function M.save_session()
+	vim.cmd("mksession! " .. M.var.path .. vim.fn.getcwd():gsub("/", ":") .. ".vim")
 end
 
-function M.attach_session()
-	vim.cmd("silent source " .. M.Path .. vim.fn.getcwd():gsub("/", ":") .. ".vim")
+function M.create_session()
+	M.save_session()
+	local prompt = vim.fn.input("Enter Session Name: ")
+	local prompt_copy = prompt:sub(1, -1)
+	if prompt == "" then
+		return
+	end
+	prompt = prompt:gsub(" ", "_")
+	prompt = prompt:gsub('"', '\\"')
+	vim.cmd(
+		"silent !touch "
+		.. M.var.path
+		.. M.var.marker
+		.. "\\(" .. prompt .. "\\)"
+		.. vim.fn.getcwd():gsub("/", ":")
+		.. ".vim"
+	)
+	print("Session created: " .. prompt_copy)
 end
 
 function M.open_list()
-	pickers.new(dropdown, M.opts()):find()
+	pickers.new(dropdown, get_options()):find()
 end
 
 return M
