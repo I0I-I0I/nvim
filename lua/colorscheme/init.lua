@@ -42,7 +42,29 @@ local colorschemes = {
 				bg2 = { '#282828', '235' }
 			}
 		end,
-	}
+	},
+
+	{
+		"zenbones-theme/zenbones.nvim",
+		-- dependencies = "rktjmp/lush.nvim",
+		theme_names = {
+			"zenbones",
+		},
+		lazy = false,
+		priority = 1000,
+		init  = function()
+			vim.g.zenbones_compat = 1
+		end,
+	},
+
+	{
+		'Verf/deepwhite.nvim',
+		lazy = false,
+		priority = 1000,
+		theme_names = {
+			'deepwhite',
+		},
+	},
 }
 
 local ok, set_colors = pcall(require, "set_colors")

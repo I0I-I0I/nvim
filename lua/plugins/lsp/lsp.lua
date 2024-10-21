@@ -26,28 +26,6 @@ function M.config()
 		end,
 	})
 
-	vim.diagnostic.config({
-		sighns = true,
-		underline = true,
-		severity_sort = true,
-		virtual_text = { prefix = "" },
-		float = {
-			focusable = true,
-			border = "rounded",
-			header = "",
-			prefix = "",
-			source = false,
-		},
-	})
-
-	-- Handlers
-	vim.lsp.handlers["textDocument/hover"] = vim.lsp.with(vim.lsp.handlers.hover, {
-		border = "double",
-	})
-	vim.lsp.handlers["textDocument/signatureHelp"] = vim.lsp.with(vim.lsp.handlers.signature_help, {
-		border = "double",
-	})
-
 	-- Attach/Mappings
 	autocmd("LspAttach", {
 		callback = function(event)
@@ -75,12 +53,12 @@ function M.config()
 			vim.keymap.set("n", "<leader>e", vim.diagnostic.open_float,
 				{ table.insert(opts, { desc = "Show line diagnostics" }) })
 			vim.keymap.set("n", "<leader>ll", "<cmd>LspRestart<cr>", { table.insert(opts, { desc = "Restart all lsp" }) })
+			vim.keymap.set("n", "<leader>f", function()
+				vim.lsp.buf.format({ async = true, timeout_ms = 500 })
+			end,
+				{ desc = "Format file" }
+			)
 			vim.keymap.set("n", "]d", function()
-				vim.keymap.set("n", "<leader>f", function()
-					vim.lsp.buf.format({ async = true, timeout_ms = 500 })
-				end,
-					{ desc = "Format file" }
-				)
 				vim.diagnostic.jump({ float = true, count = 1 })
 			end,
 				{ desc = "Lsp diagnostic go next" }
