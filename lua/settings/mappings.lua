@@ -27,7 +27,7 @@ vim.keymap.set("n", "[c", "<cmd>colder<cr>", { table.insert(opts, { desc = "Prev
 
 -- Tmux
 vim.keymap.set("n", "<C-f>", "<cmd>silent !tmux neww tmux-sessionizer<cr>")
-vim.keymap.set("n", "<localleader>rr", function()
+vim.keymap.set("n", "<localleader>rc", function()
 	vim.ui.input({ prompt = "Command: " }, function(input)
 		if input then
 			vim.cmd("silent !tmux-start-job Development 0 " .. input)

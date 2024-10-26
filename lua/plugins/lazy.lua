@@ -1,11 +1,10 @@
-local colorscheme = "colorscheme."
-local local_plugin = vim.g.plugins_path .. "local."
-local other = vim.g.plugins_path .. "other."
-local utils = vim.g.plugins_path .. "utils."
-local lsp = vim.g.lsp_path
+local ok, set_plugins = pcall(require, "plugins.lazy_init")
+if not ok then
+	error("Failed to load lazy")
+	return
+end
 
 vim.g.local_plugins_path = vim.fn.stdpath("config") .. "/plugins/"
-
 vim.g.lsp_servers = {
 	"lua_ls",
 	"clangd",
@@ -15,28 +14,32 @@ vim.g.lsp_servers = {
 	"css_variables",
 }
 
-vim.g.plugins = {
-	-- Local
-	{ import = local_plugin .. "sessions" },
-	{ import = local_plugin .. "zenmode" },
-	{ import = local_plugin .. "set_colors" },
+local p = "plugins."
+set_plugins({
 	-- Colorscheme
-	{ import = colorscheme .. "init" },
-	-- Utils
-	{ import = utils .. "undotree" },
-	{ import = utils .. "surround" },
-	{ import = utils .. "colorizer" },
-	-- Other
-	{ import = other .. "telescope" },
-	{ import = other .. "treesitter" },
-	{ import = other .. "git" },
-	{ import = other .. "harpoon" },
-	{ import = other .. "codeium" },
-	-- LSP
-	{ import = lsp .. "lsp" },
-	{ import = lsp .. "cmp" },
-	{ import = lsp .. "ts-tools" },
-	{ import = lsp .. "emmet" },
-}
+	{ import = p .. "colorscheme.init" },
 
-require(vim.g.plugins_path .. "lazy_init")
+	-- Local
+	{ import = p .. "local.sessions" },
+	{ import = p .. "local.zenmode" },
+	{ import = p .. "local.set_colors" },
+
+	-- LSP
+	{ import = p .. "lsp.lsp" },
+	{ import = p .. "lsp.cmp" },
+	{ import = p .. "lsp.ts-tools" },
+
+	-- Other
+	{ import = p .. "other.telescope" },
+	{ import = p .. "other.treesitter" },
+	{ import = p .. "other.harpoon" },
+	{ import = p .. "other.codeium" },
+	{ import = p .. "other.git" },
+	{ import = p .. "other.undotree" },
+	{ import = p .. "other.surround" },
+	{ import = p .. "other.colorizer" },
+	{ import = p .. "other.emmet" },
+})
+
+-- Current color scheme
+require("plugins.colorscheme.theme")

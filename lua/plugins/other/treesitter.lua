@@ -4,30 +4,21 @@ local M = {
 	event = { "BufRead", "BufNewFile" },
 }
 
-local languages = {
-	"lua",
-	"python",
-	"javascript",
-	"typescript",
-	"tsx",
-	"json",
-	"html",
-	"css",
-	"markdown",
-	"markdown_inline",
-	"bash",
-	"gitignore",
-	"vim",
-	"http",
-	"xml",
-	"graphql",
-}
-
 function M.config()
 	local treesitter = require("nvim-treesitter.configs")
 
 	treesitter.setup({
-		ensure_installed = languages,
+		ensure_installed = {
+			"lua",
+			"json",
+			"html",
+			"css",
+			"markdown",
+			"markdown_inline",
+			"bash",
+			"gitignore",
+			"vim",
+		},
 		sync_install = false,
 		auto_install = true,
 		query_linter = {

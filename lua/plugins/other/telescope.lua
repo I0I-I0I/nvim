@@ -127,7 +127,6 @@ end
 
 M.keys = function()
 	local builtin = require("telescope.builtin")
-	local get_visual_selection = require(vim.g.utils_path).get_visual_selection
 
 	return {
 		{ "", builtin.find_files, {} },
@@ -137,7 +136,7 @@ M.keys = function()
 			"",
 			function()
 				vim.cmd.norm("")
-				local text = get_visual_selection()
+				local text = Utils.get_visual_selection()
 				require("telescope.builtin").grep_string({ search = text })
 			end,
 			mode = { "v", "o", "x" },

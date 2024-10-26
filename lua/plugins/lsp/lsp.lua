@@ -7,6 +7,8 @@ local M = {
 	event = "VeryLazy",
 }
 
+local lsp_path = "plugins.lsp."
+
 function M.config()
 	local ok, cmp_nvim_lsp = pcall(require, "cmp_nvim_lsp")
 	vim.g.capabilities = vim.lsp.protocol.make_client_capabilities()
@@ -21,7 +23,7 @@ function M.config()
 	require("mason-lspconfig").setup_handlers({
 		function(server_name)
 			require("lspconfig")[server_name].setup(
-				require(vim.g.lsp_path .. "servers." .. server_name)
+				require(lsp_path .. "servers." .. server_name)
 			)
 		end,
 	})
