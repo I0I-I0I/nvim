@@ -1,5 +1,5 @@
 local update_no_color = require("set_colors.utils.update_no_color")
-local set_colors = require("set_colors.set_colors")
+local set_colors = require("set_colors.set_custom_colors")
 local get_colorscheme_names = require("set_colors.utils.get_colorscheme_names").get_colorscheme_names
 local set_telescope_colors = require("set_colors.set_telescope_colors")
 

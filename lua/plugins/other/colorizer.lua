@@ -1,8 +1,6 @@
-local M = {
-	'brenoprata10/nvim-highlight-colors',
-}
+local M = { 'brenoprata10/nvim-highlight-colors' }
 
-function M.config()
+M.config = function()
 	require("nvim-highlight-colors").setup({})
 end
 

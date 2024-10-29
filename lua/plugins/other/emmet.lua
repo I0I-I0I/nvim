@@ -1,6 +1,4 @@
-local M = {
-	"mattn/emmet-vim",
-}
+local M = { "mattn/emmet-vim" }
 
 autocmd("FileType", {
 	pattern = {

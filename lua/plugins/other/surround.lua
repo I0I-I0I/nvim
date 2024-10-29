@@ -1,8 +1,7 @@
-local M = {
-	"kylechui/nvim-surround",
-	version = "*",
-	event = "BufRead",
-}
+local M = { "kylechui/nvim-surround" }
+
+M.version = "*"
+M.event = "BufRead"
 
 M.opts = {}
 

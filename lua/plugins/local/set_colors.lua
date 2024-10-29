@@ -1,9 +1,8 @@
-local M = {
-	dir = vim.g.local_plugins_path .. "set_colors",
-}
+local M = { dir = vim.g.local_plugins_path .. "set_colors" }
 
 M.keys = function()
 	local set_colors = require("set_colors")
+	set_colors.setup()
 
 	return {
 		{

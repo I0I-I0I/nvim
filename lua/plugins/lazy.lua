@@ -14,32 +14,37 @@ vim.g.lsp_servers = {
 	"css_variables",
 }
 
-local p = "plugins."
 set_plugins({
-	-- Colorscheme
-	{ import = p .. "colorscheme.init" },
-
 	-- Local
-	{ import = p .. "local.sessions" },
-	{ import = p .. "local.zenmode" },
-	{ import = p .. "local.set_colors" },
+	-- "local.sessions",
+	"local.statusline",
+	"local.zenmode",
+	"local.set_colors",
+
+	-- Colorscheme
+	"colorscheme.init",
 
 	-- LSP
-	{ import = p .. "lsp.lsp" },
-	{ import = p .. "lsp.cmp" },
-	{ import = p .. "lsp.ts-tools" },
+	"lsp.lsp",
+	"lsp.cmp",
+	"lsp.ts-tools",
+	"lsp.optimization",
 
 	-- Other
-	{ import = p .. "other.telescope" },
-	{ import = p .. "other.treesitter" },
-	{ import = p .. "other.harpoon" },
-	{ import = p .. "other.codeium" },
-	{ import = p .. "other.git" },
-	{ import = p .. "other.undotree" },
-	{ import = p .. "other.surround" },
-	{ import = p .. "other.colorizer" },
-	{ import = p .. "other.emmet" },
-})
+	"other.telescope",
+	"other.harpoon",
+	"other.git",
+	"other.codeium",
+	"other.treesitter",
+	"other.undotree",
+	"other.oil",
+	"other.surround",
+	"other.colorizer",
+	"other.emmet",
+}, "plugins")
 
 -- Current color scheme
-require("plugins.colorscheme.theme")
+ok, _ = pcall(require, "set_colors")
+if ok then
+	require("plugins.colorscheme.theme")
+end

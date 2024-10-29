@@ -1,10 +1,8 @@
-local M = {
-	dir = vim.g.local_plugins_path .. "sessions",
-}
+local M = { dir = vim.g.local_plugins_path .. "sessions" }
 
 M.cmd = { "SessionAttach", "SessionsList", "SessionCreate", "SessionSave" }
 
-function M.config()
+M.config = function()
 	require("sessions").setup({
 		path = "/mnt/d/sessions/",
 		attach_after_enter = false,
@@ -33,10 +31,6 @@ M.keys = function()
 			"<leader>s",
 			function()
 				sessions.attach_session()
-				local ok, _ = pcall(require, "zenmode")
-				if ok then
-					vim.cmd("ZenmodeOpenAll 15")
-				end
 			end,
 			{ silent = true },
 			desc = "Attach session",

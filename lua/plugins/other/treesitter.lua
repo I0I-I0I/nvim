@@ -1,10 +1,9 @@
-local M = {
-	"nvim-treesitter/nvim-treesitter",
-	build = ":TSUpdate",
-	event = { "BufRead", "BufNewFile" },
-}
+local M = { "nvim-treesitter/nvim-treesitter" }
 
-function M.config()
+M.build = ":TSUpdate"
+M.event = { "BufRead", "BufNewFile" }
+
+M.config = function()
 	local treesitter = require("nvim-treesitter.configs")
 
 	treesitter.setup({

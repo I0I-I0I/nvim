@@ -3,7 +3,7 @@ local M = {
 	branch = "harpoon2",
 }
 
-function M.config()
+M.config = function()
 	local harpoon = require("harpoon")
 	harpoon:setup()
 end
@@ -20,7 +20,7 @@ M.keys = function()
 			desc = "Add file (Harpoon)",
 		},
 		{
-			"<C-space>",
+			"",
 			function()
 				harpoon.ui:toggle_quick_menu(harpoon:list())
 			end,
@@ -61,20 +61,6 @@ M.keys = function()
 			end,
 			desc = "Select 5 (Harpoon)",
 		},
-		-- {
-		-- 	"<C-n>",
-		-- 	function()
-		-- 		harpoon:list():prev()
-		-- 	end,
-		-- 	desc = "Go to Previous file (Harpoon)",
-		-- },
-		-- {
-		-- 	"<C-p>",
-		-- 	function()
-		-- 		harpoon:list():next()
-		-- 	end,
-		-- 	desc = "Go to Next file (Harpoon)",
-		-- },
 	}
 end
 

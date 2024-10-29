@@ -15,11 +15,15 @@ end
 vim.opt.rtp:prepend(lazypath)
 
 
-local function lazy_init(plugins)
+return function(plugins_names_list, path)
+	local plugins = {}
+	path = path .. "."
+	for _, plugin in pairs(plugins_names_list) do
+		table.insert(plugins, { import = path .. plugin})
+	end
+
 	require("lazy").setup({
 		spec = plugins,
 		change_detection = { notify = false },
 	})
 end
-
-return lazy_init

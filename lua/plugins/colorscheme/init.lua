@@ -46,7 +46,7 @@ local colorschemes = {
 
 	{
 		"zenbones-theme/zenbones.nvim",
-		-- dependencies = "rktjmp/lush.nvim",
+		name = "ColorScheme_zenbones",
 		theme_names = {
 			"zenbones",
 		},
@@ -59,6 +59,7 @@ local colorschemes = {
 
 	{
 		'Verf/deepwhite.nvim',
+		name = "ColorScheme_deepwhite",
 		lazy = false,
 		priority = 1000,
 		theme_names = {

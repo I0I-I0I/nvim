@@ -1,25 +1,18 @@
-local M = {
-	"hrsh7th/nvim-cmp",
-	dependencies = {
-		{ "hrsh7th/cmp-nvim-lsp" },
-		{ "saadparwaiz1/cmp_luasnip", dependencies = {
-			{ "L3MON4D3/LuaSnip", version = "v2.*", build = "make install_jsregexp" },
-			{ "rafamadriz/friendly-snippets" } },
-		},
+local M = { "hrsh7th/nvim-cmp" }
+
+M.dependencies = {
+	{ "hrsh7th/cmp-nvim-lsp" },
+	{ "saadparwaiz1/cmp_luasnip", dependencies = {
+		{ "L3MON4D3/LuaSnip", version = "v2.*", build = "make install_jsregexp" },
+		{ "rafamadriz/friendly-snippets" } },
 	},
-	event = { "BufRead" },
 }
 
-function M.config()
+M.event = { "BufRead" }
+
+M.config = function()
 	local cmp = require("cmp")
 	local ls = require("luasnip")
-
-	vim.keymap.set({ "i", "s" }, "<A-j>", function()
-		ls.jump(1)
-	end, { silent = true })
-	vim.keymap.set({ "i", "s" }, "<A-k>", function()
-		ls.jump(-1)
-	end, { silent = true })
 
 	require("luasnip.loaders.from_vscode").lazy_load()
 
@@ -28,8 +21,25 @@ function M.config()
 			["<C-b>"] = cmp.mapping.scroll_docs(-4),
 			["<C-f>"] = cmp.mapping.scroll_docs(4),
 			["<C-e>"] = cmp.mapping.abort(),
-			["<CR>"] = cmp.mapping.confirm({ select = true }),
 			["<C-space>"] = cmp.mapping.complete(),
+			["<C-y>"] = cmp.mapping.confirm({ select = true }),
+			["<CR>"] = cmp.mapping.confirm({ select = false }),
+
+			-- Snippets
+			['<Tab>'] = cmp.mapping(function(fallback)
+				if ls.jumpable(1) then
+					ls.jump(1)
+				else
+					fallback()
+				end
+			end, { "i", "s" }),
+			['<S-Tab>'] = cmp.mapping(function(fallback)
+				if ls.jumpable(-1) then
+					ls.jump(-1)
+				else
+					fallback()
+				end
+			end, { "i", "s" }),
 		}),
 		snippet = {
 			expand = function(args)

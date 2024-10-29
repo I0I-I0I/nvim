@@ -1,7 +1,6 @@
 local opts = { noremap = true, silent = true }
 
-vim.g.mapleader = ","
-vim.g.maplocalleader = " "
+vim.g.mapleader = " "
 
 -- Movement
 vim.keymap.set("n", "<C-u>", "<C-u>zz")
@@ -13,36 +12,41 @@ vim.keymap.set("n", "<C-y>", "3<C-y>")
 vim.keymap.set("n", "<C-e>", "3<C-e>")
 
 -- Netrw
-vim.keymap.set("n", "-", "<cmd>Ex<cr>", { table.insert(opts, { desc = "Toggle netrw" }) })
+-- vim.api.nvim_create_autocmd("BufEnter", {
+-- 	pattern = "*.*",
+-- 	callback = function()
+-- 		vim.keymap.set("n", "-", "mA<cmd>Ex<cr>", { desc = "Toggle netrw", silent = true, buffer = true })
+-- 	end
+-- })
 
 -- Turn off search highlight
 vim.keymap.set("n", "<localleader><localleader>", "<cmd>nohlsearch<cr>",
 	{ table.insert(opts, { desc = "Turn off search highlight" }) })
 
 -- QFix
-vim.keymap.set("n", "<C-n>", "<cmd>cnext<cr>", { table.insert(opts, { desc = "Next qfix" }) })
-vim.keymap.set("n", "<C-p>", "<cmd>cprevious<cr>", { table.insert(opts, { desc = "Previous qfix" }) })
+vim.keymap.set("n", "<C-n>", "<cmd>cnext<cr>zz", { table.insert(opts, { desc = "Next qfix" }) })
+vim.keymap.set("n", "<C-p>", "<cmd>cprevious<cr>zz", { table.insert(opts, { desc = "Previous qfix" }) })
 vim.keymap.set("n", "]c", "<cmd>cnewer<cr>", { table.insert(opts, { desc = "Next qfix" }) })
 vim.keymap.set("n", "[c", "<cmd>colder<cr>", { table.insert(opts, { desc = "Previous qfix" }) })
 
 -- Tmux
-vim.keymap.set("n", "<C-f>", "<cmd>silent !tmux neww tmux-sessionizer<cr>")
-vim.keymap.set("n", "<localleader>rc", function()
+vim.keymap.set("n", "<leader>f", "<cmd>silent !tmux neww tmux-sessionizer<cr>")
+vim.keymap.set("n", "<leader>rc", function()
 	vim.ui.input({ prompt = "Command: " }, function(input)
 		if input then
 			vim.cmd("silent !tmux-start-job Development 0 " .. input)
 		end
 	end)
-end)
+end, { desc = "Run command in tmux" })
 	-- C++
-vim.keymap.set("n", "<localleader>rm", function()
+vim.keymap.set("n", "<leader>rm", function()
 	vim.ui.input({ prompt = "Select file: " }, function(input)
 		if input then
 			vim.cmd("!tmux-start-job Development 0 make && ./build/" .. input)
 		end
 	end)
-end)
-vim.keymap.set("n", "<localleader>m", "<cmd>make<cr>", { silent = true })
+end, { desc = "Run make in tmux" })
+vim.keymap.set("n", "<leader>m", "<cmd>make<cr>", { silent = true, desc = "Run make" })
 
 -- Move lines
 vim.keymap.set("v", "K", ":m '<-2<cr>gv=gv", { silent = true })

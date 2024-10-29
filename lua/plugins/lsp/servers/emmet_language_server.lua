@@ -14,9 +14,9 @@ return {
 		--- @type boolean Defaults to `true`
 		showAbbreviationSuggestions = true,
 		--- @type "always" | "never" Defaults to `"always"`
-		showExpandedAbbreviation = "always",
+		showExpandedAbbreviation = "never",
 		--- @type boolean Defaults to `false`
-		showSuggestionsAsSnippets = false,
+		showSuggestionsAsSnippets = true,
 		--- @type table<string, any> [Emmet Docs](https://docs.emmet.io/customization/syntax-profiles/)
 		syntaxProfiles = {},
 		--- @type table<string, string> [Emmet Docs](https://docs.emmet.io/customization/snippets/#variables)

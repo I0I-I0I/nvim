@@ -1,5 +1,7 @@
 local M = {}
 
+M.colorschemes = {}
+
 function M.update_colorschemes(colorschemes)
 	M.colorschemes = colorschemes
 end

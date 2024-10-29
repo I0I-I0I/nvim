@@ -1,16 +1,12 @@
-local M = {
-	"nvim-telescope/telescope.nvim",
-	tag = "0.1.8",
-	dependencies = { "nvim-lua/plenary.nvim" },
-}
+local M = { "nvim-telescope/telescope.nvim" }
+
+M.dependencies = { "nvim-lua/plenary.nvim" }
+M.tag = "0.1.8"
 
 M.opts = function()
 	local actions = require("telescope.actions")
 	return {
 		defaults = {
-			prompt_prefix = "  ",
-			selection_caret = " ",
-
 			preview = {
 				treesitter = false,
 			},
@@ -68,7 +64,7 @@ M.opts = function()
 			live_grep = {
 				prompt_title = "~ Words ~",
 				border = true,
-				hidden = true,
+				hidden = false,
 			},
 			grep_string = {
 				border = true,
@@ -129,8 +125,8 @@ M.keys = function()
 	local builtin = require("telescope.builtin")
 
 	return {
-		{ "", builtin.find_files, {} },
-		{ "<leader>b", builtin.buffers, {} },
+		{ "<C-f>", builtin.find_files, {} },
+		{ "tb", builtin.buffers, {} },
 		{ "", builtin.live_grep, {} },
 		{
 			"",
@@ -151,7 +147,7 @@ M.keys = function()
 			{},
 		},
 		{
-			"taw",
+			"tiW",
 			function()
 				local word = vim.fn.expand("<cWORD>")
 				builtin.grep_string({ search = word })

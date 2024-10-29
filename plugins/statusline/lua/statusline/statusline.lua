@@ -21,7 +21,7 @@ local function Statusline()
 		PASTE,
 		MODIFIED,
 		"%=",
-		BUFFERS,
+		-- BUFFERS,
 		MACRO,
 		COLORSCHEME,
 		GIT,

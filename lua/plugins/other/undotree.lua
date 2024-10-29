@@ -1,8 +1,6 @@
-local M = {
-	"mbbill/undotree",
-}
+local M = { "mbbill/undotree" }
 
-function M.init()
+M.init = function()
 	vim.g.undotree_WindowLayout = 3
 end
 
