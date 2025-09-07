@@ -15,106 +15,128 @@ vim.o.smartindent = true
 vim.o.expandtab = true
 vim.o.shiftwidth = 4
 vim.o.tabstop = 4
-vim.o.completeopt = "menu,menuone,noinsert,popup,fuzzy"
+vim.o.winborder = "single"
+vim.o.completeopt = "menuone,noinsert,preview,fuzzy"
 vim.o.undofile = true
 vim.o.undolevels = 10000000
 vim.o.undoreload = 10000000
-vim.o.grepprg = "rg --vimgrep --no-heading"
+vim.o.foldnestmax = 1
+vim.o.foldmethod = "expr"
+vim.o.foldexpr = "v:lua.vim.treesitter.foldexpr()"
 vim.o.path = "**"
-vim.o.wildignore =
-    "**/node_modules/**,**/.git/**,**/__pycache__/**,**/.mypy_cache/**,**/.venv/**,**/.pytest_cache/**,**/.ruff_cache/**"
-vim.o.spell = true
-vim.o.spelllang = "en,ru"
+vim.o.wildignore = "*/.git/*,*/__pycache__/*,*/node_modules/*,*/.pytest_cache/*,*/.direnv/*,*/target/*,*/build/*,*/.vscode/*,*/.idea/*,*/.venv/*"
+vim.o.grepprg = "rg --vimgrep --hidden -g '!**/.git/**' -g '!**/.venv/**' -g '!**/node_modules/**' -g '!**/Session.vim'"
 
--- Abbreviations
-vim.cmd.cabbrev("W w")
-vim.cmd.cabbrev("Wa wa")
-vim.cmd.cabbrev("n norm")
+vim.keymap.set("n", "n", "nzzzv")
+vim.keymap.set("n", "N", "Nzzzv")
+vim.keymap.set("n", "<C-y>", "4<C-y>")
+vim.keymap.set("n", "<C-e>", "4<C-e>")
+vim.keymap.set("n", "-", "<cmd>Fyler<cr>", { noremap = true })
+vim.keymap.set("n", "gw", "<cmd>bp|bd #<cr>", { silent = true })
+vim.keymap.set("n", "gW", "<cmd>bp|bd! #<cr>", { silent = true })
+vim.keymap.set("n", "<localleader><C-f>", ":e <C-r>=expand('%:p:h')<CR>/")
+vim.keymap.set("n", "<localleader><C-s>", ":sp <C-r>=expand('%:p:h')<CR>/")
+vim.keymap.set("n", "<localleader><C-v>", ":vs <C-r>=expand('%:p:h')<CR>/")
+vim.keymap.set("n", "<localleader><C-n>", ":tabnew <C-r>=expand('%:p:h')<CR>/")
+vim.keymap.set("n", "<M-c>", ":let @+=expand('%')<cr>", { silent = true })
+vim.keymap.set("n", "<M-S-c>", ":let @+=expand('%') . ':' . line('.')<cr>", { silent = true })
+vim.keymap.set("n", "<C-s>", "<cmd>!tmux neww tmux-sessionizer<cr>", { silent = true })
+vim.keymap.set("c", "<C-w>", "<backspace><C-w>")
+vim.keymap.set("i", "<C-space>", "<C-x><C-o>")
+vim.keymap.set("n", "<leader>N", ":tabnew ~/Dropbox/notes/.md<Left><Left><Left>")
+vim.keymap.set("n", "<leader>w", "<cmd>mksession!<cr><cmd>w<cr>", { silent = true })
+vim.keymap.set("n", "<leader>q", "<cmd>mksession!<cr><cmd>wa<cr><cmd>qa<cr>", { silent = true })
+vim.keymap.set("n", "<leader>r", "<cmd>w<cr><cmd>e<cr>zozz", { silent = true })
+vim.keymap.set("n", "grd", vim.diagnostic.setqflist, { silent = true })
+vim.keymap.set("n", "<C-g>", "<cmd>Neogit<cr>", { silent = true })
+vim.keymap.set("v", "", "y:execute 'grep ' . shellescape(@\") . ' | copen'<CR>", { noremap = true, silent = true })
 
--- Keymaps
-vim.keymap.set("n", "gw", "<cmd>bp|bd#<cr>", { silent = true, noremap = true })
-vim.keymap.set("n", "<C-f>", "<C-\\><C-n>:sp <C-r>=expand('%:p:h')<cr>/<C-d>", { noremap = true })
-vim.keymap.set("n", "<C-\\><C-f>", "<C-\\><C-n>:sp <C-r>=getcwd()<cr>/<C-d>", { noremap = true })
-vim.keymap.set("n", "<C-e>", "3<C-e>", { silent = true, noremap = true })
-vim.keymap.set("n", "<C-y>", "3<C-y>", { silent = true, noremap = true })
-vim.keymap.set("n", "<C-k>", "<cmd>cprev<CR>zz", { silent = true, noremap = true })
-vim.keymap.set("n", "<C-j>", "<cmd>cnext<CR>zz", { silent = true, noremap = true })
-vim.keymap.set("n", "n", "nzzzv", { silent = true, noremap = true })
-vim.keymap.set("n", "N", "Nzzzv", { silent = true, noremap = true })
-vim.keymap.set("n", "<C-s>", "<cmd>sp term://tmux-sessionizer | startinsert<cr>", { noremap = true })
-vim.keymap.set("n", "<M-c>", ":let @+=expand('%:p')<cr>", { silent = true, noremap = true })
-vim.keymap.set({ "n", "i", "v" }, "<C-l>", "<cmd>t.<cr>", { silent = true, noremap = true })
-
--- Auto commands
 vim.cmd([[
     autocmd BufWritePre * %s/\s\+$//e
-    autocmd TextYankPost * silent! lua vim.hl.on_yank({higroup="IncSearch", timeout=150})
     autocmd FileType netrw setlocal bufhidden=wipe
+    autocmd BufWritePre * call mkdir(expand("<afile>:p:h"), "p")
+    autocmd TextYankPost * silent! lua vim.hl.on_yank({higroup="IncSearch", timeout=150})
+    autocmd FocusGained,BufEnter * checktime
     autocmd FileType fyler setlocal nospell
-    autocmd TermOpen * setlocal nospell
-    autocmd BufReadPost *
-        \ if line("'\"") > 1 && line("'\"") <= line("$") |
-        \   silent! normal! g`"zz |
-        \ endif
-    autocmd BufWritePre * call mkdir(expand("<afile>:p:h"), "p") ]])
+]])
 
--- Plugins
-vim.pack.add({ "https://github.com/chentoast/marks.nvim" })
-require("marks").setup({ builtin_marks = { ".", "<", ">", "^" } })
-
-vim.pack.add({ "https://github.com/A7Lavinraj/fyler.nvim" })
-require("fyler").setup({
-    views = { finder = { confirm_simple = true, default_explorer = true } },
-    integrations = {
-        icon = function(item_type, _)
-            if item_type == "directory" then
-                return "", "FylerFSDirectoryIcon"
-            end
-            return ""
-        end
-    }
+vim.pack.add({
+    { src = "https://github.com/ntk148v/komau.vim" },
+    { src = "https://github.com/mason-org/mason-lspconfig.nvim" },
+    { src = "https://github.com/mason-org/mason.nvim" },
+    { src = "https://github.com/artemave/workspace-diagnostics.nvim" },
+    { src = "https://github.com/supermaven-inc/supermaven-nvim" },
+    { src = "https://github.com/A7Lavinraj/fyler.nvim" },
+    { src = "https://github.com/NeogitOrg/neogit" },
+    { src = "https://github.com/nvim-lua/plenary.nvim" },
 })
-vim.keymap.set("n", "-", "<cmd>Fyler<cr>", { desc = "Open Fyler View" })
 
-vim.pack.add({ "https://github.com/supermaven-inc/supermaven-nvim" })
+vim.cmd("colo komau")
+local date = tonumber(os.date("%H"))
+if date >= 22 or date < 6 then
+-- if true then
+    vim.o.bg = "dark"
+    vim.cmd.hi("Normal guibg=NONE")
+    vim.cmd.hi("CursorLineNr guibg=NONE")
+    vim.cmd.hi("NormalNC guibg=NONE")
+    vim.cmd.hi("EndOfBuffer guibg=NONE")
+    vim.cmd.hi("SignColumn guibg=NONE")
+    vim.cmd.hi("Folded guibg=NONE")
+    vim.cmd.hi("LineNr guibg=NONE")
+    vim.cmd.hi("TabLine guifg=#707070 guibg=NONE")
+    vim.cmd.hi("TabLineSel guibg=NONE guifg=#efedef")
+    vim.cmd.hi("TabLineFill guibg=NONE")
+    vim.cmd.hi("StatusLine guibg=NONE guifg=#efedef")
+    vim.cmd.hi("NormalFloat guibg=NONE")
+    vim.cmd.hi("Float guibg=NONE")
+    vim.cmd.hi("FloatBorder guibg=NONE")
+    vim.cmd.hi("FloatTitle guibg=NONE")
+    vim.cmd.hi("FloatFooter guibg=NONE")
+    vim.cmd.hi("RenderMarkdownCode guibg=NONE")
+    vim.cmd.hi("WinSeparator guibg=NONE")
+    vim.cmd.hi("DiagnosticWarn guifg=#ffffff")
+    vim.cmd.hi("DiagnosticError guifg=#ffffff")
+    vim.cmd.hi("DiagnosticHint guifg=#ffffff")
+    vim.cmd.hi("DiagnosticInfo guifg=#ffffff")
+else
+    vim.o.bg = "light"
+    vim.cmd.hi("DiagnosticWarn guifg=#000000")
+    vim.cmd.hi("DiagnosticError guifg=#000000")
+    vim.cmd.hi("DiagnosticHint guifg=#000000")
+    vim.cmd.hi("DiagnosticInfo guifg=#000000")
+end
+
+require("vim._extui").enable({
+    enable = true,
+    msg = { target = "cmd", timeout = 4000 },
+})
+
+require("fyler").setup({confirm_simple = true, icon_provider = "none", default_explorer = true})
+vim.cmd.hi("FylerFSDirectory guifg=#ae0000")
+require("neogit").setup({})
 require("supermaven-nvim").setup({})
-
--- LSP
-vim.pack.add({ "https://github.com/mason-org/mason.nvim",
-               "https://github.com/neovim/nvim-lspconfig" })
-
 require("mason").setup()
+require("mason-lspconfig").setup({ensure_installed = {"basedpyright", "ruff", "clangd", "bashls", "lua_ls", "cssls", "css_variables", "jsonls", "html", "emmet_language_server"}})
 
-vim.keymap.set("n", "grd", "<cmd>lua vim.diagnostic.setqflist()<cr><cmd>wincmd p<cr>", { silent = true })
-vim.keymap.set("n", "grf", vim.lsp.buf.format, { silent = true })
-
-vim.diagnostic.config({ jump = { float = true }, signs = false, underline = false })
-
-local lsp = require("lsp")
-lsp.setup_linters({ "pyrefly", "shellcheck", "biome" })
-lsp.setup_formatters({ "ruff", "prettier", "biome", "stylua" })
-lsp.setup_lsps({ "lua-language-server", "pyrefly", "ruff", "typescript-language-server",
-    "biome", "css-lsp", "css-variables-language-server", "emmet-language-server",
-    "html-lsp", "clangd" })
-
+local lsps = {"clangd", "lua_ls", "ruff"}
+vim.diagnostic.config({ jump = { float = true }, float = { source = true } })
+vim.lsp.enable({ "djlsp" })
 vim.api.nvim_create_autocmd("LspAttach", {
-    group = vim.api.nvim_create_augroup("LspOnAttach", { clear = true }),
     callback = function(args)
         local client = vim.lsp.get_client_by_id(args.data.client_id)
-        if not client then return end
-        vim.lsp.completion.enable(true, client.id, args.buf, { autotrigger = false })
         vim.lsp.semantic_tokens.enable(false, { bufnr = args.buf })
+        vim.lsp.completion.enable(true, client.id, args.buf, { autotrigger = true })
+        for _, lsp in pairs(lsps) do
+            if client.name == lsp then
+                require("workspace-diagnostics").populate_workspace_diagnostics(client, args.buf)
+            end
+        end
     end,
 })
 
--- Theme
-vim.o.bg = "dark"
-vim.pack.add({ "https://github.com/ntk148v/komau.vim" })
-
-vim.cmd.colo("komau")
-vim.api.nvim_set_hl(0, "WinSeparator", { bg = "#222222" })
-local colors = { "Normal", "NormalNC", "EndOfBuffer", "WinSeparator", "LineNr", "SignColumn", "TabLineFill", "TabLine" }
-for _, color in ipairs(colors) do
-    vim.api.nvim_set_hl(0, color, { bg = "NONE" })
-end
-vim.schedule(function() vim.api.nvim_set_hl(0, "MarkSignNumHL", { bg = "NONE" }) end)
+-- { src = "https://github.com/nvim-treesitter/nvim-treesitter" },
+-- require("nvim-treesitter.configs").setup({
+--     ensure_installed = { "c", "lua", "vim", "vimdoc", "query", "markdown", "markdown_inline" },
+--     auto_install = true,
+--     highlight = { enable = false },
+--     indent = { enable = true }})
