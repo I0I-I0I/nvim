@@ -1,4 +1,3 @@
-
 vim.loader.enable()
 
 vim.g.mapleader = " "
@@ -66,8 +65,11 @@ vim.cmd([[
     autocmd FileType fyler setlocal nospell
 ]])
 
+vim.api.nvim_create_user_command("LoadDapConfig", function() require("dap-config") end, {})
+
 vim.pack.add({
     { src = "https://github.com/ntk148v/komau.vim" },
+    { src = "https://github.com/nvim-treesitter/nvim-treesitter" },
     { src = "https://github.com/mason-org/mason-lspconfig.nvim" },
     { src = "https://github.com/mason-org/mason.nvim" },
     { src = "https://github.com/artemave/workspace-diagnostics.nvim" },
@@ -117,6 +119,11 @@ require("vim._extui").enable({
     msg = { target = "cmd", timeout = 4000 },
 })
 
+require("nvim-treesitter.configs").setup({
+    ensure_installed = { "c", "lua", "vim", "vimdoc", "query", "markdown", "markdown_inline" },
+    auto_install = true,
+    highlight = { enable = false },
+    indent = { enable = true }})
 require("fyler").setup({confirm_simple = true, icon_provider = "none", default_explorer = true})
 vim.cmd.hi("FylerFSDirectory guifg=#ae0000")
 require("neogit").setup({})
@@ -140,9 +147,3 @@ vim.api.nvim_create_autocmd("LspAttach", {
     end,
 })
 
--- { src = "https://github.com/nvim-treesitter/nvim-treesitter" },
--- require("nvim-treesitter.configs").setup({
---     ensure_installed = { "c", "lua", "vim", "vimdoc", "query", "markdown", "markdown_inline" },
---     auto_install = true,
---     highlight = { enable = false },
---     indent = { enable = true }})
