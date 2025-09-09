@@ -72,6 +72,7 @@ vim.pack.add({
 
     "https://github.com/A7Lavinraj/fyler.nvim" })
 
+require("make")
 require("fyler").setup({confirm_simple = true, icon_provider = "none", default_explorer = true, git_status = false})
 require("nvim-treesitter.configs").setup({
     ensure_installed = { "c", "lua", "vim", "vimdoc", "query", "markdown", "markdown_inline" },
@@ -86,7 +87,6 @@ vim.schedule(function()
 
     vim.api.nvim_create_user_command("LoadDapConfig", function() require("dap-config") end, {})
     require("vim._extui").enable({ enable = true, msg = { target = "cmd", timeout = 4000 } })
-    require("make")
 
     vim.pack.add({
         "https://github.com/mason-org/mason-lspconfig.nvim",
