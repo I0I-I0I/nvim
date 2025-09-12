@@ -1,5 +1,5 @@
 vim.api.nvim_create_autocmd("FileType", {
-    pattern = { "htmldjango" },
+    pattern = { "htmldjango", "html" },
     callback = function(args)
         vim.bo[args.buf].makeprg = "djlint --lint --reformat --quiet %"
     end
@@ -19,4 +19,4 @@ vim.api.nvim_create_autocmd("FileType", {
     end
 })
 
-vim.keymap.set("n", "<leader>m", "<cmd>make<cr>")
+vim.keymap.set("n", "<leader>m", "<cmd>w<cr><cmd>make<cr>")
