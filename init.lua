@@ -26,10 +26,6 @@ vim.o.tabstop = 4
 vim.o.winborder = "single"
 vim.o.completeopt = "menuone,noinsert,popup,fuzzy"
 vim.o.cmdheight = 0
-vim.o.foldnestmax = 1
-vim.o.foldmethod = "expr"
-vim.o.foldexpr = "v:lua.vim.treesitter.foldexpr()"
-vim.o.foldlevelstart = 99
 vim.o.undofile = true
 vim.o.undolevels = 10000000
 vim.o.undoreload = 10000000
@@ -37,6 +33,10 @@ vim.o.langmap = "ФИСВУАПРШОЛДЬТЩЗЙКЫЕГМЦЧНЯЖ;ABCDEFGH
 
 vim.keymap.set("n", "<C-y>", "4<C-y>")
 vim.keymap.set("n", "<C-e>", "4<C-e>")
+vim.keymap.set("n", "<M-o>", "<cmd>tabnext<cr>", { silent = true })
+vim.keymap.set("n", "<M-i>", "<cmd>tabprevious<cr>", { silent = true })
+vim.keymap.set("n", "<M-S-o>", "<cmd>tabmove +<cr>", { silent = true })
+vim.keymap.set("n", "<M-S-i>", "<cmd>tabmove -<cr>", { silent = true })
 vim.keymap.set("n", "-", "<cmd>Lex %:p:h<cr>", { noremap = true })
 vim.keymap.set("n", "<leader>-", "<cmd>Lex<cr>", { noremap = true })
 vim.keymap.set("n", "gw", "<cmd>bp|bd #<cr>", { silent = true })
@@ -96,6 +96,7 @@ require("nvim-treesitter.configs").setup({
     auto_install = true,
     highlight = { enable = true },
     indent = { enable = true }})
+require("make")
 
 -- Lazy
 vim.schedule(function()
@@ -103,7 +104,6 @@ vim.schedule(function()
     vim.o.spelllang = "en,ru"
 
     vim.api.nvim_create_user_command("LoadDapConfig", function() require("dap-config") end, {})
-    require("make")
     require("vim._extui").enable({ enable = true, msg = { target = "msg", timeout = 4000 } })
 
     vim.pack.add({
@@ -170,6 +170,11 @@ vim.schedule(function()
     -- LSP
     vim.keymap.set("n", "grd", vim.diagnostic.setqflist, { silent = true })
     vim.keymap.set("i", "<C-space>", vim.lsp.completion.get)
+    vim.keymap.set("i", "<CR>", function()
+        if vim.fn.pumvisible() == 1 then
+            return vim.api.nvim_replace_termcodes("<C-e><CR>", true, true, true) end
+        return "<CR>"
+    end, { expr = true, noremap = true })
 
     vim.diagnostic.config({ jump = { float = true }, float = { source = true } })
     vim.lsp.enable({ "basedpyright", "ruff", "djlsp" , "clangd", "bashls", "lua_ls", "cssls",
@@ -191,8 +196,8 @@ vim.schedule(function()
 end)
 
 -- Color
--- vim.cmd("colo solarized-osaka")
-vim.cmd("colo quiet")
+vim.cmd("colo solarized-osaka")
+-- vim.cmd("colo quiet")
 local bgs = {"DiagnosticWarn", "DiagnosticError", "DiagnosticHint", "DiagnosticInfo"}
 local date = tonumber(os.date("%H"))
 -- if date >= 22 or date < 6 then
