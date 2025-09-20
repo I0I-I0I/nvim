@@ -13,9 +13,10 @@ vim.o.swapfile = false
 vim.o.mouse = "a"
 vim.o.hidden = true
 vim.o.list = true
-vim.o.wildmode = "list:longest,full"
+vim.o.wildmode = "longest:full,full"
 vim.o.wildmenu = true
 vim.o.laststatus = 3
+vim.o.ignorecase = true
 vim.o.smartcase = true
 vim.o.number = true
 vim.o.relativenumber = true
@@ -26,7 +27,8 @@ vim.o.expandtab = true
 vim.o.shiftwidth = 4
 vim.o.tabstop = 4
 vim.o.winborder = "single"
-vim.o.completeopt = "menuone,noinsert,preview,fuzzy"
+vim.o.completeopt = "menuone,noinsert,popup,fuzzy"
+vim.o.cmdheight = 0
 vim.o.foldnestmax = 1
 vim.o.foldmethod = "expr"
 vim.o.foldexpr = "v:lua.vim.treesitter.foldexpr()"
@@ -42,10 +44,6 @@ vim.keymap.set("n", "-", "<cmd>Lex %:p:h<cr>", { noremap = true })
 vim.keymap.set("n", "<leader>-", "<cmd>Lex<cr>", { noremap = true })
 vim.keymap.set("n", "gw", "<cmd>bp|bd #<cr>", { silent = true })
 vim.keymap.set("n", "gW", "<cmd>bp|bd! #<cr>", { silent = true })
-vim.keymap.set("n", "<localleader><C-f>", ":e <C-r>=expand('%:p:h')<CR>/")
-vim.keymap.set("n", "<localleader><C-s>", ":sp <C-r>=expand('%:p:h')<CR>/")
-vim.keymap.set("n", "<localleader><C-v>", ":vs <C-r>=expand('%:p:h')<CR>/")
-vim.keymap.set("n", "<localleader><C-n>", ":tabnew <C-r>=expand('%:p:h')<CR>/")
 vim.keymap.set("n", "<M-c>", ":let @+=expand('%:p')<cr>", { silent = true })
 vim.keymap.set("n", "<M-S-c>", ":let @+=expand('%:p') . ':' . line('.')<cr>", { silent = true })
 vim.keymap.set("n", "<C-s>", "<cmd>!tmux neww tmux-sessionizer<cr>", { silent = true })
@@ -53,7 +51,20 @@ vim.keymap.set("c", "<C-w>", "<backspace><C-w>")
 vim.keymap.set("n", "<leader>N", ":tabnew ~/Sync/notes/.md<Left><Left><Left>")
 vim.keymap.set("n", "<leader>q", "<cmd>mksession!<cr><cmd>wa<cr><cmd>qa<cr>", { silent = true })
 
-vim.keymap.set("n", "<leader>r", function()
+vim.keymap.set("c", "<C-f>", "<Right>")
+vim.keymap.set("c", "<C-b>", "<Left>")
+vim.keymap.set("c", "<A-b>", "<C-f>bb<C-c>")
+vim.keymap.set("c", "<A-f>", "<C-f>w<C-c>")
+vim.keymap.set("c", "<C-a>", "<Home>")
+vim.keymap.set("c", "<C-e>", "<End>")
+vim.keymap.set("c", "<C-d>", "<Del>")
+vim.keymap.set("c", "<C-s>", "<C-f>")
+
+vim.keymap.set("n", "<localleader><C-f>", ":e <C-r>=expand('%:p:h')<CR>/")
+vim.keymap.set("n", "<localleader><C-s>", ":sp <C-r>=expand('%:p:h')<CR>/")
+vim.keymap.set("n", "<localleader><C-v>", ":vs <C-r>=expand('%:p:h')<CR>/")
+vim.keymap.set("n", "<localleader><C-n>", ":tabnew <C-r>=expand('%:p:h')<CR>/")
+vim.keymap.set("n", "<localleader><C-r>", function()
     local old_name = vim.fn.expand("%")
     local new_name = vim.fn.input("New file name: ", vim.fn.expand("%:p"), "file")
     if new_name ~= "" and new_name ~= old_name then
@@ -61,23 +72,22 @@ vim.keymap.set("n", "<leader>r", function()
         vim.cmd("e " .. new_name)
         vim.cmd("bd #")
     end end)
-vim.keymap.set("n", "<leader>d", function()
+vim.keymap.set("n", "<localleader><C-d>", function()
     local filename = vim.fn.expand("%")
     local ask = vim.fn.input("Delete " .. filename .. "? [y/n] ")
     if filename ~= "" and ask == "y" or ask == "Y" then
         os.remove(filename)
         vim.cmd("bp|bd! #")
     end end)
-vim.keymap.set("n", "<leader>y", function()
+vim.keymap.set("n", "<localleader><C-y>", function()
     local filename = vim.fn.expand("%:p:h")
     os.execute("tmux neww 'yazi " .. filename .. "'") end)
 
 vim.cmd([[
     autocmd BufWritePre * %s/\s\+$//e
     autocmd FileType netrw setlocal bufhidden=wipe
-    autocmd BufWritePre * call mkdir(expand("<afile>:p:h"), "p")
     autocmd TextYankPost * silent! lua vim.hl.on_yank({higroup="IncSearch", timeout=150})
-    autocmd FocusGained,BufEnter * checktime ]])
+    autocmd BufWritePre * call mkdir(expand("<afile>:p:h"), "p") ]])
 
 vim.pack.add({
     "https://github.com/nvim-treesitter/nvim-treesitter",
@@ -175,11 +185,11 @@ vim.schedule(function()
                 vim.diagnostic.open_float()
             end, { buffer = args.buf })
             vim.lsp.semantic_tokens.enable(false, { bufnr = args.buf })
-            -- if client:supports_method("textDocument/completion") then
-            --     local chars = {}; for i = 32, 126 do table.insert(chars, string.char(i)) end
-            --     client.server_capabilities.completionProvider.triggerCharacters = chars
+            if client:supports_method("textDocument/completion") then
+                local chars = {}; for i = 32, 126 do table.insert(chars, string.char(i)) end
+                client.server_capabilities.completionProvider.triggerCharacters = chars
                 vim.lsp.completion.enable(true, client.id, args.buf, { autotrigger = true })
-            -- end
+            end
         end })
 end)
 
