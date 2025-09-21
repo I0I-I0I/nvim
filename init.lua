@@ -89,10 +89,7 @@ vim.cmd([[
     autocmd TextYankPost * silent! lua vim.hl.on_yank({higroup="IncSearch", timeout=150})
     autocmd BufWritePre * call mkdir(expand("<afile>:p:h"), "p") ]])
 
-vim.pack.add({
-    "https://github.com/nvim-treesitter/nvim-treesitter",
-    "https://github.com/ntk148v/komau.vim",
-    "https://github.com/craftzdog/solarized-osaka.nvim" })
+vim.pack.add({ "https://github.com/nvim-treesitter/nvim-treesitter" })
 
 require("nvim-treesitter.configs").setup({
     ensure_installed = { "c", "lua", "vim", "vimdoc", "query", "markdown", "markdown_inline" },
@@ -172,6 +169,10 @@ vim.schedule(function()
 
     -- LSP
     vim.keymap.set("n", "grd", vim.diagnostic.setqflist, { silent = true })
+    vim.keymap.set("n", "<leader>l", function()
+        vim.lsp.stop_client(vim.lsp.get_active_clients())
+        vim.cmd("w|e")
+    end, { silent = true })
     vim.keymap.set("i", "<C-space>", vim.lsp.completion.get)
     vim.keymap.set("i", "<CR>", function()
         if vim.fn.pumvisible() == 1 then
@@ -199,28 +200,26 @@ vim.schedule(function()
 end)
 
 -- Color
-vim.cmd("colo solarized-osaka")
--- vim.cmd("colo quiet")
+vim.pack.add({
+    "https://github.com/ntk148v/komau.vim",
+    "https://github.com/craftzdog/solarized-osaka.nvim" })
+
+-- vim.cmd("colo solarized-osaka")
+vim.cmd("colo quiet")
 local bgs = {"DiagnosticWarn", "DiagnosticError", "DiagnosticHint", "DiagnosticInfo"}
 local date = tonumber(os.date("%H"))
--- if date >= 22 or date < 6 then
-if true then
+if date >= 22 or date < 6 then
+-- if true then
     vim.o.bg = "dark"
     vim.pack.add({"https://github.com/xiyaowong/transparent.nvim"})
     require("transparent").setup({
         extra_groups = { "TabLine", "TabLineFill", "TabLineSel", "Folded", "NormalFloat"},
         exclude_groups = { "CursorLine" } })
     for _, bg in pairs(bgs) do vim.api.nvim_set_hl(0, bg, { fg = "#ffffff" }) end
-    vim.api.nvim_set_hl(0, "TabLine", { fg = "#6c6c6c" })
-    vim.api.nvim_set_hl(0, "TabLineSel", { fg = "#e0e2ea", bg = "#ffffff" })
     vim.api.nvim_set_hl(0, "StatusLine", { fg = "#e0e2ea" })
-    vim.api.nvim_set_hl(0, "NormalFloat", { fg = "#dadada" })
-    vim.api.nvim_set_hl(0, "Normal", { bg = "NONE" })
-    vim.api.nvim_set_hl(0, "Whitespace", { bg = "#ae0000" })
-    vim.api.nvim_set_hl(0, "CursorLine", { bg = "#121212" })
 else
     vim.o.bg = "light"
-    -- for _, bg in pairs(bgs) do vim.api.nvim_set_hl(0, bg, { fg = "#000000" }) end
-    vim.api.nvim_set_hl(0, "NormalFloat", { fg = "NONE" })
-    vim.api.nvim_set_hl(0, "Whitespace", { bg = "#ae0000" })
+    for _, bg in pairs(bgs) do vim.api.nvim_set_hl(0, bg, { fg = "#000000" }) end
+    vim.api.nvim_set_hl(0, "CursorLine", { bg = "#aaaaaa" })
+    vim.api.nvim_set_hl(0, "CursorLineNr", { bg = "#aaaaaa" })
 end
