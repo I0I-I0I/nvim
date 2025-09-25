@@ -36,7 +36,7 @@ return {
 
     settings = {
         basedpyright = {
-            typeCheckingMode = "standard", -- ["off", "basic", "standard", "strict", "recommended", "all"]
+            typeCheckingMode = "recommended", -- ["off", "basic", "standard", "strict", "recommended", "all"]
             analysis = {
                 diagnosticMode = "workspace",
                 autoSearchPaths = true, -- pick up installed packages & stubs

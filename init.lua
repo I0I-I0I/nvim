@@ -41,8 +41,10 @@ vim.keymap.set("n", "-", "<cmd>Lex %:p:h<cr>", { noremap = true })
 vim.keymap.set("n", "<leader>-", "<cmd>Lex<cr>", { noremap = true })
 vim.keymap.set("n", "gw", "<cmd>bp|bd #<cr>", { silent = true })
 vim.keymap.set("n", "gW", "<cmd>bp|bd! #<cr>", { silent = true })
-vim.keymap.set("n", "<M-c>", ":let @+=expand('%:p')<cr>", { silent = true })
-vim.keymap.set("n", "<M-S-c>", ":let @+=expand('%:p') . ':' . line('.')<cr>", { silent = true })
+vim.keymap.set("n", "<M-c>", ":let @+=expand('%')<cr>", { silent = true })
+vim.keymap.set("n", "<M-S-c>", ":let @+=expand('%') . ':' . line('.')<cr>", { silent = true })
+vim.keymap.set("n", "<leader><M-c>", ":let @+=expand('%:p')<cr>", { silent = true })
+vim.keymap.set("n", "<leader><M-S-c>", ":let @+=expand('%:p') . ':' . line('.')<cr>", { silent = true })
 vim.keymap.set("n", "<C-s>", "<cmd>!tmux neww tmux-sessionizer<cr>", { silent = true })
 vim.keymap.set("c", "<C-w>", "<backspace><C-w>")
 vim.keymap.set("n", "<leader>N", ":tabnew ~/Sync/notes/.md<Left><Left><Left>")
@@ -50,7 +52,7 @@ vim.keymap.set("n", "<leader>q", "<cmd>mksession!<cr><cmd>wa<cr><cmd>qa<cr>", { 
 
 vim.keymap.set("c", "<C-f>", "<Right>")
 vim.keymap.set("c", "<C-b>", "<Left>")
-vim.keymap.set("c", "<A-b>", "<C-f>bb<C-c>")
+vim.keymap.set("c", "<A-b>", "<C-f>b<C-c>")
 vim.keymap.set("c", "<A-f>", "<C-f>w<C-c>")
 vim.keymap.set("c", "<C-a>", "<Home>")
 vim.keymap.set("c", "<C-e>", "<End>")
@@ -87,12 +89,12 @@ vim.cmd([[
     autocmd BufWritePre * call mkdir(expand("<afile>:p:h"), "p") ]])
 
 vim.pack.add({ "https://github.com/nvim-treesitter/nvim-treesitter" })
-
 require("nvim-treesitter.configs").setup({
     ensure_installed = { "c", "lua", "vim", "vimdoc", "query", "markdown", "markdown_inline" },
     auto_install = true,
     highlight = { enable = true },
     indent = { enable = true }})
+
 require("make")
 
 -- Lazy
@@ -100,26 +102,28 @@ vim.schedule(function()
     vim.o.spell = true
     vim.o.spelllang = "en,ru"
 
-    vim.api.nvim_create_user_command("LoadDapConfig", function() require("dap-config") end, {})
     require("vim._extui").enable({ enable = true, msg = { target = "msg", timeout = 4000 } })
 
     vim.pack.add({
         "https://github.com/mason-org/mason.nvim",
+        "https://github.com/neovim/nvim-lspconfig",
         "https://github.com/ibhagwan/fzf-lua",
         "https://github.com/jake-stewart/multicursor.nvim",
         { src = "https://github.com/ThePrimeagen/harpoon", version = "harpoon2" },
-        "https://github.com/Exafunction/windsurf.nvim",
+        "https://github.com/supermaven-inc/supermaven-nvim",
+        -- "https://github.com/Exafunction/windsurf.nvim",
         "https://github.com/nvim-lua/plenary.nvim",
-        "https://github.com/MeanderingProgrammer/render-markdown.nvim",
         "https://github.com/3rd/image.nvim" })
 
+    vim.keymap.set("n", "<leader>d", function() require("dap-config") end, {})
     vim.keymap.set("n", "<leader>c", function()
-        require("codeium").setup({
-            enable_chat = false,
-            enable_cmp_source = false,
-            virtual_text = { enabled = true } }) end)
+        require("supermaven-nvim").setup({})
+        -- require("codeium").setup({
+        --     enable_chat = false,
+        --     enable_cmp_source = false,
+        --     virtual_text = { enabled = true } })
+        print("Activate codeium.nvim") end)
     require("mason").setup()
-    require("render-markdown").setup({})
     require("image").setup({ integrations = { markdown = {
                 only_render_image_at_cursor = true,
                 only_render_image_at_cursor_mode = "inline" }}})
@@ -167,31 +171,22 @@ vim.schedule(function()
     -- LSP
     vim.keymap.set("n", "grd", vim.diagnostic.setqflist, { silent = true })
     vim.keymap.set("n", "<leader>l", function()
-        vim.lsp.stop_client(vim.lsp.get_active_clients())
-        vim.cmd("w|e")
+        vim.cmd.LspRestart()
+        print("Lsp restart")
     end, { silent = true })
     vim.keymap.set("i", "<C-space>", vim.lsp.completion.get)
-    vim.keymap.set("i", "<CR>", function()
-        if vim.fn.pumvisible() == 1 then
-            return vim.api.nvim_replace_termcodes("<C-e><CR>", true, true, true) end
-        return "<CR>"
-    end, { expr = true, noremap = true })
 
-    vim.diagnostic.config({ jump = { float = true }, float = { source = true } })
-    vim.lsp.enable({ "basedpyright", "ruff", "djlsp" , "clangd", "bashls", "lua_ls", "cssls",
-                     "css_variables", "html", "emmet_language_server", "ts_ls", "superhtml" })
+    vim.diagnostic.config({ jump = { float = true } })
+    vim.lsp.enable({ "basedpyright", "djlsp" , "clangd", "bashls", "cssls", "css_variables",
+        "html", "superhtml", "emmet_language_server", "ts_ls" })
     vim.api.nvim_create_autocmd("LspAttach", {
         callback = function(args)
             local client = vim.lsp.get_client_by_id(args.data.client_id)
-            vim.keymap.set("n", "<C-w>d", function()
-                vim.diagnostic.open_float()
-                vim.diagnostic.open_float()
-            end, { buffer = args.buf })
             vim.lsp.semantic_tokens.enable(false, { bufnr = args.buf })
             if client:supports_method("textDocument/completion") then
-                local chars = {}; for i = 32, 126 do table.insert(chars, string.char(i)) end
-                client.server_capabilities.completionProvider.triggerCharacters = chars
-                vim.lsp.completion.enable(true, client.id, args.buf, { autotrigger = true })
+                -- local chars = {}; for i = 32, 126 do table.insert(chars, string.char(i)) end
+                -- client.server_capabilities.completionProvider.triggerCharacters = chars
+                vim.lsp.completion.enable(true, client.id, args.buf, { autotrigger = false })
             end
         end })
 end)
@@ -201,22 +196,26 @@ vim.pack.add({
     "https://github.com/ntk148v/komau.vim",
     "https://github.com/craftzdog/solarized-osaka.nvim" })
 
--- vim.cmd("colo solarized-osaka")
-vim.cmd("colo quiet")
+-- vim.cmd.colorscheme "solarized-osaka"
+vim.cmd.colorscheme "quiet"
 local bgs = {"DiagnosticWarn", "DiagnosticError", "DiagnosticHint", "DiagnosticInfo"}
 local date = tonumber(os.date("%H"))
-if date >= 22 or date < 6 then
--- if true then
+-- if date >= 22 or date < 6 then
+if true then
     vim.o.bg = "dark"
     vim.pack.add({"https://github.com/xiyaowong/transparent.nvim"})
     require("transparent").setup({
-        extra_groups = { "TabLine", "TabLineFill", "TabLineSel", "Folded", "NormalFloat"},
+        extra_groups = { "TabLine", "TabLineFill", "TabLineSel", "Folded", "FloatBorder"},
         exclude_groups = { "CursorLine" } })
     for _, bg in pairs(bgs) do vim.api.nvim_set_hl(0, bg, { fg = "#ffffff" }) end
     vim.api.nvim_set_hl(0, "StatusLine", { fg = "#e0e2ea" })
+    vim.api.nvim_set_hl(0, "TabLine", { fg = "#707070" })
+    vim.api.nvim_set_hl(0, "TabLineSel", { fg = "#ffffff" })
 else
     vim.o.bg = "light"
     for _, bg in pairs(bgs) do vim.api.nvim_set_hl(0, bg, { fg = "#000000" }) end
     vim.api.nvim_set_hl(0, "CursorLine", { bg = "#aaaaaa" })
     vim.api.nvim_set_hl(0, "CursorLineNr", { bg = "#aaaaaa" })
+    vim.api.nvim_set_hl(0, "MatchParen", { bg = "#000000", fg = "#ffffff" })
 end
+vim.api.nvim_set_hl(0, "NormalFloat", { bg = "NONE" })
