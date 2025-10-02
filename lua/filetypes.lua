@@ -27,12 +27,29 @@ vim.api.nvim_create_autocmd("FileType", {
         -- Format selection with 'gq'
         vim.bo[args.buf].formatprg = "uv run ruff format --stdin-filename %"
         vim.bo[args.buf].formatexpr = ""
-        vim.keymap.set("n", "<leader>f", "<cmd>w<cr><cmd>!uv run ruff format %<cr>",
+        vim.keymap.set("n", "<leader>f", "<cmd>w<cr><cmd>!uv run ruff format<cr>",
             { silent = true })
-        vim.keymap.set("n", "<leader>F", "<cmd>w<cr><cmd>!uv run ruff format<cr>",
-            { silent = true })
-        vim.keymap.set("n", "<leader>M", "<cmd>w<cr><cmd>silent !uv run ruff check --fix % >/dev/null<cr>",
-            { silent = true })
+        vim.keymap.set("n", "<leader>F", function()
+            vim.cmd("write")
+            vim.cmd([[!uv run ruff format]])
+            vim.cmd([[!uv run ruff check --fix >/dev/null]])
+        end, { silent = true })
+        vim.keymap.set("n", "<leader>m", function()
+            vim.bo[args.buf].makeprg = "uv run ruff check --output-format=pylint"
+            vim.cmd([[
+                w
+                silent make
+                copen
+                wincmd p]])
+        end)
+        vim.keymap.set("n", "<leader>M", function()
+            vim.bo[args.buf].makeprg = "uv run mypy --show-error-codes ."
+            vim.cmd([[
+                w
+                silent make
+                copen
+                wincmd p]])
+        end)
     end })
 
 vim.api.nvim_create_autocmd("FileType", {
@@ -41,5 +58,5 @@ vim.api.nvim_create_autocmd("FileType", {
         vim.bo[args.buf].makeprg = "eslint --fix %"
     end })
 
-vim.keymap.set("n", "<leader>m", "<cmd>w<cr><cmd>silent make<cr><cmd>copen<cr><cmd>wincmd k<cr>")
+vim.keymap.set("n", "<leader>m", "<cmd>w<cr><cmd>silent make<cr><cmd>copen<cr><cmd>wincmd p<cr>")
 vim.keymap.set("n", "<leader>f", "<cmd>w<cr>mfgggqG`fzz")

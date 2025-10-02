@@ -37,11 +37,12 @@ return {
     settings = {
         basedpyright = {
             typeCheckingMode = "recommended", -- ["off", "basic", "standard", "strict", "recommended", "all"]
+            diagnosticMode = "workspace",
             analysis = {
                 diagnosticMode = "workspace",
                 autoSearchPaths = true, -- pick up installed packages & stubs
                 useLibraryCodeForTypes = true, -- fall back to library .pyi for typing
-                -- extraPaths = { "src" },
+                extraPaths = { "src", "app" },
                 disableLanguageServices = false,
             },
         },
