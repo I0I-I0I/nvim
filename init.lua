@@ -1,7 +1,5 @@
 vim.loader.enable()
 
-vim.g.netrw_keepdir = 0
-vim.g.netrw_winsize = 21
 vim.g.netrw_banner = 0
 vim.g.netrw_localcopydircmd = 'cp -r'
 vim.cmd([[let g:netrw_list_hide = '\(^\|\s\s\)\zs\.\S\+']])
@@ -40,8 +38,7 @@ vim.keymap.set("n", "<M-o>", "<cmd>tabnext<cr>", { silent = true })
 vim.keymap.set("n", "<M-i>", "<cmd>tabprevious<cr>", { silent = true })
 vim.keymap.set("n", "<M-S-o>", "<cmd>tabmove +<cr>", { silent = true })
 vim.keymap.set("n", "<M-S-i>", "<cmd>tabmove -<cr>", { silent = true })
-vim.keymap.set("n", "-", "<cmd>Lex %:p:h<cr>", { noremap = true })
-vim.keymap.set("n", "<leader>-", "<cmd>Lex<cr>", { noremap = true })
+vim.keymap.set("n", "-", "<cmd>Ex<cr>", { noremap = true })
 vim.keymap.set("n", "gw", "<cmd>bp|bd #<cr>", { silent = true })
 vim.keymap.set("n", "gW", "<cmd>bp|bd! #<cr>", { silent = true })
 vim.keymap.set("n", "<M-c>", ":let @+=expand('%')<cr>", { silent = true })
@@ -52,15 +49,13 @@ vim.keymap.set("n", "<C-s>", "<cmd>!tmux neww tmux-sessionizer<cr>", { silent = 
 vim.keymap.set("c", "<C-w>", "<backspace><C-w>")
 vim.keymap.set("n", "<leader>N", ":tabnew ~/Sync/notes/.md<Left><Left><Left>")
 vim.keymap.set("n", "<leader>q", "<cmd>mksession!<cr><cmd>wa<cr><cmd>qa<cr>", { silent = true })
-
-vim.keymap.set("c", "<C-f>", "<Right>")
-vim.keymap.set("c", "<C-b>", "<Left>")
-vim.keymap.set("c", "<A-b>", "<C-f>b<C-c>")
-vim.keymap.set("c", "<A-f>", "<C-f>w<C-c>")
-vim.keymap.set("c", "<C-a>", "<Home>")
-vim.keymap.set("c", "<C-e>", "<End>")
-vim.keymap.set("c", "<C-d>", "<Del>")
-vim.keymap.set("c", "<C-s>", "<C-f>")
+vim.keymap.set({"n", "v"}, "<leader>z", "<cmd>let @z=@\"<cr>")
+vim.keymap.set({ "n", "v" }, "<leader>'", function()
+    local reg = vim.fn.input("Reg: ")
+    if reg == "" then
+        return end
+    vim.cmd("let @" .. reg .. "=@\"")
+end)
 
 vim.keymap.set("n", "<localleader><C-f>", ":e <C-r>=expand('%:p:h')<CR>/")
 vim.keymap.set("n", "<localleader><C-s>", ":sp <C-r>=expand('%:p:h')<CR>/")
@@ -98,7 +93,7 @@ require("nvim-treesitter.configs").setup({
     highlight = { enable = true },
     indent = { enable = true }})
 
-require("make")
+require("filetypes")
 
 -- Lazy
 vim.schedule(function()
@@ -106,37 +101,57 @@ vim.schedule(function()
     vim.o.spelllang = "en,ru"
 
     require("vim._extui").enable({ enable = true, msg = { target = "msg", timeout = 4000 } })
+    require("db-config")
+    require("dap-config")
 
     vim.pack.add({
         "https://github.com/mason-org/mason.nvim",
         "https://github.com/neovim/nvim-lspconfig",
+        { src = "https://github.com/saghen/blink.cmp", version = "v1.7.0" },
         "https://github.com/ibhagwan/fzf-lua",
         "https://github.com/jake-stewart/multicursor.nvim",
         { src = "https://github.com/ThePrimeagen/harpoon", version = "harpoon2" },
         "https://github.com/supermaven-inc/supermaven-nvim",
-        -- "https://github.com/Exafunction/windsurf.nvim",
+        "https://github.com/folke/sidekick.nvim",
         "https://github.com/nvim-lua/plenary.nvim",
         "https://github.com/3rd/image.nvim" })
 
-    vim.keymap.set("n", "<leader>d", function() require("dap-config") end, {})
-    vim.keymap.set("n", "<leader>c", function()
-        require("supermaven-nvim").setup({})
-        -- require("codeium").setup({
-        --     enable_chat = false,
-        --     enable_cmp_source = false,
-        --     virtual_text = { enabled = true } })
-        print("Activate codeium.nvim") end)
-    require("mason").setup()
-    require("image").setup({ integrations = { markdown = {
+    require("blink.cmp").setup({
+        cmdline = { enabled = false },
+        completion = { menu = { auto_show = false }, documentation = { auto_show = true } },
+        sources = {
+            default = { "lsp", "path", "snippets", "buffer" },
+            per_filetype = { sql = { 'snippets', 'dadbod', 'buffer' } },
+            providers = { dadbod = { name = "Dadbod", module = "vim_dadbod_completion.blink" } } } })
+
+    require("supermaven-nvim").setup({})
+    require("supermaven-nvim.api").stop()
+    vim.keymap.set({ "n", "i" }, "<localleader>c", function()
+        require("supermaven-nvim.api").toggle()
+        if require("supermaven-nvim.api").is_running() then
+            print("Supermaven is enabled")
+        else
+            print("Supermaven is disabled") end
+    end)
+    vim.keymap.set({ "n", "t" }, "<localleader>g", function()
+        require("sidekick.cli").toggle({ name = "gemini", focus = true }) end)
+    vim.keymap.set({ "n", "t" }, "<localleader>p", function()
+        require("sidekick.cli").select_prompt() end)
+
+    require("image").setup({
+        integrations = { markdown = {
                 only_render_image_at_cursor = true,
                 only_render_image_at_cursor_mode = "inline" }}})
 
-    require("fzf-lua").setup({"ivy"})
-    vim.keymap.set("n", "<C-p>", ":FzfLua files<cr>", { silent = true })
-    vim.keymap.set("n", "", ":FzfLua grep<cr>", { silent = true })
-    vim.keymap.set("n", "th", ":FzfLua helptags<cr>", { silent = true })
-    vim.keymap.set("n", "tm", ":FzfLua manpages<cr>", { silent = true })
-    vim.api.nvim_set_hl(0, "FzfLuaPreviewNormal", { bg = "NONE" })
+    require("fzf-lua").setup({{"ivy", "hide"}, winopts = { preview = { hidden = true } } })
+    vim.keymap.set("n", "<C-p>", "<cmd>FzfLua files<cr>", { silent = true })
+    vim.keymap.set("n", "", "<cmd>FzfLua grep<cr>", { silent = true })
+    vim.keymap.set("n", "<C-f>", "<cmd>FzfLua lsp_live_workspace_symbols<cr>", { silent = true })
+    vim.keymap.set("n", "gO", "<cmd>FzfLua lsp_document_symbols<cr>", { silent = true })
+    vim.keymap.set("n", "z=", "<cmd>FzfLua spell_suggest<cr>", { silent = true })
+    vim.keymap.set("n", "th", "<cmd>FzfLua helptags<cr>", { silent = true })
+    vim.keymap.set("n", "tm", "<cmd>FzfLua manpages<cr>", { silent = true })
+    vim.cmd.FzfLua("register_ui_select")
 
     local harpoon = require("harpoon")
     harpoon:setup()
@@ -172,26 +187,24 @@ vim.schedule(function()
     end)
 
     -- LSP
-    vim.keymap.set("n", "grd", vim.diagnostic.setqflist, { silent = true })
+    require("mason").setup()
+
+    vim.keymap.set("n", "grd", function()
+        vim.diagnostic.setqflist()
+        vim.cmd("wincmd p")
+    end, { silent = true })
     vim.keymap.set("n", "<leader>l", function()
         vim.cmd.LspRestart()
         print("Lsp restart")
     end, { silent = true })
-    vim.keymap.set("i", "<C-space>", vim.lsp.completion.get)
 
-    vim.diagnostic.config({ jump = { float = true } })
-    vim.lsp.enable({ "basedpyright", "djlsp" , "clangd", "bashls", "cssls", "css_variables",
-        "html", "superhtml", "emmet_language_server", "ts_ls" })
+    vim.lsp.enable({ "biome", "basedpyright", "djlsp" , "clangd", "bashls", "cssls",
+        "css_variables", "html", "superhtml", "emmet_language_server", "ts_ls" })
+    vim.diagnostic.config({ jump = { float = true }, underline = false })
     vim.api.nvim_create_autocmd("LspAttach", {
         callback = function(args)
             local client = vim.lsp.get_client_by_id(args.data.client_id)
-            vim.lsp.semantic_tokens.enable(false, { bufnr = args.buf })
-            if client:supports_method("textDocument/completion") then
-                -- local chars = {}; for i = 32, 126 do table.insert(chars, string.char(i)) end
-                -- client.server_capabilities.completionProvider.triggerCharacters = chars
-                vim.lsp.completion.enable(true, client.id, args.buf, { autotrigger = false })
-            end
-        end })
+            vim.lsp.semantic_tokens.enable(false, { bufnr = args.buf }) end })
 end)
 
 -- Color
@@ -199,26 +212,19 @@ vim.pack.add({
     "https://github.com/ntk148v/komau.vim",
     "https://github.com/craftzdog/solarized-osaka.nvim" })
 
+vim.o.bg = "dark"
+
 -- vim.cmd.colorscheme "solarized-osaka"
 vim.cmd.colorscheme "quiet"
-local bgs = {"DiagnosticWarn", "DiagnosticError", "DiagnosticHint", "DiagnosticInfo"}
-local date = tonumber(os.date("%H"))
--- if date >= 22 or date < 6 then
-if true then
-    vim.o.bg = "dark"
-    vim.pack.add({"https://github.com/xiyaowong/transparent.nvim"})
-    require("transparent").setup({
-        extra_groups = { "TabLine", "TabLineFill", "TabLineSel", "Folded", "FloatBorder"},
-        exclude_groups = { "CursorLine" } })
-    for _, bg in pairs(bgs) do vim.api.nvim_set_hl(0, bg, { fg = "#ffffff" }) end
-    vim.api.nvim_set_hl(0, "StatusLine", { fg = "#e0e2ea" })
-    vim.api.nvim_set_hl(0, "TabLine", { fg = "#707070" })
-    vim.api.nvim_set_hl(0, "TabLineSel", { fg = "#ffffff" })
-else
-    vim.o.bg = "light"
-    for _, bg in pairs(bgs) do vim.api.nvim_set_hl(0, bg, { fg = "#000000" }) end
-    vim.api.nvim_set_hl(0, "CursorLine", { bg = "#aaaaaa" })
-    vim.api.nvim_set_hl(0, "CursorLineNr", { bg = "#aaaaaa" })
-    vim.api.nvim_set_hl(0, "MatchParen", { bg = "#000000", fg = "#ffffff" })
-end
+
+vim.pack.add({"https://github.com/xiyaowong/transparent.nvim"})
+require("transparent").setup({
+    extra_groups = { "TabLine", "TabLineFill", "TabLineSel", "Folded", "FloatBorder"},
+    exclude_groups = { "CursorLine" } })
+
+for _, bg in pairs({"DiagnosticWarn", "DiagnosticError", "DiagnosticHint", "DiagnosticInfo"}) do
+    vim.api.nvim_set_hl(0, bg, { fg = "#ffffff" }) end
+vim.api.nvim_set_hl(0, "StatusLine", { fg = "#e0e2ea" })
+vim.api.nvim_set_hl(0, "TabLine", { fg = "#707070" })
+vim.api.nvim_set_hl(0, "TabLineSel", { fg = "#ffffff" })
 vim.api.nvim_set_hl(0, "NormalFloat", { bg = "NONE" })
