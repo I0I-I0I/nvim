@@ -1,0 +1,44 @@
+{
+  "plugins": {
+    "blink.cmp": {
+      "version": "'v1.7.0'"
+    },
+    "fzf-lua": {
+      "rev": "c0c0926"
+    },
+    "harpoon": {
+      "version": "'harpoon2'"
+    },
+    "komau.vim": [],
+    "mason.nvim": [],
+    "multicursor.nvim": [],
+    "neovim": {
+      "rev": "72a04c4",
+      "src": "https://github.com/rose-pine/neovim"
+    },
+    "nvim-dap": {
+      "rev": "881f7dc"
+    },
+    "nvim-dap-python": [],
+    "nvim-dap-ui": [],
+    "nvim-dap-virtual-text": [],
+    "nvim-lspconfig": [],
+    "nvim-nio": [],
+    "nvim-treesitter": [],
+    "plenary.nvim": [],
+    "sidekick.nvim": {
+      "rev": "8b6b736"
+    },
+    "solarized-osaka.nvim": [],
+    "supermaven-nvim": [],
+    "transparent.nvim": [],
+    "vague.nvim": {
+      "rev": "27a19ff",
+      "src": "https://github.com/vague-theme/vague.nvim"
+    },
+    "workspace-diagnostics.nvim": {
+      "rev": "60f9175",
+      "src": "https://github.com/artemave/workspace-diagnostics.nvim"
+    }
+  }
+}
