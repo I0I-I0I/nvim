@@ -25,6 +25,11 @@ vim.o.winborder = "single"
 vim.o.completeopt = "menuone,noinsert,popup,fuzzy"
 vim.o.cmdheight = 0
 vim.o.undofile = true
+vim.o.foldmethod = "expr"
+vim.o.foldexpr = "v:lua.vim.treesitter.foldexpr()"
+vim.o.foldlevel = 99
+vim.o.foldnestmax = 1
+vim.o.foldlevelstart = 99
 vim.o.undolevels = 10000000
 vim.o.undoreload = 10000000
 vim.o.langmap = "ФИСВУАПРШОЛДЬТЩЗЙКЫЕГМЦЧНЯЖ;ABCDEFGHIJKLMNOPQRSTUVWXYZ:,фисвуапршолдьтщзйкыегмцчняжб;abcdefghijklmnopqrstuvwxyz\\;\\,"
@@ -39,40 +44,61 @@ vim.keymap.set("n", "-", "<cmd>Ex<cr>", { noremap = true })
 vim.keymap.set("n", "gw", "<cmd>bp|bd #<cr>", { silent = true })
 vim.keymap.set("n", "gW", "<cmd>bp|bd! #<cr>", { silent = true })
 vim.keymap.set("n", "<M-c>", ":let @+=expand('%')<cr>", { silent = true })
-vim.keymap.set("n", "<M-S-c>", ":let @+=expand('%') . ':' . line('.')<cr>", { silent = true })
-vim.keymap.set("n", "<leader><M-c>", ":let @+=expand('%:p')<cr>", { silent = true })
+vim.keymap.set("n", "<M-S-c>", ":let @+=expand('%:p')<cr>", { silent = true })
+vim.keymap.set("n", "<leader><M-c>", ":let @+=expand('%') . ':' . line('.')<cr>", { silent = true })
 vim.keymap.set("n", "<leader><M-S-c>", ":let @+=expand('%:p') . ':' . line('.')<cr>", { silent = true })
 vim.keymap.set("n", "<C-s>", "<cmd>!tmux neww tmux-sessionizer<cr>", { silent = true })
-vim.keymap.set("c", "<C-w>", "<backspace><C-w>")
-vim.keymap.set("n", "<leader>N", ":tabnew ~/Sync/notes/.md<Left><Left><Left>")
 vim.keymap.set("n", "<leader>q", "<cmd>mksession!<cr><cmd>wa<cr><cmd>qa<cr>", { silent = true })
-vim.keymap.set({"n", "v"}, "<leader>z", "<cmd>let @z=@\"<cr>")
+vim.keymap.set({"n", "v"}, "<leader>y", "<cmd>let @+=@\"<cr>")
+vim.keymap.set({"n", "v"}, "<leader><leader>", "<cmd>let @\"=@0<cr>")
 vim.keymap.set({ "n", "v" }, "<leader>'", function()
     local reg = vim.fn.input("Reg: ")
     if reg == "" then
         return end
-    vim.cmd("let @" .. reg .. "=@\"")
-end)
+    vim.cmd("let @" .. reg .. "=@\"") end)
 
-vim.keymap.set("n", "<localleader><C-f>", ":e <C-r>=expand('%:p:h')<CR>/")
-vim.keymap.set("n", "<localleader><C-s>", ":sp <C-r>=expand('%:p:h')<CR>/")
-vim.keymap.set("n", "<localleader><C-v>", ":vs <C-r>=expand('%:p:h')<CR>/")
-vim.keymap.set("n", "<localleader><C-n>", ":tabnew <C-r>=expand('%:p:h')<CR>/")
+vim.keymap.set("n", "<localleader><c-f>", function()
+    local stat = "current"
+    local base_path = vim.fn.expand("%:p:h") .. "/"
+
+    vim.keymap.set("c", "<C-w>", "<backspace><C-w>")
+    local binds = { { "<C-t>", "new_tab" }, { "<C-v>", "vsplit" }, { "<C-s>", "hsplit" }}
+    local commands = {
+        current = vim.cmd.e,
+        new_tab = vim.cmd.tabnew,
+        vsplit = vim.cmd.vs,
+        hsplit = vim.cmd.sp }
+
+    for _, v in pairs(binds) do
+        vim.keymap.set("c", v[1], function()
+            stat = v[2]
+            vim.api.nvim_input("<cr>")
+        end, { noremap = true }) end
+
+    vim.ui.input({
+        prompt="-> ",
+        default=base_path,
+        completion="file" },
+        function(path)
+            if not path then return end
+            commands[stat](path) end)
+
+    vim.keymap.del("c", "<C-w>")
+    for _, v in pairs(binds) do
+        vim.keymap.del("c", v[1]) end end)
 vim.keymap.set("n", "<localleader><C-r>", function()
     local old_name = vim.fn.expand("%")
     local new_name = vim.fn.input("New file name: ", vim.fn.expand("%:p"), "file")
     if new_name ~= "" and new_name ~= old_name then
         os.rename(old_name, new_name)
         vim.cmd("e " .. new_name)
-        vim.cmd("bd #")
-    end end)
+        vim.cmd("bd #") end end)
 vim.keymap.set("n", "<localleader><C-d>", function()
     local filename = vim.fn.expand("%")
     local ask = vim.fn.input("Delete " .. filename .. "? [y/n] ")
     if filename ~= "" and ask == "y" or ask == "Y" then
         os.remove(filename)
-        vim.cmd("bp|bd! #")
-    end end)
+        vim.cmd("bp|bd! #") end end)
 vim.keymap.set("n", "<localleader><C-y>", function()
     local filename = vim.fn.expand("%:p:h")
     os.execute("tmux neww 'yazi " .. filename .. "'") end)
@@ -98,8 +124,7 @@ vim.schedule(function()
     vim.o.spelllang = "en,ru"
 
     require("vim._extui").enable({ enable = true, msg = { target = "msg", timeout = 4000 } })
-    require("db-config")
-    require("dap-config")
+    pcall(require, "dap-config")
 
     vim.pack.add({
         "https://github.com/mason-org/mason.nvim",
@@ -108,10 +133,9 @@ vim.schedule(function()
         "https://github.com/ibhagwan/fzf-lua",
         "https://github.com/jake-stewart/multicursor.nvim",
         { src = "https://github.com/ThePrimeagen/harpoon", version = "harpoon2" },
-        "https://github.com/supermaven-inc/supermaven-nvim",
-        "https://github.com/folke/sidekick.nvim",
         "https://github.com/nvim-lua/plenary.nvim",
-        "https://github.com/3rd/image.nvim" })
+        "https://github.com/supermaven-inc/supermaven-nvim",
+        "https://github.com/folke/sidekick.nvim" })
 
     require("blink.cmp").setup({
         cmdline = { enabled = false },
@@ -128,17 +152,11 @@ vim.schedule(function()
         if require("supermaven-nvim.api").is_running() then
             print("Supermaven is enabled")
         else
-            print("Supermaven is disabled") end
-    end)
+            print("Supermaven is disabled") end end)
     vim.keymap.set({ "n", "t" }, "<localleader>g", function()
         require("sidekick.cli").toggle({ name = "gemini", focus = true }) end)
     vim.keymap.set({ "n", "t" }, "<localleader>p", function()
         require("sidekick.cli").select_prompt() end)
-
-    require("image").setup({
-        integrations = { markdown = {
-                only_render_image_at_cursor = true,
-                only_render_image_at_cursor_mode = "inline" }}})
 
     require("fzf-lua").setup({{"ivy", "hide"}, winopts = { preview = { hidden = true } } })
     vim.keymap.set("n", "<C-p>", "<cmd>FzfLua files<cr>", { silent = true })
@@ -180,38 +198,27 @@ vim.schedule(function()
         layerSet({"n", "x"}, "<A-x>", mc.deleteCursor)
         layerSet("n", "<leader>a", mc.alignCursors)
         layerSet("n", "", function()
-            if not mc.cursorsEnabled() then mc.enableCursors() else mc.clearCursors() end end)
-    end)
+            if not mc.cursorsEnabled() then mc.enableCursors() else mc.clearCursors() end end) end)
 
     -- LSP
     require("mason").setup()
 
     vim.keymap.set("n", "grd", function()
         vim.diagnostic.setqflist()
-        vim.cmd("wincmd p")
-    end, { silent = true })
+        vim.cmd("wincmd p") end, { silent = true })
     vim.keymap.set("n", "<leader>l", function()
         vim.cmd.LspRestart()
-        print("Lsp restart")
-    end, { silent = true })
+        print("Lsp restart") end, { silent = true })
 
-    vim.lsp.enable({ "biome", "basedpyright", "djlsp" , "clangd", "bashls", "cssls",
+    vim.lsp.enable({ "pyright", "djlsp" , "clangd", "bashls", "cssls",
         "css_variables", "html", "superhtml", "emmet_language_server", "ts_ls" })
     vim.diagnostic.config({ jump = { float = true }, underline = false })
     vim.api.nvim_create_autocmd("LspAttach", {
         callback = function(args)
-            local client = vim.lsp.get_client_by_id(args.data.client_id)
-            vim.lsp.semantic_tokens.enable(false, { bufnr = args.buf }) end })
-end)
+            vim.lsp.semantic_tokens.enable(false, { bufnr = args.buf }) end }) end)
 
 -- Color
-vim.pack.add({
-    "https://github.com/ntk148v/komau.vim",
-    "https://github.com/craftzdog/solarized-osaka.nvim" })
-
 vim.o.bg = "dark"
-
--- vim.cmd.colorscheme "solarized-osaka"
 vim.cmd.colorscheme "quiet"
 
 vim.pack.add({"https://github.com/xiyaowong/transparent.nvim"})
@@ -219,9 +226,8 @@ require("transparent").setup({
     extra_groups = { "TabLine", "TabLineFill", "TabLineSel", "Folded", "FloatBorder"},
     exclude_groups = { "CursorLine" } })
 
-for _, bg in pairs({"DiagnosticWarn", "DiagnosticError", "DiagnosticHint", "DiagnosticInfo"}) do
+for _, bg in pairs({"DiagnosticWarn", "DiagnosticError", "DiagnosticHint", "DiagnosticInfo", "TabLine"}) do
     vim.api.nvim_set_hl(0, bg, { fg = "#ffffff" }) end
 vim.api.nvim_set_hl(0, "StatusLine", { fg = "#e0e2ea" })
 vim.api.nvim_set_hl(0, "TabLine", { fg = "#707070" })
-vim.api.nvim_set_hl(0, "TabLineSel", { fg = "#ffffff" })
 vim.api.nvim_set_hl(0, "NormalFloat", { bg = "NONE" })
