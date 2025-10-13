@@ -1,44 +1,76 @@
 {
   "plugins": {
     "blink.cmp": {
+      "rev": "327fff9",
+      "src": "https://github.com/saghen/blink.cmp",
       "version": "'v1.7.0'"
     },
+    "fyler.nvim": {
+      "rev": "f19870c"
+    },
     "fzf-lua": {
-      "rev": "c0c0926"
+      "rev": "4927602",
+      "src": "https://github.com/ibhagwan/fzf-lua"
     },
     "harpoon": {
       "version": "'harpoon2'"
     },
     "komau.vim": [],
-    "mason.nvim": [],
+    "marko.nvim": {
+      "rev": "db22bb7",
+      "src": "https://github.com/mohseenrm/marko.nvim"
+    },
+    "marks.nvim": {
+      "rev": "f353e8c",
+      "src": "https://github.com/chentoast/marks.nvim"
+    },
+    "mason.nvim": {
+      "rev": "ad7146a",
+      "src": "https://github.com/mason-org/mason.nvim"
+    },
     "multicursor.nvim": [],
     "neovim": {
       "rev": "72a04c4",
       "src": "https://github.com/rose-pine/neovim"
     },
     "nvim-dap": {
-      "rev": "881f7dc"
+      "rev": "881f7dc",
+      "src": "https://github.com/mfussenegger/nvim-dap"
     },
-    "nvim-dap-python": [],
-    "nvim-dap-ui": [],
-    "nvim-dap-virtual-text": [],
-    "nvim-lspconfig": [],
-    "nvim-nio": [],
+    "nvim-dap-python": {
+      "rev": "64652d1",
+      "src": "https://github.com/mfussenegger/nvim-dap-python"
+    },
+    "nvim-dap-ui": {
+      "rev": "cf91d5e",
+      "src": "https://github.com/rcarriga/nvim-dap-ui"
+    },
+    "nvim-dap-virtual-text": {
+      "rev": "fbdb48c",
+      "src": "https://github.com/theHamsta/nvim-dap-virtual-text"
+    },
+    "nvim-lspconfig": {
+      "rev": "ececa53",
+      "src": "https://github.com/neovim/nvim-lspconfig"
+    },
+    "nvim-nio": {
+      "rev": "21f5324",
+      "src": "https://github.com/nvim-neotest/nvim-nio"
+    },
+    "nvim-origami": {
+      "rev": "eba1fb2",
+      "src": "https://github.com/chrisgrieser/nvim-origami"
+    },
     "nvim-treesitter": [],
     "plenary.nvim": [],
     "sidekick.nvim": {
-      "rev": "8b6b736"
+      "rev": "dc2710a"
     },
     "solarized-osaka.nvim": [],
     "supermaven-nvim": [],
-    "transparent.nvim": [],
-    "vague.nvim": {
-      "rev": "27a19ff",
-      "src": "https://github.com/vague-theme/vague.nvim"
-    },
-    "workspace-diagnostics.nvim": {
-      "rev": "60f9175",
-      "src": "https://github.com/artemave/workspace-diagnostics.nvim"
+    "transparent.nvim": {
+      "rev": "8ac5988",
+      "src": "https://github.com/xiyaowong/transparent.nvim"
     }
   }
 }

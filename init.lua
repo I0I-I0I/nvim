@@ -1,8 +1,5 @@
 vim.loader.enable()
 
-vim.g.netrw_banner = 0
-vim.g.netrw_localcopydircmd = 'cp -r'
-vim.cmd([[let g:netrw_list_hide = '\(^\|\s\s\)\zs\.\S\+']])
 vim.g.mapleader = " "
 vim.g.maplocalleader = "" -- <C-x>
 vim.o.lazyredraw = true
@@ -14,6 +11,7 @@ vim.o.list = true
 vim.o.wildmode = "longest:full,full"
 vim.o.wildmenu = true
 vim.o.laststatus = 3
+vim.o.scrolloff = 1
 vim.o.ignorecase = true
 vim.o.smartcase = true
 vim.o.number = true
@@ -24,26 +22,22 @@ vim.o.smartindent = true
 vim.o.expandtab = true
 vim.o.shiftwidth = 4
 vim.o.tabstop = 4
-vim.o.winborder = "single"
-vim.o.completeopt = "menuone,noinsert,popup,fuzzy"
+vim.o.completeopt = "menu,menuone,noinsert,popup,nearest"
 vim.o.cmdheight = 0
 vim.o.undofile = true
-vim.o.foldmethod = "expr"
-vim.o.foldexpr = "v:lua.vim.treesitter.foldexpr()"
-vim.o.foldlevel = 99
-vim.o.foldnestmax = 1
-vim.o.foldlevelstart = 99
 vim.o.undolevels = 10000000
 vim.o.undoreload = 10000000
 vim.o.langmap = "ФИСВУАПРШОЛДЬТЩЗЙКЫЕГМЦЧНЯЖ;ABCDEFGHIJKLMNOPQRSTUVWXYZ:,фисвуапршолдьтщзйкыегмцчняжб;abcdefghijklmnopqrstuvwxyz\\;\\,"
 
-vim.keymap.set("n", "<C-y>", "4<C-y>")
-vim.keymap.set("n", "<C-e>", "4<C-e>")
+vim.keymap.set({ "v", "n" }, "<C-y>", "4<C-y>")
+vim.keymap.set({ "v", "n" }, "<C-e>", "4<C-e>")
 vim.keymap.set("n", "<M-o>", "<cmd>tabnext<cr>", { silent = true })
 vim.keymap.set("n", "<M-i>", "<cmd>tabprevious<cr>", { silent = true })
 vim.keymap.set("n", "<M-S-o>", "<cmd>tabmove +<cr>", { silent = true })
 vim.keymap.set("n", "<M-S-i>", "<cmd>tabmove -<cr>", { silent = true })
-vim.keymap.set("n", "-", "<cmd>Ex<cr>", { noremap = true })
+vim.keymap.set("n", "<M-k>", "<cmd>cprev<CR>zz")
+vim.keymap.set("n", "<M-j>", "<cmd>cnext<CR>zz")
+vim.keymap.set("n", "Q", "@@")
 vim.keymap.set("n", "gw", "<cmd>bp|bd #<cr>", { silent = true })
 vim.keymap.set("n", "gW", "<cmd>bp|bd! #<cr>", { silent = true })
 vim.keymap.set("n", "<M-c>", ":let @+=expand('%')<cr>", { silent = true })
@@ -51,14 +45,16 @@ vim.keymap.set("n", "<M-S-c>", ":let @+=expand('%:p')<cr>", { silent = true })
 vim.keymap.set("n", "<leader><M-c>", ":let @+=expand('%') . ':' . line('.')<cr>", { silent = true })
 vim.keymap.set("n", "<leader><M-S-c>", ":let @+=expand('%:p') . ':' . line('.')<cr>", { silent = true })
 vim.keymap.set("n", "<C-s>", "<cmd>!tmux neww tmux-sessionizer<cr>", { silent = true })
-vim.keymap.set("n", "<leader>q", "<cmd>mksession!<cr><cmd>wa<cr><cmd>qa<cr>", { silent = true })
-vim.keymap.set({"n", "v"}, "<leader>y", "<cmd>let @+=@\"<cr>")
-vim.keymap.set({"n", "v"}, "<leader><leader>", "<cmd>let @\"=@0<cr>")
+vim.keymap.set("n", "=ap", "ma=ap`a")
+vim.keymap.set("n", "n", "nzzzv")
+vim.keymap.set("n", "N", "Nzzzv")
+vim.keymap.set({"n", "v"}, "<leader>y", "\"+y")
+vim.keymap.set({"n", "v"}, "<leader>p", "\"+p")
+vim.keymap.set("x", "P", "\"_dP")
 vim.keymap.set({ "n", "v" }, "<leader>'", function()
-    local reg = vim.fn.input("Reg: ")
-    if reg == "" then
-        return end
-    vim.cmd("let @" .. reg .. "=@\"") end)
+    local to = vim.fn.input("To: ")
+    if to == "" then return end
+    vim.cmd("let @" .. to .. "=@\"") end)
 
 vim.keymap.set("n", "<localleader><c-f>", function()
     local stat = "current"
@@ -79,7 +75,7 @@ vim.keymap.set("n", "<localleader><c-f>", function()
         end, { noremap = true }) end
 
     vim.ui.input({
-        prompt="-> ",
+        prompt="open: ",
         default=base_path,
         completion="file" },
         function(path)
@@ -89,35 +85,33 @@ vim.keymap.set("n", "<localleader><c-f>", function()
     vim.keymap.del("c", "<C-w>")
     for _, v in pairs(binds) do
         vim.keymap.del("c", v[1]) end end)
-vim.keymap.set("n", "<localleader><C-r>", function()
-    local old_name = vim.fn.expand("%")
-    local new_name = vim.fn.input("New file name: ", vim.fn.expand("%:p"), "file")
-    if new_name ~= "" and new_name ~= old_name then
-        os.rename(old_name, new_name)
-        vim.cmd("e " .. new_name)
-        vim.cmd("bd #") end end)
-vim.keymap.set("n", "<localleader><C-d>", function()
-    local filename = vim.fn.expand("%")
-    local ask = vim.fn.input("Delete " .. filename .. "? [y/n] ")
-    if filename ~= "" and ask == "y" or ask == "Y" then
-        os.remove(filename)
-        vim.cmd("bp|bd! #") end end)
-vim.keymap.set("n", "<localleader><C-y>", function()
-    local filename = vim.fn.expand("%:p:h")
-    os.execute("tmux neww 'yazi " .. filename .. "'") end)
 
 vim.cmd([[
     autocmd BufWritePre * %s/\s\+$//e
-    autocmd FileType netrw setlocal bufhidden=wipe
+    autocmd FileType Fyler setlocal nospell
     autocmd TextYankPost * silent! lua vim.hl.on_yank({higroup="IncSearch", timeout=150})
+    autocmd VimLeavePre * mark L
     autocmd BufWritePre * call mkdir(expand("<afile>:p:h"), "p") ]])
 
-vim.pack.add({ "https://github.com/nvim-treesitter/nvim-treesitter" })
+vim.pack.add({
+    "https://github.com/A7Lavinraj/fyler.nvim",
+    "https://github.com/nvim-treesitter/nvim-treesitter" })
+
 require("nvim-treesitter.configs").setup({
-    ensure_installed = { "c", "lua", "vim", "vimdoc", "query", "markdown", "markdown_inline" },
-    auto_install = true,
-    highlight = { enable = true },
-    indent = { enable = true }})
+  ensure_installed = { "c", "lua", "vim", "vimdoc", "query", "markdown", "markdown_inline" },
+  auto_install = true,
+  highlight = { enable = true } })
+
+require("fyler").setup({
+    confirm_simple = true,
+    default_explorer = true,
+    icon_provider = "none",
+    icon = {
+        directory_collapsed = "",
+        directory_empty = "󰍴",
+        directory_expanded = "" } })
+
+vim.keymap.set("n", "-", "<cmd>Fyler<cr>", { noremap = true })
 
 require("filetypes")
 
@@ -132,76 +126,47 @@ vim.schedule(function()
     vim.pack.add({
         "https://github.com/mason-org/mason.nvim",
         "https://github.com/neovim/nvim-lspconfig",
-        { src = "https://github.com/saghen/blink.cmp", version = "v1.7.0" },
-        "https://github.com/ibhagwan/fzf-lua",
-        "https://github.com/jake-stewart/multicursor.nvim",
         { src = "https://github.com/ThePrimeagen/harpoon", version = "harpoon2" },
         "https://github.com/nvim-lua/plenary.nvim",
+        { src = "https://github.com/saghen/blink.cmp", version = "v1.7.0" },
+        "https://github.com/ibhagwan/fzf-lua",
         "https://github.com/supermaven-inc/supermaven-nvim",
         "https://github.com/folke/sidekick.nvim" })
 
     require("blink.cmp").setup({
         cmdline = { enabled = false },
-        completion = { menu = { auto_show = false }, documentation = { auto_show = true } },
-        sources = {
-            default = { "lsp", "path", "snippets", "buffer" },
-            per_filetype = { sql = { 'snippets', 'dadbod', 'buffer' } },
-            providers = { dadbod = { name = "Dadbod", module = "vim_dadbod_completion.blink" } } } })
-
-    require("supermaven-nvim").setup({})
-    require("supermaven-nvim.api").stop()
-    vim.keymap.set({ "n", "i" }, "<localleader>c", function()
-        require("supermaven-nvim.api").toggle()
-        if require("supermaven-nvim.api").is_running() then
-            print("Supermaven is enabled")
-        else
-            print("Supermaven is disabled") end end)
-    vim.keymap.set({ "n", "t" }, "<localleader>g", function()
-        require("sidekick.cli").toggle({ name = "gemini", focus = true }) end)
-    vim.keymap.set({ "n", "t" }, "<localleader>p", function()
-        require("sidekick.cli").select_prompt() end)
-
-    require("fzf-lua").setup({{"ivy", "hide"}, winopts = { preview = { hidden = true } } })
-    vim.keymap.set("n", "<C-p>", "<cmd>FzfLua files<cr>", { silent = true })
-    vim.keymap.set("n", "", "<cmd>FzfLua grep<cr>", { silent = true })
-    vim.keymap.set("n", "<C-f>", "<cmd>FzfLua lsp_live_workspace_symbols<cr>", { silent = true })
-    vim.keymap.set("n", "gO", "<cmd>FzfLua lsp_document_symbols<cr>", { silent = true })
-    vim.keymap.set("n", "z=", "<cmd>FzfLua spell_suggest<cr>", { silent = true })
-    vim.keymap.set("n", "th", "<cmd>FzfLua helptags<cr>", { silent = true })
-    vim.keymap.set("n", "tm", "<cmd>FzfLua manpages<cr>", { silent = true })
-    vim.cmd.FzfLua("register_ui_select")
+        completion = { menu = { auto_show = true }, documentation = { auto_show = true } } })
 
     local harpoon = require("harpoon")
+
     harpoon:setup()
+
     vim.keymap.set("n", "<leader>a", function() harpoon:list():add() end)
     vim.keymap.set("n", "", function() harpoon.ui:toggle_quick_menu(harpoon:list()) end)
+
     vim.keymap.set("n", "<C-h>", function() harpoon:list():select(1) end)
     vim.keymap.set("n", "<C-j>", function() harpoon:list():select(2) end)
     vim.keymap.set("n", "<C-k>", function() harpoon:list():select(3) end)
     vim.keymap.set("n", "<C-l>", function() harpoon:list():select(4) end)
 
-    local mc = require("multicursor-nvim")
-    mc.setup()
-    vim.keymap.set({"n", "x"}, "<A-k>", function() mc.lineAddCursor(-1) end)
-    vim.keymap.set({"n", "x"}, "<A-j>", function() mc.lineAddCursor(1) end)
-    vim.keymap.set({"n", "x"}, "<A-S-k>", function() mc.lineSkipCursor(-1) end)
-    vim.keymap.set({"n", "x"}, "<A-S-j>", function() mc.lineSkipCursor(1) end)
-    vim.keymap.set({"n", "x"}, "<A-n>", function() mc.matchAddCursor(1) end)
-    vim.keymap.set({"n", "x"}, "<A-S-n>", function() mc.matchSkipCursor(1) end)
-    vim.keymap.set({"n", "x"}, "<A-p>", function() mc.matchAddCursor(-1) end)
-    vim.keymap.set({"n", "x"}, "<A-S-p>", function() mc.matchSkipCursor(-1) end)
-    vim.keymap.set({"n", "x"}, "<A-a>", mc.matchAllAddCursors)
-    vim.keymap.set({"n", "x"}, "<A-q>", mc.toggleCursor)
-    vim.keymap.set("x", "I", mc.insertVisual)
-    vim.keymap.set("x", "A", mc.appendVisual)
-    vim.keymap.set("n", "<leader>gv", mc.restoreCursors)
-    mc.addKeymapLayer(function(layerSet)
-        layerSet({"n", "x"}, "<A-h>", mc.prevCursor)
-        layerSet({"n", "x"}, "<A-l>", mc.nextCursor)
-        layerSet({"n", "x"}, "<A-x>", mc.deleteCursor)
-        layerSet("n", "<leader>a", mc.alignCursors)
-        layerSet("n", "", function()
-            if not mc.cursorsEnabled() then mc.enableCursors() else mc.clearCursors() end end) end)
+    require("supermaven-nvim").setup({ ignore_filetypes = { "Fyler", "" } })
+    require("supermaven-nvim.api").stop()
+    vim.keymap.set({ "n", "i" }, "<M-g>", function()
+        require("supermaven-nvim.api").toggle()
+        if require("supermaven-nvim.api").is_running() then
+            print("Supermaven is enabled")
+        else
+            print("Supermaven is disabled") end end)
+    vim.keymap.set({ "n", "t" }, "<M-b>", function()
+        require("sidekick.cli").toggle({ name = "gemini", focus = true }) end)
+
+    require("fzf-lua").setup({{"ivy", "hide"}, winopts = { preview = { hidden = true } } })
+    vim.keymap.set("n", "<C-p>", "<cmd>FzfLua files<cr>", { silent = true })
+    vim.keymap.set("n", "", "<cmd>FzfLua live_grep<cr>", { silent = true })
+    vim.keymap.set("n", "<C-f>", "<cmd>FzfLua lsp_live_workspace_symbols<cr>", { silent = true })
+    vim.keymap.set("n", "z=", "<cmd>FzfLua spell_suggest<cr>", { silent = true })
+    vim.keymap.set("n", "th", "<cmd>FzfLua helptags<cr>", { silent = true })
+    vim.cmd.FzfLua("register_ui_select")
 
     -- LSP
     require("mason").setup()
@@ -209,28 +174,36 @@ vim.schedule(function()
     vim.keymap.set("n", "grd", function()
         vim.diagnostic.setqflist()
         vim.cmd("wincmd p") end, { silent = true })
-    vim.keymap.set("n", "<leader>l", function()
+    vim.keymap.set("n", "<leader>lr", function()
         vim.cmd.LspRestart()
         print("Lsp restart") end, { silent = true })
+    vim.keymap.set("i", "<C-x><C-o>", vim.lsp.completion.get, { noremap = true })
 
-    vim.lsp.enable({ "pyright", "djlsp" , "clangd", "bashls", "cssls",
-        "css_variables", "html", "superhtml", "emmet_language_server", "ts_ls" })
-    vim.diagnostic.config({ jump = { float = true }, underline = false })
+    vim.lsp.enable({ "basedpyright", "djlsp" , "clangd", "bashls", "cssls",
+        "css_variables", "html", "superhtml", "emmet_language_server", "ts_ls",
+        "copilot" })
+    vim.diagnostic.config({ jump = { float = true } })
     vim.api.nvim_create_autocmd("LspAttach", {
         callback = function(args)
+            local client = vim.lsp.get_client_by_id(args.data.client_id)
+            vim.lsp.completion.enable(true, client.id, args.buf, { autotrigger = true })
             vim.lsp.semantic_tokens.enable(false, { bufnr = args.buf }) end }) end)
 
--- Color
+-- Colors
 vim.o.bg = "dark"
-vim.cmd.colorscheme "quiet"
 
-vim.pack.add({"https://github.com/xiyaowong/transparent.nvim"})
+vim.pack.add({
+    "https://github.com/craftzdog/solarized-osaka.nvim",
+    "https://github.com/rose-pine/neovim" })
+
+vim.cmd.colorscheme "rose-pine-main"
+
+vim.pack.add({ "https://github.com/xiyaowong/transparent.nvim" })
 require("transparent").setup({
-    extra_groups = { "TabLine", "TabLineFill", "TabLineSel", "Folded", "FloatBorder"},
+    extra_groups = { "TabLine", "TabLineFill", "TabLineSel", "FloatBorder"},
     exclude_groups = { "CursorLine" } })
 
-for _, bg in pairs({"DiagnosticWarn", "DiagnosticError", "DiagnosticHint", "DiagnosticInfo", "TabLine"}) do
+for _, bg in pairs({"DiagnosticWarn", "DiagnosticError", "DiagnosticHint", "DiagnosticInfo", "TabLineSel"}) do
     vim.api.nvim_set_hl(0, bg, { fg = "#ffffff" }) end
 vim.api.nvim_set_hl(0, "StatusLine", { fg = "#e0e2ea" })
 vim.api.nvim_set_hl(0, "TabLine", { fg = "#707070" })
-vim.api.nvim_set_hl(0, "NormalFloat", { bg = "NONE" })
