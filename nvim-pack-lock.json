@@ -5,46 +5,67 @@
       "src": "https://github.com/saghen/blink.cmp",
       "version": "'v1.7.0'"
     },
+    "conform.nvim": {
+      "rev": "cde4da5"
+    },
+    "deepwhite.nvim": {
+      "rev": "ccad56b",
+      "src": "https://github.com/Verf/deepwhite.nvim"
+    },
+    "dressing.nvim": {
+      "rev": "2d7c2db",
+      "src": "https://github.com/stevearc/dressing.nvim"
+    },
+    "everforest": {
+      "rev": "484dd56"
+    },
+    "fidget.nvim": {
+      "rev": "e32b672",
+      "src": "https://github.com/j-hui/fidget.nvim"
+    },
     "fyler.nvim": {
-      "rev": "f19870c"
+      "rev": "9d42002",
+      "src": "https://github.com/A7Lavinraj/fyler.nvim"
     },
-    "fzf-lua": {
-      "rev": "4927602",
-      "src": "https://github.com/ibhagwan/fzf-lua"
-    "mason.nvim": {
-      "rev": "44d1e90e1f66e077268191e3ee9d2ac97cc18e65",
-      "src": "https://github.com/mason-org/mason.nvim"
+    "gitsigns.nvim": {
+      "rev": "20ad441",
+      "src": "https://github.com/lewis6991/gitsigns.nvim"
     },
-    "nvim-lspconfig": {
-      "rev": "5a82e10b2df0ed31bec642c1c0344baee7c458b6",
-      "src": "https://github.com/neovim/nvim-lspconfig"
+    "harpoon": {
+      "rev": "87b1a35",
+      "version": "'harpoon2'"
     },
-    "oceanic-next": {
-      "rev": "09833f72d5ba23de2e8bcae18f479f326f5f677a",
-      "src": "https://github.com/mhartington/oceanic-next"
-    },
-    "supermaven-nvim": {
-      "rev": "07d20fce48a5629686aefb0a7cd4b25e33947d50",
-      "src": "https://github.com/supermaven-inc/supermaven-nvim"
-    "marko.nvim": {
-      "rev": "db22bb7",
-      "src": "https://github.com/mohseenrm/marko.nvim"
-    },
-    "marks.nvim": {
-      "rev": "f353e8c",
-      "src": "https://github.com/chentoast/marks.nvim"
+    "komau.vim": [],
+    "lackluster.nvim": {
+      "rev": "70dd682",
+      "src": "https://github.com/slugbyte/lackluster.nvim"
     },
     "mason.nvim": {
-      "rev": "ad7146a",
+      "rev": "57e5a8a",
       "src": "https://github.com/mason-org/mason.nvim"
     },
-    "multicursor.nvim": [],
+    "mellifluous.nvim": {
+      "rev": "b51ffc0",
+      "src": "https://github.com/ramojus/mellifluous.nvim"
+    },
+    "miasma.nvim": [],
+    "mini.icons": {
+      "rev": "ff2e4f1",
+      "src": "https://github.com/nvim-mini/mini.icons"
+    },
+    "multicursor.nvim": {
+      "rev": "25d1e50"
+    },
     "neovim": {
-      "rev": "72a04c4",
+      "rev": "cf2a288",
       "src": "https://github.com/rose-pine/neovim"
     },
+    "no-clown-fiesta.nvim": {
+      "rev": "04b808e",
+      "src": "https://github.com/aktersnurra/no-clown-fiesta.nvim"
+    },
     "nvim-dap": {
-      "rev": "881f7dc",
+      "rev": "b38f7d3",
       "src": "https://github.com/mfussenegger/nvim-dap"
     },
     "nvim-dap-python": {
@@ -60,27 +81,43 @@
       "src": "https://github.com/theHamsta/nvim-dap-virtual-text"
     },
     "nvim-lspconfig": {
-      "rev": "ececa53",
+      "rev": "c6f05c0",
       "src": "https://github.com/neovim/nvim-lspconfig"
     },
     "nvim-nio": {
       "rev": "21f5324",
       "src": "https://github.com/nvim-neotest/nvim-nio"
     },
-    "nvim-origami": {
-      "rev": "eba1fb2",
-      "src": "https://github.com/chrisgrieser/nvim-origami"
-    },
     "nvim-treesitter": [],
     "plenary.nvim": [],
+    "quicker.nvim": {
+      "rev": "12a2291869a326424b1cbee937f4f80334433012",
+      "src": "https://github.com/stevearc/quicker.nvim"
+    },
+    "sessions.nvim": {
+      "rev": "f55deb880ae1eec0a4025fa2fb729b46e6e4b3a0",
+      "src": "https://github.com/i0i-i0i/sessions.nvim"
+    },
     "sidekick.nvim": {
-      "rev": "dc2710a"
+      "rev": "c2bdf8c"
     },
     "solarized-osaka.nvim": [],
     "supermaven-nvim": [],
+    "telescope-file-browser.nvim": {
+      "rev": "3610dc7",
+      "src": "https://github.com/nvim-telescope/telescope-file-browser.nvim"
+    },
+    "telescope.nvim": {
+      "rev": "a0bbec2",
+      "version": "'0.1.8'"
+    },
     "transparent.nvim": {
       "rev": "8ac5988",
       "src": "https://github.com/xiyaowong/transparent.nvim"
+    },
+    "vim-tpipeline": {
+      "rev": "bc6dfc1",
+      "src": "https://github.com/vimpostor/vim-tpipeline"
     }
   }
 }

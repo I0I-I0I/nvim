@@ -14,7 +14,8 @@ local function set_python_path(command)
         if client.settings then
             client.settings.python = vim.tbl_deep_extend('force', client.settings.python or {}, { pythonPath = path })
         else
-            client.config.settings = vim.tbl_deep_extend('force', client.config.settings, { python = { pythonPath = path } })
+            client.config.settings = vim.tbl_deep_extend('force', client.config.settings,
+                { python = { pythonPath = path } })
         end
         client:notify('workspace/didChangeConfiguration', { settings = nil })
     end
@@ -36,34 +37,36 @@ return {
 
     settings = {
         basedpyright = {
-            typeCheckingMode = "recommended", -- ["off", "basic", "standard", "strict", "recommended", "all"]
-            diagnosticMode = "workspace",
             analysis = {
-                diagnosticMode = "workspace",
-                autoSearchPaths = true, -- pick up installed packages & stubs
+                typeCheckingMode = "strict",   -- ["off", "basic", "standard", "strict", "recommended", "all"]
+                autoSearchPaths = true,        -- pick up installed packages & stubs
                 useLibraryCodeForTypes = true, -- fall back to library .pyi for typing
-                extraPaths = { "src", "app" },
-                disableLanguageServices = false,
             },
         },
         python = {
             pythonPath = ".venv/bin/python",
+            analysis = {
+                typeCheckingMode = "strict",   -- ["off", "basic", "standard", "strict", "recommended", "all"]
+                autoSearchPaths = true,        -- pick up installed packages & stubs
+                useLibraryCodeForTypes = true, -- fall back to library .pyi for typing
+            },
         },
     },
+    capabilities = vim.tbl_deep_extend('force',
+        vim.lsp.protocol.make_client_capabilities(),
+        { window = { workDoneProgress = true } }
+    ),
     on_attach = function(client, bufnr)
         vim.api.nvim_buf_create_user_command(bufnr, 'LspPyrightOrganizeImports', function()
             local params = {
                 command = 'basedpyright.organizeimports',
                 arguments = { vim.uri_from_bufnr(bufnr) },
             }
-
-            -- Using client.request() directly because "basedpyright.organizeimports" is private
-            -- (not advertised via capabilities), which client:exec_cmd() refuses to call.
-            -- https://github.com/neovim/neovim/blob/c333d64663d3b6e0dd9aa440e433d346af4a3d81/runtime/lua/vim/lsp/client.lua#L1024-L1030
             client.request('workspace/executeCommand', params, nil, bufnr)
         end, {
-                desc = 'Organize Imports',
-            })
+            desc = 'Organize Imports',
+        })
+
 
         vim.api.nvim_buf_create_user_command(bufnr, 'LspPyrightSetPythonPath', set_python_path, {
             desc = 'Reconfigure basedpyright with the provided python path',

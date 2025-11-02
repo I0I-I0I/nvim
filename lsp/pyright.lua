@@ -34,12 +34,29 @@ return {
         '.git',
     },
     settings = {
+        ["python.analysis"] = {
+            autoSearchPaths = true,
+            useLibraryCodeForTypes = true,
+            diagnosticMode = "workspace",
+            typeCheckingMode = "strict"
+        },
+        pyright = {
+            typeCheckingMode = "strict", -- ["off", "basic", "standard", "strict", "recommended", "all"]
+            diagnosticMode = "workspace",
+            analysis = {
+                diagnosticMode = "workspace",
+                autoSearchPaths = true, -- pick up installed packages & stubs
+                useLibraryCodeForTypes = true, -- fall back to library .pyi for typing
+                disableLanguageServices = false,
+            },
+        },
         python = {
             pythonPath = ".venv/bin/python",
             analysis = {
                 autoSearchPaths = true,
                 useLibraryCodeForTypes = true,
-                diagnosticMode = 'workspace',
+                diagnosticMode = "workspace",
+                typeCheckingMode = "strict"
             },
         },
     },
