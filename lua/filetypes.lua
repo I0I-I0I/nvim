@@ -1,40 +1,22 @@
-vim.cmd([[
-function! Format(type, ...)
-    normal! '[v']gq
-    if v:shell_error > 0
-        silent undo
-        redraw
-        echomsg 'formatprg "' . &formatprg . '" exited with status ' . v:shell_error
-    endif
-    if exists('w:gqview')
-        call winrestview(w:gqview)
-        unlet w:gqview
-    endif
-endfunction ]])
-
 vim.api.nvim_create_autocmd("FileType", {
     pattern = { "htmldjango", "html" },
     callback = function(args)
         vim.bo[args.buf].makeprg = "djlint --lint --reformat --quiet %"
-    end })
+    end
+})
 
 vim.api.nvim_create_autocmd("FileType", {
     pattern = { "python" },
     callback = function(args)
         vim.bo[args.buf].formatprg = "uv run ruff format --stdin-filename %"
         vim.bo[args.buf].formatexpr = ""
-        vim.keymap.set("n", "<leader>f", "<cmd>w<cr><cmd>!uv run ruff format<cr>",
-            { silent = true })
-        vim.keymap.set("n", "<leader>F", function()
-            vim.cmd("wa")
-            vim.cmd([[!uv run ruff format]])
-            vim.cmd([[!uv run ruff check --fix]])
-        end, { silent = true, noremap = true })
         vim.keymap.set("n", "<leader>k", function()
             local pack = vim.fn.input("Package: ")
             if pack == "" then
-                return end
-            vim.cmd("!uv run python -m pydoc " .. pack) end, { noremap = true })
+                return
+            end
+            vim.cmd("!uv run python -m pydoc " .. pack)
+        end, { noremap = true })
 
         local function parse_pyright(text)
             if text == "" then return {} end
@@ -49,10 +31,10 @@ vim.api.nvim_create_autocmd("FileType", {
                     local start = (d.range and d.range.start) or {}
                     table.insert(items, {
                         filename = file,
-                        lnum     = (start.line  and start.line  + 1) or 1,
+                        lnum     = (start.line and start.line + 1) or 1,
                         col      = (start.character and start.character + 1) or 1,
                         text     = d.message or d.messageText or "",
-                        type     = (d.category and d.category:sub(1,1):upper()) or "E",
+                        type     = (d.category and d.category:sub(1, 1):upper()) or "E",
                     })
                 end
             end
@@ -84,7 +66,7 @@ vim.api.nvim_create_autocmd("FileType", {
         function _G.lint_pyright_and_ruff()
             local pyright_out = vim.fn.system("pyright --outputjson")
             local ruff_out    = vim.fn.system("ruff check --output-format json .")
-            local items = {}
+            local items       = {}
             vim.list_extend(items, parse_pyright(pyright_out))
             vim.list_extend(items, parse_ruff(ruff_out))
             vim.fn.setqflist(items, "r")
@@ -92,15 +74,15 @@ vim.api.nvim_create_autocmd("FileType", {
         end
 
         vim.api.nvim_create_user_command("LintPy", "lua _G.lint_pyright_and_ruff()", {})
-        vim.keymap.set("n", "<leader>l", "<cmd>LintPy<CR>", { noremap=true, silent=true })
-
-    end })
+        vim.keymap.set("n", "<leader>m", "<cmd>LintPy<CR>", { noremap = true, silent = true })
+    end
+})
 
 vim.api.nvim_create_autocmd("FileType", {
     pattern = { "typescript", "javascript", "typescriptreact", "javascriptreact" },
     callback = function(args)
         vim.bo[args.buf].makeprg = "eslint --fix %"
-    end })
+    end
+})
 
 vim.keymap.set("n", "<leader>m", "<cmd>w<cr><cmd>silent make<cr><cmd>copen<cr><cmd>wincmd p<cr>")
-vim.keymap.set("n", "<leader>f", "<cmd>w<cr>mfgggqG`fzz")
