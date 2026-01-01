@@ -62,9 +62,7 @@ function M.setup(cb)
                     end)
                 end
             end,
-            on_stderr = function(_, _data, _)
-                vim.notify("[ERROR] Gnome-track: " .. _data, vim.log.levels.ERROR)
-            end,
+            on_stderr = function(_, _, _) end,
             on_exit = function(_, _, _)
                 job_id = nil
             end,

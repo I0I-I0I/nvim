@@ -5,12 +5,12 @@ vim.g.maplocalleader = "" -- <C-x>
 vim.o.lazyredraw = true
 vim.o.updatetime = 300
 vim.o.swapfile = false
-vim.o.mouse = "a"
-vim.o.hidden = true
 vim.o.list = true
 vim.o.wildmode = "longest:full,full"
 vim.o.wildmenu = true
 vim.o.scrolloff = 1
+vim.o.laststatus = 3
+vim.o.statuscolumn = "%=%l%s"
 vim.o.ignorecase = true
 vim.o.smartcase = true
 vim.o.number = true
@@ -26,24 +26,35 @@ vim.o.cmdheight = 0
 vim.o.undofile = true
 vim.o.undolevels = 10000000
 vim.o.undoreload = 10000000
-vim.o.langmap =
-"ФИСВУАПРШОЛДЬТЩЗЙКЫЕГМЦЧНЯЖ;ABCDEFGHIJKLMNOPQRSTUVWXYZ:,фисвуапршолдьтщзйкыегмцчняжб;abcdefghijklmnopqrstuvwxyz\\;\\,"
+vim.o.path = "**"
+vim.o.foldmethod = "expr"
+vim.o.foldexpr = "nvim_treesitter#foldexpr()"
+vim.o.foldlevel = 99
+vim.o.foldlevelstart = 99
+vim.o.foldnestmax = 2
 
-vim.keymap.set({ "v", "n" }, "<C-y>", "4<C-y>")
-vim.keymap.set({ "v", "n" }, "<C-e>", "4<C-e>")
-vim.keymap.set({ "n", "t", "i" }, "<M-o>", "<cmd>tabnext<cr>", { silent = true })
-vim.keymap.set({ "n", "t", "i" }, "<M-i>", "<cmd>tabprevious<cr>", { silent = true })
-vim.keymap.set({ "n", "t", "i" }, "<M-S-o>", "<cmd>tabmove +<cr>", { silent = true })
-vim.keymap.set({ "n", "t", "i" }, "<M-S-i>", "<cmd>tabmove -<cr>", { silent = true })
-vim.keymap.set("n", "<C-w>t", "<cmd>tab term<cr>", { silent = true })
-vim.keymap.set("n", "<C-w>g", "<cmd>tab term gitu<cr><cmd>norm! i<cr>", { silent = true })
+vim.cmd.abbreviate("W w")
+vim.cmd.abbreviate("Wa wa")
+
+vim.keymap.set({ "v", "n" }, "<C-y>", "4<C-y>", { silent = true, noremap = true })
+vim.keymap.set({ "v", "n" }, "<C-e>", "4<C-e>", { silent = true, noremap = true })
+vim.keymap.set("n", "<C-d>", "<cmd>keepjumps normal! <C-d><cr>", { silent = true, noremap = true })
+vim.keymap.set("n", "<C-u>", "<cmd>keepjumps normal! <C-u><cr>", { silent = true, noremap = true })
+vim.keymap.set({ "n", "t", "i" }, "<M-o>", "<cmd>tabnext<cr>", { silent = true, noremap = true })
+vim.keymap.set({ "n", "t", "i" }, "<M-i>", "<cmd>tabprevious<cr>", { silent = true, noremap = true })
+vim.keymap.set({ "n", "t", "i" }, "<M-S-o>", "<cmd>tabmove +<cr>", { silent = true, noremap = true })
+vim.keymap.set({ "n", "t", "i" }, "<M-S-i>", "<cmd>tabmove -<cr>", { silent = true, noremap = true })
+vim.keymap.set("v", "K", ":m '<-2<CR>gv=gv", { silent = true, noremap = true })
+vim.keymap.set("v", "J", ":m '>+1<CR>gv=gv", { silent = true, noremap = true })
+vim.keymap.set("n", "<C-w>t", "<cmd>tab term<cr>", { silent = true, noremap = true })
+vim.keymap.set("n", "<C-w>g", "<cmd>tab term gitu<cr><cmd>norm! i<cr>", { silent = true, noremap = true })
 vim.keymap.set("n", "<C-S-k>", "<cmd>cprev<CR>zz", { noremap = true })
 vim.keymap.set("n", "<C-S-j>", "<cmd>cnext<CR>zz", { noremap = true })
 vim.keymap.set("n", "Q", "@@")
-vim.keymap.set("n", "gw", "<cmd>bp|bd #<cr>", { silent = true })
-vim.keymap.set("n", "gW", "<cmd>bp|bd! #<cr>", { silent = true })
-vim.keymap.set("n", "<M-c>", ":let @+=expand('%:p')<cr>", { silent = true })
-vim.keymap.set("n", "<leader>o", ":!xdg-open . <cr>", { silent = true })
+vim.keymap.set("n", "gw", "<cmd>bp|bd #<cr>", { silent = true, noremap = true })
+vim.keymap.set("n", "gW", "<cmd>bp|bd! #<cr>", { silent = true, noremap = true })
+vim.keymap.set("n", "<M-c>", ":let @+=expand('%:p')<cr>", { silent = true, noremap = true })
+vim.keymap.set("n", "<leader>o", ":!xdg-open .<cr>", { silent = true, noremap = true })
 vim.keymap.set("n", "=ap", "ma=ap`a")
 vim.keymap.set("n", "n", "nzzzv")
 vim.keymap.set("n", "N", "Nzzzv")
@@ -65,8 +76,8 @@ end)
 vim.cmd([[
     autocmd BufWritePre * %s/\s\+$//e
     autocmd FileType fyler setlocal nospell
+    autocmd TermOpen * setlocal nospell
     autocmd TextYankPost * silent! lua vim.hl.on_yank({higroup="IncSearch", timeout=150})
-    autocmd VimLeavePre * mark L
     autocmd BufReadPost *
         \ if line("'\"") > 1 && line("'\"") <= line("$") |
         \   silent! normal! g`"zz |
@@ -77,7 +88,7 @@ vim.pack.add({ "https://github.com/nvim-treesitter/nvim-treesitter" })
 require("nvim-treesitter.configs").setup({
     ensure_installed = { "c", "lua", "vim", "vimdoc", "query", "markdown", "markdown_inline" },
     auto_install = true,
-    highlight = { enable = true }
+    highlight = { enable = false }
 })
 
 vim.pack.add({ "https://github.com/A7Lavinraj/fyler.nvim", "https://github.com/nvim-mini/mini.icons" })
@@ -99,39 +110,33 @@ require("fyler").setup({
 vim.keymap.set("n", "<C-b>", "<cmd>Fyler<cr>", { noremap = true })
 
 -- vim.pack.add({ "https://github.com/i0i-i0i/sessions.nvim" })
-vim.opt.runtimepath:append("/home/nnofly/code/personal/sessions.nvim")
-require("sessions").setup({})
-
-vim.keymap.set({ "n", "t" }, "<C-s>", "<cmd>Sessions list<cr>", { noremap = true })
-vim.keymap.set({ "n", "t" }, "<C-S-l>", "<cmd>Sessions last<cr>", { noremap = true })
-vim.keymap.set("n", "<leader>sa", "<cmd>Sessions pin<cr>", { noremap = true })
-vim.keymap.set("n", "<leader>ss", "<cmd>Sessions load<cr>", { noremap = true })
-
-local commands = require("sessions.commands")
-
-vim.api.nvim_create_autocmd("VimEnter", {
-    callback = function()
-        vim.schedule(function()
-            if vim.fn.argc() == 0 then
-                commands.load()
-            end
-        end)
-    end,
+vim.opt.runtimepath:append("/home/nnofly/code/personal/sessionizer.nvim")
+require("sessionizer").setup({
+    exclude_filetypes = { "gitcommit" },
+    paths = {
+        "~/code/personal/*",
+        "~/code/work/*",
+        "~/.dotfiles/*",
+        "~/.config/nvim",
+    },
+    before_load = {
+        auto_save_files = true,
+        auto_remove_buffers = true,
+    },
+    after_load = {}
 })
 
-vim.api.nvim_create_autocmd("VimLeavePre", {
-    callback = function()
-        local utils = require("sessions.utils")
-        if utils.contains(vim.bo.filetype,
-                { "gitcommit", "fyler" }) then
-            return
-        end
-        commands.save()
-    end
-})
+vim.keymap.set({ "n", "t" }, "<C-s>", "<cmd>Telescope sessionizer<cr>", { noremap = true })
+vim.keymap.set({ "n", "t" }, "<C-S-l>", "<cmd>Sess last<cr>", { noremap = true })
+vim.keymap.set("n", "<leader>sa", "<cmd>Sess pin<cr>", { noremap = true })
+vim.keymap.set("n", "<leader>ss", "<cmd>Sess load<cr>", { noremap = true })
 
-require("filetypes")
-require("pack")
+local utils = require("sessionizer.utils")
+
+vim.api.nvim_create_user_command("DT", function()
+    utils.purge_term_buffers()
+    vim.notify("Purged terminal buffers")
+end, { nargs = 0 })
 
 -- Lazy
 vim.schedule(function()
@@ -140,10 +145,12 @@ vim.schedule(function()
 
     require("vim._extui").enable({ enable = true, msg = { target = "msg", timeout = 4000 } })
     pcall(require, "dap-config")
+    pcall(require, "db-config")
 
     vim.pack.add({
         "https://github.com/mason-org/mason.nvim",
         "https://github.com/neovim/nvim-lspconfig",
+        "https://github.com/artemave/workspace-diagnostics.nvim",
         "https://github.com/stevearc/conform.nvim",
         "https://github.com/nvim-lua/plenary.nvim",
         "https://github.com/j-hui/fidget.nvim",
@@ -156,7 +163,12 @@ vim.schedule(function()
         "https://github.com/supermaven-inc/supermaven-nvim",
         "https://github.com/lewis6991/gitsigns.nvim",
         "https://github.com/stevearc/quicker.nvim",
+        "https://github.com/NeogitOrg/neogit",
+        "https://github.com/sindrets/diffview.nvim",
+        "https://github.com/iamcco/markdown-preview.nvim",
         "https://github.com/folke/sidekick.nvim" })
+
+    vim.keymap.set("n", "<C-g>", "<cmd>Neogit<cr>", { noremap = true, silent = true })
 
     vim.keymap.set("n", "<M-g>b", "<cmd>Gitsigns blame<cr>", { noremap = true, silent = true })
     vim.keymap.set("n", "<M-g>r", "<cmd>Gitsigns reset_hunk<cr>", { noremap = true, silent = true })
@@ -195,7 +207,7 @@ vim.schedule(function()
     vim.keymap.set("n", "<C-l>", function() harpoon:list():select(4) end)
 
     require("supermaven-nvim").setup({ ignore_filetypes = { "fyler", "" } })
-    vim.keymap.set({ "n", "i" }, "<C-g>", function()
+    vim.keymap.set({ "n", "i" }, "<M-C-g>", function()
         require("supermaven-nvim.api").toggle()
         if require("supermaven-nvim.api").is_running() then
             print("Supermaven is enabled")
@@ -218,21 +230,28 @@ vim.schedule(function()
             scroll_strategy = "limit",
             layout_strategy = "bottom_pane",
             layout_config = { height = 0.3, prompt_position = "bottom" },
+            borderchars = { " ", " ", " ", " ", " ", " ", " ", " " },
             sorting_strategy = "ascending",
         },
         extensions = {
+            sessionizer = {
+                theme = require("telescope.themes").get_dropdown(),
+                sorting_strategy = "descending",
+            },
             file_browser = {
                 select_buffer = true,
                 hidden = { file_browser = true, folder_browser = true },
                 mappings = {
-                    ["i"] = { ["<Tab>"] = require("telescope.actions").select_default },
-                    ["n"] = { ["<Tab>"] = require("telescope.actions").select_default },
+                    ["i"] = { ["<tab>"] = require("telescope.actions").select_default },
+                    ["n"] = { ["<tab>"] = require("telescope.actions").select_default },
                 },
             }
         }
     })
 
+    require("telescope").load_extension("sessionizer")
     require("telescope").load_extension("file_browser")
+
     local builtin, themes = require("telescope.builtin"), require("telescope.themes")
     vim.keymap.set("n", "<C-f>", "<cmd>Telescope file_browser path=%:p:h<cr>", { silent = true })
     vim.keymap.set("n", "<C-p>", function() builtin.find_files() end, { silent = true })
@@ -256,7 +275,6 @@ vim.schedule(function()
     vim.keymap.set({ "n", "x" }, "<M-q>", mc.toggleCursor)
     vim.keymap.set("x", "I", mc.insertVisual)
     vim.keymap.set("x", "A", mc.appendVisual)
-    vim.keymap.set("n", "<leader>gv", mc.restoreCursors)
     mc.addKeymapLayer(function(layerSet)
         layerSet({ "n", "x" }, "<M-h>", mc.prevCursor)
         layerSet({ "n", "x" }, "<M-l>", mc.nextCursor)
@@ -285,20 +303,35 @@ vim.schedule(function()
             javascriptreact = { "prettierd" },
             typescriptreact = { "prettierd" }
         },
-        format_after_save = { lsp_format = "fallback", timeout_ms = 500, async = true }
+        format_on_save = { timeout_ms = 500, lsp_format = "fallback" },
     })
 
-    vim.lsp.enable({ "basedpyright", "lua_ls", "ruff", "clangd", "bashls", "cssls",
+    vim.lsp.enable({ "ty", "ruff", "lua_ls", "clangd", "bashls", "cssls",
         "css_variables", "html", "emmet_language_server", "ts_ls" })
-    vim.diagnostic.config({ jump = { float = true }, virtual_text = true, signs = false })
+    vim.diagnostic.config({ jump = { float = true }, virtual_text = false, signs = false })
+
+    -- local lsp_handlers = vim.lsp.handlers
+    -- if lsp_handlers["textDocument/documentHighlight"] then
+    --     local original_handler = lsp_handlers["textDocument/documentHighlight"]
+    --     lsp_handlers["textDocument/documentHighlight"] = function(err, result, ctx, config)
+    --         local bufnr = ctx.bufnr
+    --         if not bufnr then
+    --             return
+    --         end
+    --         if not vim.api.nvim_buf_is_valid(bufnr) then
+    --             return
+    --         end
+    --         original_handler(err, result, ctx, config)
+    --     end
+    -- end
 
     vim.api.nvim_create_autocmd("LspAttach", {
         group = vim.api.nvim_create_augroup("LspOnAttach", { clear = true }),
         callback = function(args)
             local client = vim.lsp.get_client_by_id(args.data.client_id)
             if not client then return end
-            vim.lsp.completion.enable(true, client.id, args.buf, { autotrigger = true })
-            vim.lsp.semantic_tokens.enable(false, { bufnr = args.buf })
+            -- vim.lsp.completion.enable(true, client.id, args.buf, { autotrigger = true })
+            -- vim.lsp.semantic_tokens.enable(false, { bufnr = args.buf })
 
             if client.server_capabilities.documentHighlightProvider then
                 local group = vim.api.nvim_create_augroup("LspDocumentHighlight", { clear = true })
@@ -312,7 +345,6 @@ vim.schedule(function()
                     buffer = args.buf,
                     callback = vim.lsp.buf.clear_references,
                 })
-                vim.api.nvim_set_hl(0, "LspReferenceRead", { bold = true, underdotted = true })
             end
         end
     })
@@ -326,12 +358,13 @@ vim.pack.add({
     "https://github.com/ramojus/mellifluous.nvim",
     "https://github.com/sainnhe/everforest",
     "https://github.com/aktersnurra/no-clown-fiesta.nvim",
+    "https://github.com/mhartington/oceanic-next",
     "https://github.com/rose-pine/neovim" })
 
 vim.pack.add({ "https://github.com/xiyaowong/transparent.nvim" })
 require("transparent").setup({
     extra_groups = { "TabLine", "TabLineFill", "TabLineSel", "FloatBorder", "WinSeparator",
-        "GitsignsAdd", "GitsignsChange", "GitsignsDelete", "GitsignsChangeDelete", "SidekickChat" },
+        "GitSignsAdd", "GitSignsChange", "GitSignsDelete", "GitSignsChangeDelete", "SidekickChat" },
     exclude_groups = { "CursorLine" }
 })
 
@@ -348,14 +381,19 @@ require("gnome-track").setup(function(scheme)
     vim.cmd.colo "default"
     if scheme == "prefer-dark" then
         vim.o.bg = "dark"
-        vim.cmd.colorscheme "mellifluous"
-        vim.schedule(function() vim.cmd("TransparentEnable") end)
+        vim.cmd.colorscheme "OceanicNext"
+        vim.schedule(function()
+            vim.cmd("TransparentEnable")
+            vim.api.nvim_set_hl(0, "StatusLine", { fg = "#dadada" })
+            vim.api.nvim_set_hl(0, "NormalFloat", { bg = "#2a2a2a" })
+            vim.api.nvim_set_hl(0, "WinSeparator", { fg = "#000000" })
+            vim.api.nvim_set_hl(0, "TelescopeBorder", { fg = "#000000" })
+            vim.api.nvim_set_hl(0, "TabLine", { fg = "#666666" })
+            vim.api.nvim_set_hl(0, "TabLineSel", { fg = "#dadada" })
+        end)
     else
         vim.o.bg = "light"
         vim.cmd.colorscheme "deepwhite"
         vim.schedule(function() vim.cmd("TransparentDisable") end)
     end
-    vim.api.nvim_set_hl(0, "StatusLine", { fg = "#dadada" })
-    vim.api.nvim_set_hl(0, "WinSeparator", { fg = "#000000" })
-    vim.api.nvim_set_hl(0, "LspReferenceRead", { bold = true, underdotted = true })
 end)

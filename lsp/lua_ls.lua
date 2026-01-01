@@ -4,7 +4,7 @@ return {
             telemetry = { enable = false },
             path = vim.split(package.path, ";"),
             workspace = {
-                checkThirdParty = true,
+                checkThirdParty = false,
                 library = {
                     vim.env.VIMRUNTIME,
                 }
