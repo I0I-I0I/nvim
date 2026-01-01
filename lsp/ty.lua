@@ -12,9 +12,6 @@ return {
     filetypes = { "python" },
     root_markers = { "ty.toml", "pyproject.toml", "setup.py", "setup.cfg", "requirements.txt", ".git" },
     settings = {
-        ty = {
-            diagnosticMode = "workspace",
-            inlayHints = { variableTypes = false },
-        }
+        ty = { diagnosticMode = "workspace" }
     },
 }
