@@ -1,5 +1,9 @@
 {
   "plugins": {
+    "fyler.nvim": {
+      "rev": "5ef9d97b9292cee169ef0cfb865996f15ee9577a",
+      "src": "https://github.com/A7Lavinraj/fyler.nvim"
+    },
     "komau.vim": {
       "rev": "52c193bb912b782ebe3c348e38e81f15458b500d",
       "src": "https://github.com/ntk148v/komau.vim"

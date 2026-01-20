@@ -1,12 +1,5 @@
 vim.loader.enable()
 
--- Theme
-vim.o.bg = "dark"
-vim.pack.add({ "https://github.com/ntk148v/komau.vim" })
-
-vim.cmd.colo("komau")
-vim.api.nvim_set_hl(0, "WinSeparator", { bg = "#222222" })
-
 -- Settings
 vim.g.mapleader = " "
 vim.o.lazyredraw = true
@@ -39,35 +32,26 @@ vim.cmd.cabbrev("Wa wa")
 vim.cmd.cabbrev("n norm")
 
 -- Keymaps
-
--- duplicate current line
-vim.keymap.set({ "n", "i", "v" }, "<C-l>", "<cmd>t.<cr>", { silent = true, noremap = true })
-
+vim.keymap.set("n", "gw", "<cmd>bp|bd#<cr>", { silent = true, noremap = true })
 vim.keymap.set("n", "<C-f>", "<C-\\><C-n>:sp <C-r>=expand('%:p:h')<cr>/<C-d>", { noremap = true })
 vim.keymap.set("n", "<C-\\><C-f>", "<C-\\><C-n>:sp <C-r>=getcwd()<cr>/<C-d>", { noremap = true })
-vim.keymap.set({ "i", "n" }, "<C-p>", "<esc>:sf ", { noremap = true })
-vim.keymap.set("n", "<C-\\><C-t>", "<cmd>e ~/TODO.md<cr>", { noremap = true, silent = true })
-
+vim.keymap.set("n", "<C-e>", "3<C-e>", { silent = true, noremap = true })
+vim.keymap.set("n", "<C-y>", "3<C-y>", { silent = true, noremap = true })
 vim.keymap.set("n", "<C-k>", "<cmd>cprev<CR>zz", { silent = true, noremap = true })
 vim.keymap.set("n", "<C-j>", "<cmd>cnext<CR>zz", { silent = true, noremap = true })
-
-vim.keymap.set("n", "<C-d>", "<cmd>keepjumps normal! <C-d><cr>", { silent = true, noremap = true })
-vim.keymap.set("n", "<C-u>", "<cmd>keepjumps normal! <C-u><cr>", { silent = true, noremap = true })
 vim.keymap.set("n", "n", "nzzzv", { silent = true, noremap = true })
 vim.keymap.set("n", "N", "Nzzzv", { silent = true, noremap = true })
-
-vim.keymap.set({ "t", "n", "i" }, "<M-i>", "<cmd>tabprevious<cr>", { silent = true, noremap = true })
-vim.keymap.set({ "t", "n", "i" }, "<M-o>", "<cmd>tabnext<cr>", { silent = true, noremap = true })
-vim.keymap.set({ "t", "n", "i" }, "<M-S-i>", "<cmd>tabmove -<cr>", { silent = true, noremap = true })
-vim.keymap.set({ "t", "n", "i" }, "<M-S-o>", "<cmd>tabmove +<cr>", { silent = true, noremap = true })
-
+vim.keymap.set("n", "<C-s>", "<cmd>sp term://tmux-sessionizer | startinsert<cr>", { noremap = true })
 vim.keymap.set("n", "<M-c>", ":let @+=expand('%:p')<cr>", { silent = true, noremap = true })
+vim.keymap.set({ "n", "i", "v" }, "<C-l>", "<cmd>t.<cr>", { silent = true, noremap = true })
 
 -- Auto commands
 vim.cmd([[
     autocmd BufWritePre * %s/\s\+$//e
     autocmd TextYankPost * silent! lua vim.hl.on_yank({higroup="IncSearch", timeout=150})
     autocmd FileType netrw setlocal bufhidden=wipe
+    autocmd FileType fyler setlocal nospell
+    autocmd TermOpen * setlocal nospell
     autocmd BufReadPost *
         \ if line("'\"") > 1 && line("'\"") <= line("$") |
         \   silent! normal! g`"zz |
@@ -78,6 +62,7 @@ vim.cmd([[
 vim.pack.add({ "https://github.com/chentoast/marks.nvim" })
 require("marks").setup({ builtin_marks = { ".", "<", ">", "^" } })
 
+vim.pack.add({ "https://github.com/A7Lavinraj/fyler.nvim" })
 require("fyler").setup({
     views = { finder = { confirm_simple = true, default_explorer = true } },
     integrations = {
@@ -90,3 +75,46 @@ require("fyler").setup({
     }
 })
 vim.keymap.set("n", "-", "<cmd>Fyler<cr>", { desc = "Open Fyler View" })
+
+vim.pack.add({ "https://github.com/supermaven-inc/supermaven-nvim" })
+require("supermaven-nvim").setup({})
+
+-- LSP
+vim.pack.add({ "https://github.com/mason-org/mason.nvim",
+               "https://github.com/neovim/nvim-lspconfig" })
+
+require("mason").setup()
+
+vim.keymap.set("n", "grd", "<cmd>lua vim.diagnostic.setqflist()<cr><cmd>wincmd p<cr>", { silent = true })
+vim.keymap.set("n", "grf", vim.lsp.buf.format, { silent = true })
+
+vim.diagnostic.config({ jump = { float = true }, signs = false, underline = false })
+
+local lsp = require("lsp")
+lsp.setup_linters({ "pyrefly", "shellcheck", "biome" })
+lsp.setup_formatters({ "ruff", "prettier", "biome", "stylua" })
+lsp.setup_lsps({ "lua-language-server", "pyrefly", "ruff", "typescript-language-server",
+    "biome", "css-lsp", "css-variables-language-server", "emmet-language-server",
+    "html-lsp", "clangd" })
+
+vim.api.nvim_create_autocmd("LspAttach", {
+    group = vim.api.nvim_create_augroup("LspOnAttach", { clear = true }),
+    callback = function(args)
+        local client = vim.lsp.get_client_by_id(args.data.client_id)
+        if not client then return end
+        vim.lsp.completion.enable(true, client.id, args.buf, { autotrigger = false })
+        vim.lsp.semantic_tokens.enable(false, { bufnr = args.buf })
+    end,
+})
+
+-- Theme
+vim.o.bg = "dark"
+vim.pack.add({ "https://github.com/ntk148v/komau.vim" })
+
+vim.cmd.colo("komau")
+vim.api.nvim_set_hl(0, "WinSeparator", { bg = "#222222" })
+local colors = { "Normal", "NormalNC", "EndOfBuffer", "WinSeparator", "LineNr", "SignColumn", "TabLineFill", "TabLine" }
+for _, color in ipairs(colors) do
+    vim.api.nvim_set_hl(0, color, { bg = "NONE" })
+end
+vim.schedule(function() vim.api.nvim_set_hl(0, "MarkSignNumHL", { bg = "NONE" }) end)
