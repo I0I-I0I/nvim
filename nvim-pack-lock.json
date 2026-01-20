@@ -1,0 +1,32 @@
+{
+  "plugins": {
+    "fyler.nvim": {
+      "rev": "5ef9d97b9292cee169ef0cfb865996f15ee9577a",
+      "src": "https://github.com/A7Lavinraj/fyler.nvim"
+    },
+    "komau.vim": {
+      "rev": "52c193bb912b782ebe3c348e38e81f15458b500d",
+      "src": "https://github.com/ntk148v/komau.vim"
+    },
+    "marks.nvim": {
+      "rev": "f353e8c08c50f39e99a9ed474172df7eddd89b72",
+      "src": "https://github.com/chentoast/marks.nvim"
+    },
+    "mason.nvim": {
+      "rev": "44d1e90e1f66e077268191e3ee9d2ac97cc18e65",
+      "src": "https://github.com/mason-org/mason.nvim"
+    },
+    "nvim-lspconfig": {
+      "rev": "5a82e10b2df0ed31bec642c1c0344baee7c458b6",
+      "src": "https://github.com/neovim/nvim-lspconfig"
+    },
+    "oceanic-next": {
+      "rev": "09833f72d5ba23de2e8bcae18f479f326f5f677a",
+      "src": "https://github.com/mhartington/oceanic-next"
+    },
+    "supermaven-nvim": {
+      "rev": "07d20fce48a5629686aefb0a7cd4b25e33947d50",
+      "src": "https://github.com/supermaven-inc/supermaven-nvim"
+    }
+  }
+}
