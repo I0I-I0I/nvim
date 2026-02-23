@@ -9,9 +9,6 @@ vim.o.wildmenu = true
 vim.o.showtabline = 3
 vim.o.laststatus = 0
 vim.o.cmdheight = 0
-vim.o.number = true
-vim.o.relativenumber = true
-vim.o.signcolumn = "yes"
 vim.o.colorcolumn = "80"
 vim.o.smartindent = true
 vim.o.expandtab = true
@@ -27,11 +24,13 @@ vim.o.wildignore =
 "**/node_modules/**,**/.git/**,**/__pycache__/**,**/.mypy_cache/**,**/.venv/**,**/.pytest_cache/**,**/.ruff_cache/**"
 vim.o.spell = true
 vim.o.spelllang = "en,ru"
-vim.o.foldmethod = "expr"
-vim.o.foldexpr = "v:lua.vim.treesitter.foldexpr()"
-vim.o.foldenable = true
-vim.o.foldlevel = 99
-vim.o.foldlevelstart = 99
+vim.o.mousescroll = "ver:1,hor:1"
+
+vim.o.signcolumn = "yes:1"
+vim.o.foldcolumn = "1"
+vim.o.number = true
+vim.o.relativenumber = true
+vim.o.statuscolumn = "%s%l %C "
 
 require("vim._extui").enable({ enable = true, msg = { target = "msg", timeout = 4000 } })
 
@@ -46,10 +45,11 @@ vim.keymap.set("n", "n", "nzzzv")
 vim.keymap.set("n", "N", "Nzzzv")
 vim.keymap.set("v", "K", ":m '<-2<CR>gv=gv")
 vim.keymap.set("v", "J", ":m '>+1<CR>gv=gv")
-vim.keymap.set("n", "<S-tab>", "za")
-vim.keymap.set("n", "<leader><S-tab>", "zA")
-vim.keymap.set("n", "<C-f>", "<C-\\><C-n>:sp <C-r>=expand('%:p:h')<cr>/<C-d>", { noremap = true })
-vim.keymap.set("n", "<C-\\><C-f>", "<C-\\><C-n>:sp <C-r>=getcwd()<cr>/<C-d>", { noremap = true })
+vim.keymap.set("n", "<cr>", "za")
+vim.keymap.set("n", "<M-cr>", "zA")
+vim.keymap.set("n", "<leader><cr>", "zM")
+vim.keymap.set("n", "<C-f>", "<C-\\><C-n>:e <C-r>=expand('%:p:h')<cr>/<C-d>", { noremap = true })
+vim.keymap.set("n", "<C-\\><C-f>", "<C-\\><C-n>:e <C-r>=getcwd()<cr>/<C-d>", { noremap = true })
 vim.keymap.set("n", "<C-e>", "4<C-e>", { silent = true, noremap = true })
 vim.keymap.set("n", "<C-y>", "4<C-y>", { silent = true, noremap = true })
 vim.keymap.set("n", "<C-k>", "<cmd>cprev<CR>zz", { silent = true, noremap = true })
@@ -63,6 +63,7 @@ vim.keymap.set("n", "n", "nzzzv", { silent = true, noremap = true })
 vim.keymap.set("n", "N", "Nzzzv", { silent = true, noremap = true })
 vim.keymap.set("n", "<C-s>", "<cmd>sp term://tmux-sessionizer | startinsert<cr>", { noremap = true })
 vim.keymap.set("n", "<M-c>", ":let @+=expand('%:p')<cr>", { silent = true, noremap = true })
+vim.keymap.set("t", "<C-[>", "<C-\\><C-n>", { silent = true, noremap = true })
 vim.keymap.set({ "n", "i", "v" }, "<C-l>", "<cmd>t.<cr>", { silent = true, noremap = true })
 
 -- Auto commands
@@ -79,8 +80,8 @@ vim.cmd([[
     autocmd BufWritePre * call mkdir(expand("<afile>:p:h"), "p") ]])
 
 -- Plugins
-vim.pack.add({ "https://github.com/chentoast/marks.nvim" })
-require("marks").setup({ builtin_marks = { ".", "<", ">", "^" } })
+-- vim.pack.add({ "https://github.com/chentoast/marks.nvim" })
+-- require("marks").setup({ builtin_marks = { ".", "<", ">", "^" } })
 
 -- Tree-sitter
 vim.pack.add({ { src = "https://github.com/nvim-treesitter/nvim-treesitter", version = "master" } })
@@ -90,9 +91,43 @@ require("nvim-treesitter.configs").setup({
     indent = { enable = true },
 })
 
+-- Folds
+vim.pack.add({ "https://github.com/masukomi/vim-markdown-folding" })
+
+vim.o.fillchars = 'eob: ,fold: ,foldopen:,foldsep: ,foldinner: ,foldclose:'
+
+vim.o.foldenable = true
+vim.o.foldmethod = "expr"
+vim.o.foldexpr = "v:lua.vim.treesitter.foldexpr()"
+vim.o.foldtext = ""
+
+vim.api.nvim_create_autocmd("FileType", {
+    callback = function()
+        if vim.bo.filetype == "markdown" then
+            vim.cmd([[ setlocal foldexpr=NestedMarkdownFolds() ]])
+            vim.opt_local.foldlevel = 1
+            vim.opt_local.foldlevelstart = 1
+            vim.opt_local.foldnestmax = 9
+        else
+            vim.o.foldexpr = "v:lua.vim.treesitter.foldexpr()"
+            vim.o.foldlevel = 99
+            vim.o.foldlevelstart = 99
+            vim.o.foldnestmax = 2
+        end
+    end,
+})
+
 -- Telescope
 vim.pack.add({ "https://github.com/nvim-telescope/telescope.nvim",
-    "https://github.com/nvim-lua/plenary.nvim" })
+    "https://github.com/nvim-lua/plenary.nvim",
+    "https://github.com/dimaportenko/telescope-simulators.nvim" })
+
+require("simulators").setup({
+    android_emulator = true,
+    apple_simulator = false,
+})
+
+vim.keymap.set("n", "te", "<cmd>Telescope simulators run<cr>", { desc = "Run simulator" })
 
 local builtin = require("telescope.builtin")
 vim.keymap.set("n", "<C-p>", builtin.fd, { desc = "Telescope find files" })
@@ -113,7 +148,7 @@ vim.pack.add({ "https://github.com/MunifTanjim/nui.nvim",
 
 require("neogit").setup({})
 local gitsigns = require("gitsigns")
-gitsigns.setup({})
+gitsigns.setup({ sign_priority = 100 })
 
 vim.keymap.set("n", "<leader>g", "<cmd>Neogit<cr>", { desc = "Open Neogit View" })
 vim.keymap.set("n", "]c", gitsigns.next_hunk)
@@ -324,7 +359,8 @@ vim.pack.add({ "https://github.com/ntk148v/komau.vim" })
 
 vim.cmd.colo("komau")
 vim.api.nvim_set_hl(0, "WinSeparator", { bg = "#222222" })
-local colors = { "Normal", "NormalNC", "EndOfBuffer", "WinSeparator", "LineNr", "SignColumn", "TabLineFill", "TabLine" }
+local colors = { "Normal", "NormalNC", "EndOfBuffer", "WinSeparator", "LineNr", "SignColumn", "TabLineFill", "TabLine",
+    "FoldColumn" }
 for _, color in ipairs(colors) do
     vim.api.nvim_set_hl(0, color, { bg = "NONE" })
 end

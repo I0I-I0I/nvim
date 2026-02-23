@@ -99,6 +99,10 @@
       "rev": "07d20fce48a5629686aefb0a7cd4b25e33947d50",
       "src": "https://github.com/supermaven-inc/supermaven-nvim"
     },
+    "telescope-simulators.nvim": {
+      "rev": "4f3c30258cd31c57b581cfe98f23c61324a33f39",
+      "src": "https://github.com/dimaportenko/telescope-simulators.nvim"
+    },
     "telescope.nvim": {
       "rev": "5255aa27c422de944791318024167ad5d40aad20",
       "src": "https://github.com/nvim-telescope/telescope.nvim"
@@ -114,6 +118,10 @@
     "vim-dadbod-ui": {
       "rev": "07e92e22114cc5b1ba4938d99897d85b58e20475",
       "src": "https://github.com/kristijanhusak/vim-dadbod-ui"
+    },
+    "vim-markdown-folding": {
+      "rev": "0592d3efcb9b287fff265aa542872d95478a7536",
+      "src": "https://github.com/masukomi/vim-markdown-folding"
     },
     "workspace-diagnostics.nvim": {
       "rev": "60f9175b2501ae3f8b1aba9719c0df8827610c8e",
