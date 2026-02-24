@@ -48,12 +48,13 @@ vim.keymap.set("v", "J", ":m '>+1<CR>gv=gv")
 vim.keymap.set("n", "<cr>", "za")
 vim.keymap.set("n", "<M-cr>", "zA")
 vim.keymap.set("n", "<leader><cr>", "zM")
+vim.keymap.set("n", "<leader>c", "<cmd>tcd %:p:h<cr>")
 vim.keymap.set("n", "<C-f>", "<C-\\><C-n>:e <C-r>=expand('%:p:h')<cr>/<C-d>", { noremap = true })
 vim.keymap.set("n", "<C-\\><C-f>", "<C-\\><C-n>:e <C-r>=getcwd()<cr>/<C-d>", { noremap = true })
 vim.keymap.set("n", "<C-e>", "4<C-e>", { silent = true, noremap = true })
 vim.keymap.set("n", "<C-y>", "4<C-y>", { silent = true, noremap = true })
-vim.keymap.set("n", "<C-k>", "<cmd>cprev<CR>zz", { silent = true, noremap = true })
-vim.keymap.set("n", "<C-j>", "<cmd>cnext<CR>zz", { silent = true, noremap = true })
+vim.keymap.set("n", "<M-K>", "<cmd>cprev<CR>zz", { silent = true, noremap = true })
+vim.keymap.set("n", "<M-J>", "<cmd>cnext<CR>zz", { silent = true, noremap = true })
 vim.keymap.set("n", "<M-i>", "<cmd>tabprevious<cr>", { silent = true, noremap = true })
 vim.keymap.set("n", "<M-o>", "<cmd>tabnext<cr>", { silent = true, noremap = true })
 vim.keymap.set("n", "<M-S-o>", "<cmd>tabmove +<cr>", { silent = true, noremap = true })
@@ -64,7 +65,8 @@ vim.keymap.set("n", "N", "Nzzzv", { silent = true, noremap = true })
 vim.keymap.set("n", "<C-s>", "<cmd>sp term://tmux-sessionizer | startinsert<cr>", { noremap = true })
 vim.keymap.set("n", "<M-c>", ":let @+=expand('%:p')<cr>", { silent = true, noremap = true })
 vim.keymap.set("t", "<C-[>", "<C-\\><C-n>", { silent = true, noremap = true })
-vim.keymap.set({ "n", "i", "v" }, "<C-l>", "<cmd>t.<cr>", { silent = true, noremap = true })
+vim.keymap.set({ "n", "i", "v" }, "<C-[>", "<cmd>noh<cr><C-[>", { silent = true, noremap = true, desc = "Open link" })
+vim.keymap.set({ "n", "i", "v" }, "<M-l>", "<cmd>t.<cr>", { silent = true, noremap = true })
 
 -- Auto commands
 vim.cmd([[
@@ -94,7 +96,7 @@ require("nvim-treesitter.configs").setup({
 -- Folds
 vim.pack.add({ "https://github.com/masukomi/vim-markdown-folding" })
 
-vim.o.fillchars = 'eob: ,fold: ,foldopen:,foldsep: ,foldinner: ,foldclose:'
+vim.o.fillchars = "eob: ,fold: ,foldopen:,foldsep: ,foldinner: ,foldclose:"
 
 vim.o.foldenable = true
 vim.o.foldmethod = "expr"
@@ -157,11 +159,11 @@ vim.keymap.set("n", "<M-g>p", gitsigns.preview_hunk)
 vim.keymap.set("n", "<M-g>b", gitsigns.blame)
 vim.keymap.set("n", "<M-g>Q", function() gitsigns.setqflist("all") end)
 vim.keymap.set("n", "<M-g>q", gitsigns.setqflist)
-vim.keymap.set("n", "<M-g>d", "<cmd>CodeDiff<cr>", { desc = "CodeDiff: explorer (git status)" })
-vim.keymap.set("n", "<M-g>D", "<cmd>CodeDiff file HEAD<cr>", { desc = "CodeDiff: current file vs HEAD" })
+vim.keymap.set("n", "<M-g>D", "<cmd>CodeDiff<cr>", { desc = "CodeDiff: explorer (git status)" })
+vim.keymap.set("n", "<M-g>d", "<cmd>CodeDiff file HEAD<cr>", { desc = "CodeDiff: current file vs HEAD" })
 vim.keymap.set("n", "<M-g>h", "<cmd>CodeDiff history<cr>", { desc = "CodeDiff: history" })
 
--- Fyler
+-- File explorer
 vim.pack.add({ "https://github.com/A7Lavinraj/fyler.nvim" })
 require("fyler").setup({
     views = {
@@ -189,6 +191,25 @@ require("sessionizer").setup({
     log_level = "error",
 })
 
+-- Tests
+vim.pack.add({
+    "https://github.com/nvim-lua/plenary.nvim",
+    "https://github.com/antoinemadec/FixCursorHold.nvim",
+    "https://github.com/nvim-treesitter/nvim-treesitter",
+    "https://github.com/nvim-neotest/nvim-nio",
+    "https://github.com/nvim-neotest/neotest",
+    "https://github.com/nvim-neotest/neotest-python",
+    "https://github.com/nvim-neotest/neotest-jest",
+    "https://github.com/marilari88/neotest-vitest" })
+
+require("neotest").setup({
+    adapters = {
+        require("neotest-python"),
+        require("neotest-vitest"),
+        require("neotest-jest"),
+    },
+})
+
 -- DB
 vim.pack.add({ "https://github.com/kristijanhusak/vim-dadbod-ui",
     "https://github.com/tpope/vim-dadbod",
@@ -202,17 +223,12 @@ vim.pack.add({ { src = "https://github.com/ThePrimeagen/harpoon", version = "har
 local harpoon = require("harpoon")
 harpoon:setup()
 
-vim.keymap.set("n", "<M-0>", function() harpoon:list():add() end)
-vim.keymap.set("n", "<M-e>", function() harpoon.ui:toggle_quick_menu(harpoon:list()) end)
-vim.keymap.set("n", "<M-1>", function() harpoon:list():select(1) end)
-vim.keymap.set("n", "<M-2>", function() harpoon:list():select(2) end)
-vim.keymap.set("n", "<M-3>", function() harpoon:list():select(3) end)
-vim.keymap.set("n", "<M-4>", function() harpoon:list():select(4) end)
-vim.keymap.set("n", "<M-5>", function() harpoon:list():select(5) end)
-vim.keymap.set("n", "<M-6>", function() harpoon:list():select(6) end)
-vim.keymap.set("n", "<M-7>", function() harpoon:list():select(7) end)
-vim.keymap.set("n", "<M-8>", function() harpoon:list():select(8) end)
-vim.keymap.set("n", "<M-9>", function() harpoon:list():select(9) end)
+vim.keymap.set("n", "<leader>a", function() harpoon:list():add() end)
+vim.keymap.set("n", "<leader>e", function() harpoon.ui:toggle_quick_menu(harpoon:list()) end)
+vim.keymap.set("n", "<C-h>", function() harpoon:list():select(1) end)
+vim.keymap.set("n", "<C-j>", function() harpoon:list():select(2) end)
+vim.keymap.set("n", "<C-k>", function() harpoon:list():select(3) end)
+vim.keymap.set("n", "<C-l>", function() harpoon:list():select(4) end)
 
 -- AI completion
 vim.pack.add({ "https://github.com/supermaven-inc/supermaven-nvim" })
@@ -293,9 +309,9 @@ require("blink.cmp").setup({
     completion = { documentation = { auto_show = true } },
     cmdline = { enabled = false },
     sources = {
-        default = { "conventional_commits", "lsp", "path", "snippets", "buffer", "env" },
+        default = { "lsp", "path", "snippets", "buffer", "env" },
         per_filetype = {
-            sql = { "snippets", "dadbod", "buffer" },
+            sql = { "snippets", "dadbod" },
             gitcommit = { "conventional_commits", "buffer", "env" }
         },
         providers = {
@@ -308,9 +324,29 @@ require("blink.cmp").setup({
 
 -- LSP
 vim.pack.add({ "https://github.com/mason-org/mason.nvim",
+    "https://github.com/mason-org/mason-lspconfig.nvim",
     "https://github.com/neovim/nvim-lspconfig" })
 
+local lsp_servers = {
+    "lua_ls",
+    "ty",
+    "ruff",
+    "vtsls",
+    "eslint",
+    "biome",
+    "cssls",
+    "emmet_language_server",
+    "html",
+    "clangd",
+}
+
 require("mason").setup()
+require("mason-lspconfig").setup({
+    automatic_enable = false,
+    ensure_installed = lsp_servers,
+})
+
+vim.lsp.enable(lsp_servers)
 
 vim.keymap.set("n", "grd", function()
     for _, client in ipairs(vim.lsp.get_clients()) do
@@ -326,20 +362,6 @@ end, { silent = true })
 
 vim.diagnostic.config({ jump = { float = true }, signs = false, underline = true })
 
-vim.lsp.enable({
-    "lua_ls",
-    "ty",
-    "ruff",
-    "vtsls",
-    "eslint",
-    "biome",
-    "cssls",
-    "cssvar",
-    "emmet_language_server",
-    "html",
-    "clangd",
-})
-
 vim.api.nvim_create_autocmd("LspAttach", {
     group = vim.api.nvim_create_augroup("LspOnAttach", { clear = true }),
     callback = function(args)
@@ -349,9 +371,47 @@ vim.api.nvim_create_autocmd("LspAttach", {
     end,
 })
 
--- Colorizer
-vim.pack.add({ "https://github.com/catgoose/nvim-colorizer.lua" })
+-- Utils
+vim.pack.add({ "https://github.com/catgoose/nvim-colorizer.lua",
+    "https://github.com/azratul/expose-localhost.nvim",
+    "https://github.com/potamides/pantran.nvim" })
+
 require("colorizer").setup({})
+
+local pantran = require("pantran")
+pantran.setup({
+    default_engine = "yandex",
+    engines = { yandex = { default_source = "auto", default_target = "ru" } },
+})
+
+vim.keymap.set("n", "<leader>t", "<cmd>Pantran mode=hover source=auto target=ru<cr>",
+    { noremap = true, silent = true })
+vim.keymap.set("x", "<leader>t", "<cmd>Pantran mode=hover source=auto target=ru<cr>",
+    { noremap = true, silent = true })
+
+vim.keymap.set("n", "<leader>x", function()
+    require("expose-localhost").stop()
+    vim.ui.input({ prompt = "Port to expose: " }, function(input)
+        if not input then return end
+        require("expose-localhost").expose(input, "ngrok")
+    end)
+end)
+
+vim.keymap.set("n", "<leader>X", function()
+    require("expose-localhost").stop()
+    local port = 53439
+    vim.system({ "fuser", "-k", port .. "/tcp" }):wait()
+    local handle = vim.system(
+        { "python3", "-m", "http.server", tostring(port) },
+        { detach = true }
+    )
+
+    if not handle then
+        vim.notify("Failed to start server")
+        return
+    end
+    require("expose-localhost").expose(port, "ngrok")
+end)
 
 -- Theme
 vim.o.bg = "dark"

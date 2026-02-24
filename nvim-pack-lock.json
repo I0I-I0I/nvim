@@ -1,5 +1,9 @@
 {
   "plugins": {
+    "FixCursorHold.nvim": {
+      "rev": "1900f89dc17c603eec29960f57c00bd9ae696495",
+      "src": "https://github.com/antoinemadec/FixCursorHold.nvim"
+    },
     "blink-cmp-conventional-commits": {
       "rev": "faa45344aab97aa33ece53938c4c3379760e61bd",
       "src": "https://github.com/disrupted/blink-cmp-conventional-commits"
@@ -24,6 +28,10 @@
     "conform.nvim": {
       "rev": "c2526f1cde528a66e086ab1668e996d162c75f4f",
       "src": "https://github.com/stevearc/conform.nvim"
+    },
+    "expose-localhost.nvim": {
+      "rev": "249ba29773ac82598ea3f87870c78ec145bc5a6b",
+      "src": "https://github.com/azratul/expose-localhost.nvim"
     },
     "friendly-snippets": {
       "rev": "6cd7280adead7f586db6fccbd15d2cac7e2188b9",
@@ -50,6 +58,10 @@
       "rev": "f353e8c08c50f39e99a9ed474172df7eddd89b72",
       "src": "https://github.com/chentoast/marks.nvim"
     },
+    "mason-lspconfig.nvim": {
+      "rev": "6c4830e37743b060d13c9269394176aea6a0fbc8",
+      "src": "https://github.com/mason-org/mason-lspconfig.nvim"
+    },
     "mason.nvim": {
       "rev": "44d1e90e1f66e077268191e3ee9d2ac97cc18e65",
       "src": "https://github.com/mason-org/mason.nvim"
@@ -61,6 +73,22 @@
     "neogit": {
       "rev": "2a47e1df95605b232fbdd5d369ab1bfaaf40fce4",
       "src": "https://github.com/NeogitOrg/neogit"
+    },
+    "neotest": {
+      "rev": "deadfb1af5ce458742671ad3a013acb9a6b41178",
+      "src": "https://github.com/nvim-neotest/neotest"
+    },
+    "neotest-jest": {
+      "rev": "3f0cc2cff1ee05394081805c622dc2551b54d8c4",
+      "src": "https://github.com/nvim-neotest/neotest-jest"
+    },
+    "neotest-python": {
+      "rev": "b0d3a861bd85689d8ed73f0590c47963a7eb1bf9",
+      "src": "https://github.com/nvim-neotest/neotest-python"
+    },
+    "neotest-vitest": {
+      "rev": "f01addc6f07b79ef1be5f4297eafbee9e0959018",
+      "src": "https://github.com/marilari88/neotest-vitest"
     },
     "nui.nvim": {
       "rev": "de740991c12411b663994b2860f1a4fd0937c130",
@@ -74,14 +102,21 @@
       "rev": "44acfe887d4056f704ccc4f17513ed41c9e2b2e6",
       "src": "https://github.com/neovim/nvim-lspconfig"
     },
+    "nvim-nio": {
+      "rev": "21f5324bfac14e22ba26553caf69ec76ae8a7662",
+      "src": "https://github.com/nvim-neotest/nvim-nio"
+    },
     "nvim-treesitter": {
       "rev": "42fc28ba918343ebfd5565147a42a26580579482",
-      "src": "https://github.com/nvim-treesitter/nvim-treesitter",
-      "version": "'master'"
+      "src": "https://github.com/nvim-treesitter/nvim-treesitter"
     },
     "oceanic-next": {
       "rev": "09833f72d5ba23de2e8bcae18f479f326f5f677a",
       "src": "https://github.com/mhartington/oceanic-next"
+    },
+    "pantran.nvim": {
+      "rev": "b87c3ae48cba4659587fb75abd847e5b7a7c9ca0",
+      "src": "https://github.com/potamides/pantran.nvim"
     },
     "plenary.nvim": {
       "rev": "b9fd5226c2f76c951fc8ed5923d85e4de065e509",
