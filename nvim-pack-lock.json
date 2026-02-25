@@ -161,6 +161,10 @@
     "workspace-diagnostics.nvim": {
       "rev": "60f9175b2501ae3f8b1aba9719c0df8827610c8e",
       "src": "https://github.com/artemave/workspace-diagnostics.nvim"
+    },
+    "zenmode.nvim": {
+      "rev": "090331ebf83978b41f9c21df3c549ee768d37787",
+      "src": "https://github.com/I0I-I0I/zenmode.nvim"
     }
   }
 }

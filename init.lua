@@ -15,6 +15,7 @@ vim.o.expandtab = true
 vim.o.shiftwidth = 4
 vim.o.tabstop = 4
 vim.o.completeopt = "menu,menuone,noinsert,popup,fuzzy"
+vim.o.winborder = "rounded"
 vim.o.undofile = true
 vim.o.undolevels = 10000000
 vim.o.undoreload = 10000000
@@ -25,6 +26,7 @@ vim.o.wildignore =
 vim.o.spell = true
 vim.o.spelllang = "en,ru"
 vim.o.mousescroll = "ver:1,hor:1"
+vim.o.linebreak = true
 
 vim.o.signcolumn = "yes:1"
 vim.o.foldcolumn = "1"
@@ -40,11 +42,29 @@ vim.cmd.cabbrev("Wa wa")
 vim.cmd.cabbrev("n norm")
 
 -- Keymaps
-vim.keymap.set("n", "gw", "<cmd>bp|bd#<cr>", { silent = true, noremap = true })
+vim.keymap.set({ "n", "x" }, "j", function()
+    if vim.v.count == 0 then
+        return "gj"
+    else
+        return "j"
+    end
+end, { expr = true, remap = true, silent = true })
+vim.keymap.set({ "n", "x" }, "k", function()
+    if vim.v.count == 0 then
+        return "gk"
+    else
+        return "k"
+    end
+end, { expr = true, remap = true, silent = true })
+vim.keymap.set("n", "^", "g^", { silent = true, noremap = true })
+vim.keymap.set("n", "$", "g$", { silent = true, noremap = true })
+vim.keymap.set("n", "0", "g0", { silent = true, noremap = true })
+vim.keymap.set("n", "J", "mzJ`z", { silent = true, noremap = true })
 vim.keymap.set("n", "n", "nzzzv")
 vim.keymap.set("n", "N", "Nzzzv")
-vim.keymap.set("v", "K", ":m '<-2<CR>gv=gv")
-vim.keymap.set("v", "J", ":m '>+1<CR>gv=gv")
+vim.keymap.set("v", "K", ":m '<-2<CR>gv=gv", { silent = true, noremap = true })
+vim.keymap.set("v", "J", ":m '>+1<CR>gv=gv", { silent = true, noremap = true })
+vim.keymap.set("n", "gw", "<cmd>bp|bd#<cr>", { silent = true, noremap = true })
 vim.keymap.set("n", "<cr>", "za")
 vim.keymap.set("n", "<M-cr>", "zA")
 vim.keymap.set("n", "<leader><cr>", "zM")
@@ -67,6 +87,7 @@ vim.keymap.set("n", "<M-c>", ":let @+=expand('%:p')<cr>", { silent = true, norem
 vim.keymap.set("t", "<C-[>", "<C-\\><C-n>", { silent = true, noremap = true })
 vim.keymap.set({ "n", "i", "v" }, "<C-[>", "<cmd>noh<cr><C-[>", { silent = true, noremap = true, desc = "Open link" })
 vim.keymap.set({ "n", "i", "v" }, "<M-l>", "<cmd>t.<cr>", { silent = true, noremap = true })
+vim.keymap.set("n", "<leader>R", "<cmd>restart<cr>", { silent = true, noremap = true })
 
 -- Auto commands
 vim.cmd([[
@@ -107,8 +128,8 @@ vim.api.nvim_create_autocmd("FileType", {
     callback = function()
         if vim.bo.filetype == "markdown" then
             vim.cmd([[ setlocal foldexpr=NestedMarkdownFolds() ]])
-            vim.opt_local.foldlevel = 1
-            vim.opt_local.foldlevelstart = 1
+            vim.opt_local.foldlevel = 0
+            vim.opt_local.foldlevelstart = 0
             vim.opt_local.foldnestmax = 9
         else
             vim.o.foldexpr = "v:lua.vim.treesitter.foldexpr()"
@@ -187,9 +208,44 @@ require("sessionizer").setup({
         "~/.config/nvim",
     },
     smart_auto_load = true,
-    auto_save = true,
+    auto_save = false,
     log_level = "error",
 })
+
+-- Zen mode
+vim.pack.add({ "https://github.com/I0I-I0I/zenmode.nvim" })
+
+vim.api.nvim_create_autocmd("VimLeavePre", {
+    group = vim.api.nvim_create_augroup("ZenMode", { clear = true }),
+    callback = function()
+        vim.cmd("ZenmodeClose")
+        vim.cmd("Sess save")
+    end,
+})
+
+vim.api.nvim_create_autocmd("BufReadPost", {
+    group = vim.api.nvim_create_augroup("ZenMode", { clear = true }),
+    pattern = { "*.md" },
+    callback = function()
+        vim.schedule(function()
+            vim.cmd("ZenmodeOpen")
+        end)
+    end,
+})
+
+require("zenmode").setup({
+    options = {
+        number = false,
+        relativenumber = false,
+        cursorline = false,
+        signcolumn = "no",
+        laststatus = 0,
+        fillchars = vim.o.fillchars,
+    },
+    default_width = 12,
+})
+
+vim.keymap.set("n", "<leader>z", "<cmd>ZenmodeToggle<cr>", { desc = "Open Zenmode View" })
 
 -- Tests
 vim.pack.add({
@@ -306,7 +362,10 @@ vim.pack.add({ { src = "https://github.com/saghen/blink.cmp", version = "v1.9.1"
 
 require("blink.cmp").setup({
     keymap = { preset = "default" },
-    completion = { documentation = { auto_show = true } },
+    completion = {
+        documentation = { auto_show = true },
+        menu = { border = "rounded" }
+    },
     cmdline = { enabled = false },
     sources = {
         default = { "lsp", "path", "snippets", "buffer", "env" },
@@ -320,6 +379,23 @@ require("blink.cmp").setup({
             env = { name = "Env", module = "blink-cmp-env" }
         },
     },
+})
+
+vim.api.nvim_create_autocmd("ColorScheme", {
+    callback = function()
+        vim.defer_fn(function()
+            vim.api.nvim_set_hl(0, "BlinkCmpDoc", { fg = "#ffffff" })
+            vim.api.nvim_set_hl(0, "BlinkCmpMenu", { bg = "NONE", fg = "#ffffff" })
+            vim.api.nvim_set_hl(0, "BlinkCmpMenuSelection", {
+                bg = "NONE",
+                fg = "#ffffff",
+                bold = true,
+                italic = true,
+            })
+            vim.api.nvim_set_hl(0, "BlinkCmpMenuBorder", { bg = "NONE" })
+            vim.api.nvim_set_hl(0, "BlinkCmpKind", { bg = "NONE" })
+        end, 100)
+    end,
 })
 
 -- LSP
@@ -372,23 +448,22 @@ vim.api.nvim_create_autocmd("LspAttach", {
 })
 
 -- Utils
-vim.pack.add({ "https://github.com/catgoose/nvim-colorizer.lua",
-    "https://github.com/azratul/expose-localhost.nvim",
-    "https://github.com/potamides/pantran.nvim" })
-
+vim.pack.add({ "https://github.com/catgoose/nvim-colorizer.lua" })
 require("colorizer").setup({})
 
+vim.pack.add({ "https://github.com/potamides/pantran.nvim" })
 local pantran = require("pantran")
 pantran.setup({
     default_engine = "yandex",
     engines = { yandex = { default_source = "auto", default_target = "ru" } },
 })
 
-vim.keymap.set("n", "<leader>t", "<cmd>Pantran mode=hover source=auto target=ru<cr>",
+vim.keymap.set("n", "<M-y>", "<cmd>Pantran mode=hover source=auto target=ru<cr>",
     { noremap = true, silent = true })
-vim.keymap.set("x", "<leader>t", "<cmd>Pantran mode=hover source=auto target=ru<cr>",
+vim.keymap.set("x", "<M-y>", "<cmd>Pantran mode=hover source=auto target=ru<cr>",
     { noremap = true, silent = true })
 
+vim.pack.add({ "https://github.com/azratul/expose-localhost.nvim" })
 vim.keymap.set("n", "<leader>x", function()
     require("expose-localhost").stop()
     vim.ui.input({ prompt = "Port to expose: " }, function(input)
@@ -417,11 +492,16 @@ end)
 vim.o.bg = "dark"
 vim.pack.add({ "https://github.com/ntk148v/komau.vim" })
 
-vim.cmd.colo("komau")
-vim.api.nvim_set_hl(0, "WinSeparator", { bg = "#222222" })
-local colors = { "Normal", "NormalNC", "EndOfBuffer", "WinSeparator", "LineNr", "SignColumn", "TabLineFill", "TabLine",
-    "FoldColumn" }
+vim.cmd.colo("quiet")
+
+local colors = { "Normal", "NormalNC", "EndOfBuffer", "WinSeparator", "LineNr",
+    "SignColumn", "TabLineFill", "TabLine", "FoldColumn" }
 for _, color in ipairs(colors) do
     vim.api.nvim_set_hl(0, color, { bg = "NONE" })
 end
-vim.schedule(function() vim.api.nvim_set_hl(0, "MarkSignNumHL", { bg = "NONE" }) end)
+vim.api.nvim_set_hl(0, "NormalFloat", { fg = "#ffffff" })
+vim.api.nvim_set_hl(0, "Float", { fg = "#ffffff" })
+vim.api.nvim_set_hl(0, "Folded", { fg = "#707070" })
+vim.api.nvim_set_hl(0, "TabLine", { fg = "#707070" })
+vim.api.nvim_set_hl(0, "TabLineSel", { fg = "#ffffff" })
+vim.api.nvim_set_hl(0, "TabLineFill", { fg = "#707070" })
