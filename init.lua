@@ -41,7 +41,12 @@ vim.o.statuscolumn = "%s%l %C "
 
 require("vim._extui").enable({ enable = true, msg = { target = "msg", timeout = 4000 } })
 
-local is_transparent = true
+local hour = os.date("*t").hour
+local is_transparent = false
+if hour <= 7 or hour > 21 then
+    is_transparent = true
+end
+
 if vim.g.neovide then
     vim.g.neovide_opacity = .73
     vim.g.neovide_normal_opacity = .73
@@ -59,7 +64,7 @@ if vim.g.neovide then
 
     vim.o.mousescroll = "ver:4,hor:4"
 
-    vim.keymap.set("n", "<C-enter>", function()
+    vim.keymap.set({ "n", "v", "i" }, "<C-enter>", function()
         is_transparent = not is_transparent
         vim.g.neovide_fullscreen = not is_transparent
     end, { desc = "Toggle neovide fullscreen" })
@@ -99,10 +104,17 @@ vim.keymap.set("n", "0", "g0", { silent = true, noremap = true, desc = "Go to co
 vim.keymap.set("n", "J", "mzJ`z", { silent = true, noremap = true, desc = "Join line and keep cursor" })
 vim.keymap.set("n", "n", "nzzzv", { desc = "Next search result centered" })
 vim.keymap.set("n", "N", "Nzzzv", { desc = "Previous search result centered" })
-vim.keymap.set("v", "K", ":m '<-2<CR>gv=gv", { silent = true, noremap = true, desc = "Move selection up" })
-vim.keymap.set("v", "J", ":m '>+1<CR>gv=gv", { silent = true, noremap = true, desc = "Move selection down" })
+vim.keymap.set("v", "<M-k>", ":m '<-2<CR>gv=gv", { silent = true, noremap = true, desc = "Move selection up" })
+vim.keymap.set("v", "<M-j>", ":m '>+1<CR>gv=gv", { silent = true, noremap = true, desc = "Move selection down" })
+vim.keymap.set("n", "<M-k>", "<cmd>m -2<cr>", { silent = true, noremap = true, desc = "Move selection up" })
+vim.keymap.set("n", "<M-j>", "<cmd>m +1<cr>", { silent = true, noremap = true, desc = "Move selection down" })
 vim.keymap.set("n", "<M-^>", "kJ", { silent = true, noremap = true, desc = "Join with previous line" })
 vim.keymap.set("x", "<M-^>", "<cmd>norm! J<cr>", { silent = true, noremap = true, desc = "Join selected lines" })
+
+vim.keymap.set({ "i", "c" }, "<M-h>", "<left>", { noremap = true })
+vim.keymap.set({ "i", "c" }, "<M-l>", "<right>", { noremap = true })
+vim.keymap.set({ "i", "c" }, "<C-M-h>", "<C-left>", { noremap = true })
+vim.keymap.set({ "i", "c" }, "<C-M-l>", "<C-right>", { noremap = true })
 
 vim.keymap.set({ "n", "i", "v" }, "<C-s>", vim.cmd.update, { desc = "Save" })
 vim.keymap.set("v", "<M-y>", function()
@@ -176,11 +188,6 @@ vim.keymap.set("x", "<C-l>", ":t'><cr>gv", { silent = true, noremap = true, desc
 vim.keymap.set("n", "<leader>R", "<cmd>restart<cr>", { silent = true, noremap = true, desc = "Restart Neovim" })
 vim.keymap.set("n", "R", "<cmd>e<cr>", { silent = true, noremap = true, desc = "Reload buffer" })
 
-vim.keymap.set({ "n", "i", "t" }, "<M-h>", "<cmd>wincmd h<cr>", { silent = true, noremap = true })
-vim.keymap.set({ "n", "i", "t" }, "<M-j>", "<cmd>wincmd j<cr>", { silent = true, noremap = true })
-vim.keymap.set({ "n", "i", "t" }, "<M-k>", "<cmd>wincmd k<cr>", { silent = true, noremap = true })
-vim.keymap.set({ "n", "i", "t" }, "<M-l>", "<cmd>wincmd l<cr>", { silent = true, noremap = true })
-
 -- Auto commands
 vim.cmd([[
     autocmd BufWritePre * %s/\s\+$//e
@@ -222,7 +229,7 @@ vim.pack.add({ "https://github.com/OXY2DEV/markview.nvim",
     "https://github.com/tadmccorkle/markdown.nvim",
     "https://github.com/3rd/image.nvim" })
 
-require("image").setup({})
+require("image").setup({ backend = "kitty" })
 require("markdown").setup()
 require("markview").setup({})
 
@@ -535,18 +542,19 @@ vim.pack.add({ "https://github.com/kristijanhusak/vim-dadbod-ui",
 vim.keymap.set({ "n", "t" }, "<M-D>", "<cmd>tabnew<cr><cmd>DBUIToggle<cr>",
     { noremap = true, desc = "Open DBUI in new tab" })
 
--- Harpoon
-vim.pack.add({ { src = "https://github.com/ThePrimeagen/harpoon", version = "harpoon2" } })
+-- Grapple
+vim.pack.add({ "https://github.com/cbochs/grapple.nvim" })
 
-local harpoon = require("harpoon")
-harpoon:setup()
+require("grapple").setup({ icons = false })
 
-vim.keymap.set("n", "<M-e>", function() harpoon.ui:toggle_quick_menu(harpoon:list()) end,
-    { desc = "Harpoon: toggle menu" })
-vim.keymap.set("n", "<M-0>", function() harpoon:list():add() end, { desc = "Harpoon: add file" })
+vim.keymap.set("n", "<M-0>", "<cmd>Grapple toggle scope=cwd<cr>",
+    { silent = true, noremap = true, desc = "Tag a file" })
+vim.keymap.set("n", "<M-e>", "<cmd>Grapple toggle_tags scope=cwd<cr>",
+    { silent = true, noremap = true, desc = "Toggle tags menu" })
+
 for i = 1, 9 do
-    vim.keymap.set("n", "<M-" .. i .. ">", function() harpoon:list():select(i) end,
-        { desc = "Harpoon: select file " .. i })
+    vim.keymap.set("n", "<M-" .. i .. ">", "<cmd>Grapple select index=" .. i .. " scope=cwd<cr>",
+        { silent = true, noremap = true, desc = "Select " .. i .. " tag" })
 end
 
 -- Completion
@@ -772,13 +780,18 @@ local function apply(bg)
 end
 
 local function load_bg()
-    local f = io.open(state_file, "r")
-    if f then
-        local bg = f:read("*l")
-        f:close()
-        apply(bg)
+    -- local f = io.open(state_file, "r")
+    -- if f then
+    --     local bg = f:read("*l")
+    --     f:close()
+    --     apply(bg)
+    -- else
+    --     apply(vim.o.background)
+    -- end
+    if is_transparent then
+        apply("dark")
     else
-        apply(vim.o.background)
+        apply("light")
     end
 end
 
