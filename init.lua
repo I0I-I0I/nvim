@@ -16,7 +16,7 @@ vim.o.expandtab = true
 vim.o.shiftwidth = 4
 vim.o.tabstop = 4
 vim.o.completeopt = "menu,menuone,noinsert,popup,fuzzy"
-vim.o.winborder = "rounded"
+vim.o.winborder = "single"
 vim.o.undofile = true
 vim.o.undolevels = 10000000
 vim.o.undoreload = 10000000
@@ -43,18 +43,16 @@ require("vim._extui").enable({ enable = true, msg = { target = "msg", timeout = 
 
 local hour = os.date("*t").hour
 local is_transparent = false
-if hour <= 7 or hour > 21 then
+if hour <= 7 or hour >= 21 then
     is_transparent = true
 end
 
 if vim.g.neovide then
-    vim.g.neovide_opacity = .73
-    vim.g.neovide_normal_opacity = .73
-    vim.g.neovide_scale_factor = 1.1
+    vim.g.neovide_scale_factor = 1.15
     vim.o.guifont = "Maple Mono"
     vim.g.neovide_hide_mouse_when_typing = true
     vim.g.neovide_no_idle = false
-    vim.g.neovide_fullscreen = not is_transparent
+    vim.g.neovide_fullscreen = false
     vim.g.neovide_window_decorations = "none"
     vim.g.neovide_confirm_quit = false
     vim.g.neovide_cursor_animation_length = 0
@@ -67,15 +65,15 @@ if vim.g.neovide then
     vim.keymap.set({ "n", "v", "i" }, "<C-enter>", function()
         is_transparent = not is_transparent
         vim.g.neovide_fullscreen = not is_transparent
-    end, { desc = "Toggle neovide fullscreen" })
+    end, { desc = "Neovide: toggle fullscreen" })
     vim.keymap.set("n", "<C-=>", function()
         vim.g.neovide_scale_factor = vim.g.neovide_scale_factor + 0.05
         vim.notify("Scale: " .. vim.g.neovide_scale_factor)
-    end, { noremap = true, desc = "Increase neovide scale" })
+    end, { noremap = true, desc = "Neovide: increase scale" })
     vim.keymap.set("n", "<C-->", function()
         vim.g.neovide_scale_factor = vim.g.neovide_scale_factor - 0.05
         vim.notify("Scale: " .. vim.g.neovide_scale_factor)
-    end, { noremap = true, desc = "Decrease neovide scale" })
+    end, { noremap = true, desc = "Neovide: decrease scale" })
 end
 
 -- Abbreviations
@@ -205,14 +203,7 @@ vim.cmd([[
 -- Plugins
 -- WhichKey
 vim.pack.add({ "https://github.com/folke/which-key.nvim" })
-local wk = require("which-key")
-wk.setup({
-    triggers = {
-        { "<auto>", mode = "nixsotc" },
-        { "s",      mode = "n" },
-        { "t",      mode = "n" },
-    },
-})
+require("which-key").setup()
 
 -- Marks
 vim.pack.add({ "https://github.com/chentoast/marks.nvim" })
@@ -221,15 +212,15 @@ require("marks").setup({ builtin_marks = { ".", "<", ">", "^" } })
 -- Paste image
 vim.pack.add({ "https://github.com/HakonHarnes/img-clip.nvim" })
 require("img-clip").setup({})
-vim.keymap.set("n", "<M-P>", "<cmd>PasteImage<cr>",
-    { noremap = true, silent = true, desc = "Paste image from clipboard" })
+vim.keymap.set("n", "<leader><M-p>", "<cmd>PasteImage<cr>",
+    { noremap = true, silent = true, desc = "Img-clip: paste image from clipboard" })
 
 -- Markdown
 vim.pack.add({ "https://github.com/OXY2DEV/markview.nvim",
     "https://github.com/tadmccorkle/markdown.nvim",
     "https://github.com/3rd/image.nvim" })
 
-require("image").setup({ backend = "kitty" })
+require("image").setup({})
 require("markdown").setup()
 require("markview").setup({})
 
@@ -237,22 +228,142 @@ vim.api.nvim_create_autocmd("FileType", {
     pattern = { "markdown", "markdown_inline" },
     callback = function()
         vim.keymap.set("n", "<cr>", "<cmd>Markview<cr>",
-            { buffer = true, noremap = true, silent = true, desc = "Toggle markdown preview" })
+            { buffer = true, noremap = true, silent = true, desc = "Markview: toggle" })
     end,
 })
 
 -- Tree-sitter
-vim.pack.add({ { src = "https://github.com/nvim-treesitter/nvim-treesitter", version = "master" } })
+vim.pack.add({
+    { src = "https://github.com/nvim-treesitter/nvim-treesitter", version = "master" },
+    "https://github.com/nvim-treesitter/nvim-treesitter-textobjects",
+})
+
 require("nvim-treesitter.configs").setup({
     auto_install = true,
     highlight = { enable = true },
     indent = { enable = true },
 })
 
+local ts_select = require("nvim-treesitter-textobjects.select")
+local ts_move = require("nvim-treesitter-textobjects.move")
+local ts_swap = require("nvim-treesitter-textobjects.swap")
+
+require("nvim-treesitter-textobjects").setup({
+    select = { enable = true, lookahead = true },
+    swap = { enable = true },
+    move = { enable = true, set_jumps = true },
+})
+
+local function select(query, desc)
+    vim.keymap.set({ "x", "o" }, desc.lhs, function()
+        ts_select.select_textobject(query, "textobjects")
+    end, { desc = desc.text })
+end
+
+-- Select
+select("@assignment.outer", { lhs = "a=", text = "Textobjects: select outer part of assignment" })
+select("@assignment.inner", { lhs = "i=", text = "Textobjects: select inner part of assignment" })
+
+select("@parameter.outer", { lhs = "aa", text = "Textobjects: select outer part of parameter/argument" })
+select("@parameter.inner", { lhs = "ia", text = "Textobjects: select inner part of parameter/argument" })
+
+select("@conditional.outer", { lhs = "ai", text = "Textobjects: select outer part of conditional" })
+select("@conditional.inner", { lhs = "ii", text = "Textobjects: select inner part of conditional" })
+
+select("@loop.outer", { lhs = "al", text = "Textobjects: select outer part of loop" })
+select("@loop.inner", { lhs = "il", text = "Textobjects: select inner part of loop" })
+
+select("@call.outer", { lhs = "af", text = "Textobjects: select outer part of function call" })
+select("@call.inner", { lhs = "if", text = "Textobjects: select inner part of function call" })
+
+select("@function.outer", { lhs = "am", text = "Textobjects: select outer part of method/function definition" })
+select("@function.inner", { lhs = "im", text = "Textobjects: select inner part of method/function definition" })
+
+select("@class.outer", { lhs = "ac", text = "Textobjects: select outer part of class" })
+select("@class.inner", { lhs = "ic", text = "Textobjects: select inner part of class" })
+
+-- Swap
+vim.keymap.set("n", "<leader>an", function()
+    ts_swap.swap_next("@parameter.inner")
+end, { desc = "Textobjects: swap parameter with next" })
+
+vim.keymap.set("n", "<leader>ap", function()
+    ts_swap.swap_previous("@parameter.inner")
+end, { desc = "Textobjects: swap parameter with previous" })
+
+vim.keymap.set("n", "<leader>fn", function()
+    ts_swap.swap_next("@function.outer")
+end, { desc = "Textobjects: swap function with next" })
+
+vim.keymap.set("n", "<leader>fp", function()
+    ts_swap.swap_previous("@function.outer")
+end, { desc = "Textobjects: swap function with previous" })
+
+-- Move: next start
+vim.keymap.set("n", "]f", function() ts_move.goto_next_start("@call.outer") end,
+    { desc = "Textobjects: Next function call start" })
+vim.keymap.set("n", "]m", function() ts_move.goto_next_start("@function.outer") end,
+    { desc = "Textobjects: Next function start" })
+vim.keymap.set("n", "]c", function() ts_move.goto_next_start("@class.outer") end,
+    { desc = "Textobjects: Next class start" })
+vim.keymap.set("n", "]i", function() ts_move.goto_next_start("@conditional.outer") end,
+    { desc = "Textobjects: Next conditional start" })
+vim.keymap.set("n", "]l", function() ts_move.goto_next_start("@loop.outer") end,
+    { desc = "Textobjects: Next loop start" })
+
+-- Move: next end
+vim.keymap.set("n", "]F", function() ts_move.goto_next_end("@call.outer") end,
+    { desc = "Textobjects: Next function call end" })
+vim.keymap.set("n", "]M", function() ts_move.goto_next_end("@function.outer") end,
+    { desc = "Textobjects: Next function end" })
+vim.keymap.set("n", "]C", function() ts_move.goto_next_end("@class.outer") end, { desc = "Textobjects: Next class end" })
+vim.keymap.set("n", "]I", function() ts_move.goto_next_end("@conditional.outer") end,
+    { desc = "Textobjects: Next conditional end" })
+vim.keymap.set("n", "]L", function() ts_move.goto_next_end("@loop.outer") end, { desc = "Textobjects: Next loop end" })
+
+-- Move: previous start
+vim.keymap.set("n", "[f", function() ts_move.goto_previous_start("@call.outer") end,
+    { desc = "Textobjects: Prev function call start" })
+vim.keymap.set("n", "[m", function() ts_move.goto_previous_start("@function.outer") end,
+    { desc = "Textobjects: Prev function start" })
+vim.keymap.set("n", "[c", function() ts_move.goto_previous_start("@class.outer") end,
+    { desc = "Textobjects: Prev class start" })
+vim.keymap.set("n", "[i", function() ts_move.goto_previous_start("@conditional.outer") end,
+    { desc = "Textobjects: Prev conditional start" })
+vim.keymap.set("n", "[l", function() ts_move.goto_previous_start("@loop.outer") end,
+    { desc = "Textobjects: Prev loop start" })
+
+-- Move: previous end
+vim.keymap.set("n", "[F", function() ts_move.goto_previous_end("@call.outer") end,
+    { desc = "Textobjects: Prev function call end" })
+vim.keymap.set("n", "[M", function() ts_move.goto_previous_end("@function.outer") end,
+    { desc = "Textobjects: Prev function end" })
+vim.keymap.set("n", "[C", function() ts_move.goto_previous_end("@class.outer") end,
+    { desc = "Textobjects: Prev class end" })
+vim.keymap.set("n", "[I", function() ts_move.goto_previous_end("@conditional.outer") end,
+    { desc = "Textobjects: Prev conditional end" })
+vim.keymap.set("n", "[L", function() ts_move.goto_previous_end("@loop.outer") end,
+    { desc = "Textobjects: Prev loop end" })
+
+local repeat_move = require("nvim-treesitter-textobjects.repeatable_move")
+
+-- Repeat motions with ; and ,
+vim.keymap.set({ "n", "x", "o" }, ";", repeat_move.repeat_last_move_next, {
+    desc = "Textobjects: Repeat last Treesitter move forward",
+})
+vim.keymap.set({ "n", "x", "o" }, ",", repeat_move.repeat_last_move_previous, {
+    desc = "Textobjects: Repeat last Treesitter move backward",
+})
+
+vim.keymap.set({ "n", "x", "o" }, "f", repeat_move.builtin_f_expr, { expr = true })
+vim.keymap.set({ "n", "x", "o" }, "F", repeat_move.builtin_F_expr, { expr = true })
+vim.keymap.set({ "n", "x", "o" }, "t", repeat_move.builtin_t_expr, { expr = true })
+vim.keymap.set({ "n", "x", "o" }, "T", repeat_move.builtin_T_expr, { expr = true })
+
 -- Folds
 vim.pack.add({ "https://github.com/masukomi/vim-markdown-folding" })
 
-vim.o.fillchars = "eob: ,fold: ,foldopen:,foldsep: ,foldinner: ,foldclose:"
+vim.o.fillchars = "eob: ,foldopen:,foldinner:│,foldclose:"
 
 vim.o.foldenable = true
 vim.o.foldmethod = "expr"
@@ -321,18 +432,17 @@ telescope.setup({
 
 telescope.load_extension("ui-select")
 
-vim.keymap.set("n", "s", "<Nop>", { noremap = true, silent = true, desc = "Telescope" })
-vim.keymap.set("n", "sf", T(builtin.fd), { desc = "Telescope find files" })
-vim.keymap.set("n", "sb", T(builtin.buffers, { previewer = false }), { desc = "Telescope buffers" })
-vim.keymap.set("n", "sg", T(builtin.live_grep), { desc = "Telescope live grep" })
-vim.keymap.set("n", "sh", T(builtin.help_tags), { desc = "Telescope help tags" })
-vim.keymap.set("n", "sm", T(builtin.man_pages), { desc = "Telescope man pages" })
-vim.keymap.set("n", "grs", T(builtin.lsp_workspace_symbols), { desc = "Telescope lsp symbols" })
-vim.keymap.set("n", "grr", T(builtin.lsp_references), { desc = "Telescope lsp references" })
-vim.keymap.set("n", "<C-]>", T(builtin.lsp_definitions), { desc = "Telescope lsp definitions" })
+vim.keymap.set({ "n", "i" }, "<M-f><M-g>", T(builtin.live_grep), { desc = "Telescope: live grep" })
+vim.keymap.set({ "n", "i" }, "<M-f><M-b>", T(builtin.buffers, { previewer = false }), { desc = "Telescope: buffers" })
+vim.keymap.set({ "n", "i" }, "<M-f><M-h>", T(builtin.help_tags), { desc = "Telescope: help tags" })
+vim.keymap.set({ "n", "i" }, "<M-f><M-m>", T(builtin.man_pages), { desc = "Telescope: man pages" })
+vim.keymap.set({ "n", "i" }, "<M-f><M-f>", T(builtin.fd), { desc = "Telescope: find files" })
+vim.keymap.set("n", "grs", T(builtin.lsp_workspace_symbols), { desc = "Telescope: lsp symbols" })
+vim.keymap.set("n", "grr", T(builtin.lsp_references), { desc = "Telescope: lsp references" })
+vim.keymap.set("n", "<C-]>", T(builtin.lsp_definitions), { desc = "Telescope: lsp definitions" })
 vim.keymap.set("n", "z=", function()
     builtin.spell_suggest(themes.get_cursor({ border = true }))
-end, { desc = "Telescope spell suggest" })
+end, { desc = "Telescope: spell suggest" })
 
 -- Git integration
 vim.pack.add({ "https://github.com/MunifTanjim/nui.nvim",
@@ -344,16 +454,17 @@ require("neogit").setup({})
 local gitsigns = require("gitsigns")
 gitsigns.setup({ sign_priority = 100 })
 
-vim.keymap.set("n", "]c", gitsigns.next_hunk, { desc = "Next git hunk" })
-vim.keymap.set("n", "[c", gitsigns.prev_hunk, { desc = "Previous git hunk" })
-vim.keymap.set({ "n", "t" }, "<M-g>g", "<cmd>Neogit<cr>", { desc = "Open Neogit View" })
-vim.keymap.set({ "n", "t" }, "<M-g>p", gitsigns.preview_hunk, { desc = "Preview git hunk" })
-vim.keymap.set({ "n", "t" }, "<M-g>b", gitsigns.blame, { desc = "Blame current line" })
-vim.keymap.set({ "n", "t" }, "<M-g>Q", function() gitsigns.setqflist("all") end, { desc = "Quickfix all hunks" })
-vim.keymap.set({ "n", "t" }, "<M-g>q", gitsigns.setqflist, { desc = "Quickfix buffer hunks" })
-vim.keymap.set({ "n", "t" }, "<M-g>D", "<cmd>CodeDiff<cr>", { desc = "CodeDiff: explorer (git status)" })
-vim.keymap.set({ "n", "t" }, "<M-g>d", "<cmd>CodeDiff file HEAD<cr>", { desc = "CodeDiff: current file vs HEAD" })
-vim.keymap.set({ "n", "t" }, "<M-g>h", "<cmd>CodeDiff history<cr>", { desc = "CodeDiff: history" })
+vim.keymap.set({ "n", "t" }, "<M-g>g", "<cmd>Neogit<cr>", { desc = "Git: open Neogit" })
+vim.keymap.set("n", "]c", gitsigns.next_hunk, { desc = "Git: next hunk" })
+vim.keymap.set("n", "[c", gitsigns.prev_hunk, { desc = "Git: previous hunk" })
+vim.keymap.set({ "n", "t" }, "<M-g>p", gitsigns.preview_hunk, { desc = "Git: preview hunk" })
+vim.keymap.set({ "n", "t" }, "<M-g>Q", function() gitsigns.setqflist("all") end, { desc = "Git: quickfix all hunks" })
+vim.keymap.set({ "n", "t" }, "<M-g>q", gitsigns.setqflist, { desc = "Git: quickfix buffer hunks" })
+vim.keymap.set({ "n", "t" }, "<M-g>r", gitsigns.reset_hunk, { desc = "Git: reset hunk" })
+vim.keymap.set({ "n", "t" }, "<M-g>b", gitsigns.blame, { desc = "Git: blame current line" })
+vim.keymap.set({ "n", "t" }, "<M-g>D", "<cmd>CodeDiff<cr>", { desc = "Git: explorer (git status)" })
+vim.keymap.set({ "n", "t" }, "<M-g>d", "<cmd>CodeDiff file HEAD<cr>", { desc = "Git: current file vs HEAD" })
+vim.keymap.set({ "n", "t" }, "<M-g>h", "<cmd>CodeDiff history<cr>", { desc = "Git: history" })
 
 -- File explorer
 vim.pack.add({ "https://github.com/A7Lavinraj/fyler.nvim" })
@@ -369,7 +480,14 @@ require("fyler").setup({
     },
     integrations = { icon = "none" }
 })
-vim.keymap.set("n", "-", "<cmd>Fyler<cr>", { desc = "Open Fyler View" })
+vim.keymap.set("n", "-", "<cmd>Fyler<cr>", { desc = "Fyler: open" })
+
+vim.api.nvim_create_autocmd("FileType", {
+    pattern = { "fyler", "Fyler" },
+    callback = function()
+        vim.wo.cursorline = true
+    end,
+})
 
 -- Zen mode
 -- vim.pack.add({ "https://github.com/I0I-I0I/zenmode.nvim" })
@@ -398,7 +516,7 @@ zenmode.setup({
     default_width = 100,
 })
 
-vim.keymap.set("n", "<M-z>", zenmode_api.toggle, { desc = "Open Zenmode View" })
+vim.keymap.set("n", "<M-z>", zenmode_api.toggle, { desc = "Zenmode: open" })
 
 -- Session manager
 -- vim.pack.add({ "https://github.com/i0i-i0i/sessionizer.nvim" })
@@ -449,9 +567,10 @@ require("sessionizer").setup({
 
 require("telescope").load_extension("sessionizer")
 
-vim.keymap.set("n", "ss", "<cmd>Sess list<cr>", { noremap = true, desc = "Sessions: list" })
-vim.keymap.set({ "n", "t" }, "<M-s>l", "<cmd>Sess last<cr>", { noremap = true, desc = "Sessions: load last" })
-vim.keymap.set({ "n", "t" }, "<M-s>p", "<cmd>Sess pin<cr>", { noremap = true, desc = "Sessions: pin current" })
+vim.keymap.set("n", "<M-f><M-s>", "<cmd>Sess list<cr>", { noremap = true, desc = "Telescope: sessions" })
+vim.keymap.set({ "n", "t" }, "<M-s>s", "<cmd>Sess save<cr>", { noremap = true, desc = "Sess: save" })
+vim.keymap.set({ "n", "t" }, "<M-s>l", "<cmd>Sess last<cr>", { noremap = true, desc = "Sess: load last" })
+vim.keymap.set({ "n", "t" }, "<M-s>p", "<cmd>Sess pin<cr>", { noremap = true, desc = "Sess: pin current" })
 
 -- Tests
 vim.pack.add({
@@ -495,27 +614,26 @@ nt.setup({
     },
 })
 
-vim.keymap.set("n", "t", "<Nop>", { noremap = true, silent = true, desc = "Test" })
-vim.keymap.set("n", "tt", function() nt.run.run() end,
+vim.keymap.set("n", "<M-t>t", function() nt.run.run() end,
     { silent = true, noremap = true, desc = "Test: run nearest" })
-vim.keymap.set("n", "tT", function() nt.run.run(vim.fn.expand("%")) end,
+vim.keymap.set("n", "<M-t>T", function() nt.run.run(vim.fn.expand("%")) end,
     { silent = true, noremap = true, desc = "Test: run file" })
-vim.keymap.set("n", "ta", function() nt.run.run((vim.uv or vim.loop).cwd()) end,
+vim.keymap.set("n", "<M-t>a", function() nt.run.run((vim.uv or vim.loop).cwd()) end,
     { silent = true, noremap = true, desc = "Test: run all (cwd)" })
 
-vim.keymap.set("n", "td", function() nt.run.run({ strategy = "dap" }) end,
+vim.keymap.set("n", "<M-t>d", function() nt.run.run({ strategy = "dap" }) end,
     { silent = true, noremap = true, desc = "Test: debug nearest (DAP)" })
-vim.keymap.set("n", "tD", function() nt.run.run({ vim.fn.expand("%"), strategy = "dap" }) end,
+vim.keymap.set("n", "<M-t>D", function() nt.run.run({ vim.fn.expand("%"), strategy = "dap" }) end,
     { silent = true, noremap = true, desc = "Test: debug file (DAP)" })
 
-vim.keymap.set("n", "ts", function() nt.summary.toggle() end,
+vim.keymap.set("n", "<M-t>s", function() nt.summary.toggle() end,
     { silent = true, noremap = true, desc = "Test: toggle summary" })
-vim.keymap.set("n", "to", function() nt.output.open({ enter = true, auto_close = true }) end,
+vim.keymap.set("n", "<M-t>o", function() nt.output.open({ enter = true, auto_close = true }) end,
     { silent = true, noremap = true, desc = "Test: open output" })
-vim.keymap.set("n", "tO", function() nt.output_panel.toggle() end,
+vim.keymap.set("n", "<M-t>O", function() nt.output_panel.toggle() end,
     { silent = true, noremap = true, desc = "Test: toggle output panel" })
 
-vim.keymap.set("n", "tS", function() nt.run.stop() end,
+vim.keymap.set("n", "<M-t>S", function() nt.run.stop() end,
     { silent = true, noremap = true, desc = "Test: stop" })
 vim.keymap.set("n", "]t", function() nt.jump.next({ status = "failed" }) end,
     { silent = true, noremap = true, desc = "Test: next failed" })
@@ -540,7 +658,7 @@ vim.pack.add({ "https://github.com/kristijanhusak/vim-dadbod-ui",
     "https://github.com/kristijanhusak/vim-dadbod-completion" })
 
 vim.keymap.set({ "n", "t" }, "<M-D>", "<cmd>tabnew<cr><cmd>DBUIToggle<cr>",
-    { noremap = true, desc = "Open DBUI in new tab" })
+    { noremap = true, desc = "DB: open DBUI in new tab" })
 
 -- Grapple
 vim.pack.add({ "https://github.com/cbochs/grapple.nvim" })
@@ -548,13 +666,13 @@ vim.pack.add({ "https://github.com/cbochs/grapple.nvim" })
 require("grapple").setup({ icons = false })
 
 vim.keymap.set("n", "<M-0>", "<cmd>Grapple toggle scope=cwd<cr>",
-    { silent = true, noremap = true, desc = "Tag a file" })
+    { silent = true, noremap = true, desc = "Grapple: tag a file" })
 vim.keymap.set("n", "<M-e>", "<cmd>Grapple toggle_tags scope=cwd<cr>",
-    { silent = true, noremap = true, desc = "Toggle tags menu" })
+    { silent = true, noremap = true, desc = "Grapple: toggle tags menu" })
 
 for i = 1, 9 do
     vim.keymap.set("n", "<M-" .. i .. ">", "<cmd>Grapple select index=" .. i .. " scope=cwd<cr>",
-        { silent = true, noremap = true, desc = "Select " .. i .. " tag" })
+        { silent = true, noremap = true, desc = "Grapple: select " .. i .. " tag" })
 end
 
 -- Completion
@@ -567,7 +685,7 @@ require("blink.cmp").setup({
     keymap = { preset = "default" },
     completion = {
         documentation = { auto_show = true },
-        menu = { border = "rounded" }
+        menu = { border = "single" }
     },
     cmdline = { enabled = false },
     sources = {
@@ -588,7 +706,7 @@ require("blink.cmp").setup({
 vim.pack.add({ "https://github.com/supermaven-inc/supermaven-nvim" })
 require("supermaven-nvim").setup({})
 
-vim.keymap.set({ "n" }, "<leader>at", function()
+vim.keymap.set({ "n" }, "<M-a>c", function()
     require("supermaven-nvim.api").toggle()
     if require("supermaven-nvim.api").is_running() then
         print("Supermaven is enabled")
@@ -603,16 +721,16 @@ require("sidekick").setup({
     cli = {
         win = {
             layout = "float",
-            keys = { buffers = { "<M-a>", "hide", mode = "nt", desc = "hide the terminal window" } }
+            keys = { buffers = { "<M-S-a>", "hide", mode = "nt", desc = "AI: hide the terminal window" } }
         }
     },
 })
 
-vim.keymap.set({ "n", "v", "i", "t" }, "<M-a>", function()
+vim.keymap.set({ "n", "v", "i", "t" }, "<M-S-a>", function()
     require("sidekick.cli").toggle({ name = "codex", filter = { cwd = vim.fn.getcwd() } })
-end, { noremap = true })
-vim.keymap.set({ "n", "v" }, "<leader><M-a>", require("sidekick.cli").select, { noremap = true })
-vim.keymap.set({ "n", "v", "i" }, "<M-S-a>", require("sidekick.cli").prompt, { noremap = true })
+end, { noremap = true, desc = "AI: toggle codex" })
+vim.keymap.set({ "n", "v" }, "<M-a>s", require("sidekick.cli").select, { noremap = true, desc = "AI: select cli" })
+vim.keymap.set({ "n", "v", "i" }, "<M-a>p", require("sidekick.cli").prompt, { noremap = true, desc = "AI: prompt" })
 
 -- Multicursor
 vim.pack.add({ "https://github.com/jake-stewart/multicursor.nvim" })
@@ -630,20 +748,20 @@ vim.keymap.set("x", "I", mc.insertVisual, { desc = "Multicursor: insert at start
 vim.keymap.set("x", "A", mc.appendVisual, { desc = "Multicursor: append at ends" })
 
 mc.addKeymapLayer(function(layerSet)
-    layerSet({ "n", "x" }, "<C-S-k>", function() mc.lineSkipCursor(-1) end)
-    layerSet({ "n", "x" }, "<C-S-j>", function() mc.lineSkipCursor(1) end)
-    layerSet({ "n", "v" }, "<C-S-n>", function() mc.matchSkipCursor(1) end)
-    layerSet({ "n", "v" }, "<C-S-p>", function() mc.matchSkipCursor(-1) end)
-    layerSet({ "n", "x" }, "<C-h>", mc.prevCursor)
-    layerSet({ "n", "x" }, "<C-l>", mc.nextCursor)
-    layerSet({ "n", "x" }, "<C-x>", mc.deleteCursor)
+    layerSet({ "n", "x" }, "<C-S-k>", function() mc.lineSkipCursor(-1) end, { desc = "Multicursor: skip line" })
+    layerSet({ "n", "x" }, "<C-S-j>", function() mc.lineSkipCursor(1) end, { desc = "Multicursor: skip line" })
+    layerSet({ "n", "v" }, "<C-S-n>", function() mc.matchSkipCursor(1) end, { desc = "Multicursor: skip match" })
+    layerSet({ "n", "v" }, "<C-S-p>", function() mc.matchSkipCursor(-1) end, { desc = "Multicursor: skip match" })
+    layerSet({ "n", "x" }, "<C-h>", mc.prevCursor, { desc = "Multicursor: prev cursor" })
+    layerSet({ "n", "x" }, "<C-l>", mc.nextCursor, { desc = "Multicursor: next cursor" })
+    layerSet({ "n", "x" }, "<C-d>", mc.deleteCursor, { desc = "Multicursor: delete cursor" })
     layerSet("n", "<C-[>", function()
         if not mc.cursorsEnabled() then
             mc.enableCursors()
         else
             mc.clearCursors()
         end
-    end)
+    end, { desc = "Multicursor: enable/clear cursors" })
 end)
 
 -- Formatting
@@ -700,10 +818,10 @@ vim.keymap.set("n", "grd", function()
         vim.diagnostic.setqflist({ open = true })
         vim.cmd("wincmd p")
     end, 200)
-end, { silent = true, desc = "Diagnostics: workspace to quickfix" })
+end, { silent = true, desc = "LSP: workspace diagnostics" })
 vim.keymap.set("n", "grh", function()
     vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled())
-end, { desc = "Toggle inlay hints" })
+end, { desc = "LSP: toggle inlay hints" })
 
 vim.diagnostic.config({ jump = { float = true }, signs = false, underline = true })
 
@@ -727,19 +845,27 @@ pantran.setup({
     engines = { yandex = { default_source = "auto", default_target = "ru" } },
 })
 
-vim.keymap.set({ "n", "x" }, "<C-M-y>", ":Pantran mode=hover source=auto target=ru<cr>",
-    { noremap = true, silent = true, desc = "Translate hover to Russian" })
-vim.keymap.set({ "n", "x" }, "<M-Y>", ":Pantran mode=hover source=auto target=en<cr>",
-    { noremap = true, silent = true, desc = "Translate hover to English" })
+vim.keymap.set({ "n", "x" }, "<M-l>i", function()
+    vim.ui.select({ "ru", "en" }, { prompt = "Select translation target:" }, function(choice)
+        if not choice then return end
+        vim.cmd("Pantran mode=interactive source=auto target=" .. choice)
+    end)
+end, { noremap = true, silent = true, desc = "Translate: interactively" })
+
+vim.keymap.set({ "n", "x" }, "<M-l>r", ":Pantran mode=hover source=auto target=ru<cr>",
+    { noremap = true, silent = true, desc = "Translate: hover to Russian" })
+vim.keymap.set({ "n", "x" }, "<M-l>e", ":Pantran mode=hover source=auto target=en<cr>",
+    { noremap = true, silent = true, desc = "Translate: hover to English" })
 
 vim.pack.add({ "https://github.com/azratul/expose-localhost.nvim" })
+
 vim.keymap.set("n", "<M-x>x", function()
     require("expose-localhost").stop()
     vim.ui.input({ prompt = "Port to expose: " }, function(input)
         if not input then return end
         require("expose-localhost").expose(input, "ngrok")
     end)
-end, { desc = "Expose custom port via ngrok" })
+end, { desc = "Expose: custom port via ngrok" })
 
 vim.keymap.set("n", "<M-x>X", function()
     require("expose-localhost").stop()
@@ -755,10 +881,32 @@ vim.keymap.set("n", "<M-x>X", function()
         return
     end
     require("expose-localhost").expose(port, "ngrok")
-end, { desc = "Expose static server via ngrok" })
+end, { desc = "Expose: static server via ngrok" })
 
 -- Theme
-vim.pack.add({ "https://github.com/oskarnurm/koda.nvim" })
+vim.pack.add({
+    "https://github.com/aditya-azad/candle-grey",
+    "https://github.com/pbrisbin/vim-colors-off",
+})
+
+vim.api.nvim_create_autocmd("ColorScheme", {
+    pattern = { "candle-grey", "off" },
+    callback = function()
+        local normal = vim.api.nvim_get_hl(0, { name = "Normal" })
+        if vim.g.colors_name == "off" then
+            vim.api.nvim_set_hl(0, "CursorLineNr", { bg = string.format("#%06x", normal.bg) })
+        end
+        vim.api.nvim_set_hl(0, "TelescopeSelection",
+            { bg = string.format("#%06x", normal.bg), italic = true, bold = true })
+        local blink_color = { "BlinkCmpMenu", "BlinkCmpMenuBorder", "BlinkCmpKind" }
+        for _, color in ipairs(blink_color) do
+            vim.api.nvim_set_hl(0, color,
+                { bg = string.format("#%06x", normal.bg) })
+        end
+        vim.api.nvim_set_hl(0, "BlinkCmpMenuSelection",
+            { bg = string.format("#%06x", normal.bg), italic = true, bold = true })
+    end,
+})
 
 local state_file = vim.fn.stdpath("state") .. "/theme_bg"
 
@@ -767,11 +915,13 @@ local function apply(bg)
 
     vim.o.background = bg
     if bg == "dark" then
-        require("koda").setup({ transparent = true })
-        vim.cmd.colorscheme("koda-dark")
+        vim.cmd.colorscheme("candle-grey-transparent")
+        vim.g.neovide_opacity = .73
+        vim.g.neovide_normal_opacity = .73
     else
-        require("koda").setup({ transparent = false })
-        vim.cmd.colorscheme("koda-light")
+        vim.cmd.colorscheme("off")
+        vim.g.neovide_opacity = 1
+        vim.g.neovide_normal_opacity = 1
     end
     local normal = vim.api.nvim_get_hl(0, { name = "Normal" })
     if normal.bg then
@@ -809,4 +959,4 @@ vim.keymap.set("n", "<leader>t", function()
     local next_bg = (vim.o.background == "dark") and "light" or "dark"
     apply(next_bg)
     save_bg()
-end, { desc = "Toggle theme" })
+end, { desc = "Theme: toggle" })
