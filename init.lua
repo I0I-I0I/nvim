@@ -181,6 +181,8 @@ vim.keymap.set({ "n", "t", "i" }, "<M-S-o>", "<cmd>tabmove +<cr>",
 vim.keymap.set({ "n", "t", "i" }, "<M-S-i>", "<cmd>tabmove -<cr>",
     { silent = true, noremap = true, desc = "Move tab left" })
 vim.keymap.set("n", "<C-w>t", "<cmd>tab term<cr>", { silent = true, noremap = true, desc = "Open terminal tab" })
+vim.keymap.set("n", "<C-w>+", "<cmd>vertical resize 999<cr><cmd>resize 999<cr>",
+    { silent = true, noremap = true, desc = "Open terminal tab" })
 -- vim.keymap.set("n", "<C-s>", "<cmd>sp term://tmux-sessionizer | startinsert<cr>", { noremap = true })
 vim.keymap.set("t", "<C-[>", "<C-\\><C-n>", { silent = true, noremap = true, desc = "Exit terminal mode" })
 vim.keymap.set({ "n", "i", "v" }, "<C-[>", "<cmd>noh<cr><C-[>", { silent = true, noremap = true, desc = "Open link" })
@@ -202,6 +204,24 @@ vim.cmd([[
         \   silent! normal! g`"zz |
         \ endif
     autocmd BufWritePre * call mkdir(expand("<afile>:p:h"), "p") ]])
+
+vim.api.nvim_create_autocmd({ 'TermRequest' }, {
+    desc = 'Handles OSC 7 dir change requests',
+    callback = function(ev)
+        local val, n = string.gsub(ev.data.sequence, '\027]7;file://[^/]*', '')
+        if n > 0 then
+            local dir = val
+            if vim.fn.isdirectory(dir) == 0 then
+                vim.notify('invalid dir: ' .. dir)
+                return
+            end
+            vim.b[ev.buf].osc7_dir = dir
+            if vim.api.nvim_get_current_buf() == ev.buf then
+                vim.cmd.lcd(dir)
+            end
+        end
+    end
+})
 
 -- Plugins
 -- WhichKey
@@ -227,11 +247,66 @@ require("image").setup({})
 require("markdown").setup()
 require("markview").setup({})
 
+vim.api.nvim_create_autocmd("BufReadPre", {
+    callback = function(args)
+        local max = 200 * 1024
+        local ok, stat = pcall(vim.uv.fs_stat, vim.api.nvim_buf_get_name(args.buf))
+        if not ok or not stat or stat.size < max then
+            return
+        end
+
+        vim.b.large_file = true
+    end,
+})
+
+vim.api.nvim_create_autocmd("BufEnter", {
+    callback = function()
+        if not vim.b.large_file then
+            return
+        end
+
+        vim.opt_local.spell = false
+        vim.opt_local.syntax = "off"
+        vim.opt_local.undofile = false
+        vim.opt_local.swapfile = false
+
+        if vim.list_contains({ "markdown", "markdown_inline" }, vim.bo.filetype) then
+            vim.cmd("Markview disable")
+        end
+        vim.treesitter.stop()
+    end,
+})
+
 vim.api.nvim_create_autocmd("FileType", {
     pattern = { "markdown", "markdown_inline" },
     callback = function()
         vim.keymap.set("n", "<cr>", "<cmd>Markview<cr>",
             { buffer = true, noremap = true, silent = true, desc = "Markview: toggle" })
+    end,
+})
+
+-- Folds
+vim.pack.add({ "https://github.com/masukomi/vim-markdown-folding" })
+
+vim.o.fillchars = "eob: ,foldopen:,foldinner:│,foldclose:"
+
+vim.o.foldenable = true
+vim.o.foldmethod = "expr"
+vim.o.foldtext = ""
+
+vim.api.nvim_create_autocmd("BufRead", {
+    callback = function()
+        if vim.list_contains({ "markdown", "markdown_inline" }, vim.bo.filetype) then
+            vim.cmd([[ setlocal foldexpr=NestedMarkdownFolds() ]])
+            vim.opt_local.foldlevel = 0
+            vim.opt_local.foldlevelstart = 0
+            vim.opt_local.foldnestmax = 9
+        else
+            vim.opt_local.foldexpr = "v:lua.vim.treesitter.foldexpr()"
+            vim.opt_local.foldlevel = 99
+            vim.opt_local.foldlevelstart = 99
+            vim.opt_local.foldnestmax = 2
+        end
     end,
 })
 
@@ -243,8 +318,16 @@ vim.pack.add({
 
 require("nvim-treesitter.configs").setup({
     auto_install = true,
-    highlight = { enable = true },
     indent = { enable = true },
+    highlight = {
+        enable = true,
+        disable = function(lang, buf)
+            local max = 200 * 1024
+            local name = vim.api.nvim_buf_get_name(buf)
+            local ok, stat = pcall(vim.uv.fs_stat, name)
+            return ok and stat and stat.size > max
+        end,
+    },
 })
 
 local ts_select = require("nvim-treesitter-textobjects.select")
@@ -362,31 +445,6 @@ vim.keymap.set({ "n", "x", "o" }, "f", repeat_move.builtin_f_expr, { expr = true
 vim.keymap.set({ "n", "x", "o" }, "F", repeat_move.builtin_F_expr, { expr = true })
 vim.keymap.set({ "n", "x", "o" }, "t", repeat_move.builtin_t_expr, { expr = true })
 vim.keymap.set({ "n", "x", "o" }, "T", repeat_move.builtin_T_expr, { expr = true })
-
--- Folds
-vim.pack.add({ "https://github.com/masukomi/vim-markdown-folding" })
-
-vim.o.fillchars = "eob: ,foldopen:,foldinner:│,foldclose:"
-
-vim.o.foldenable = true
-vim.o.foldmethod = "expr"
-vim.o.foldtext = ""
-
-vim.api.nvim_create_autocmd("BufRead", {
-    callback = function()
-        if vim.list_contains({ "markdown", "markdown_inline" }, vim.bo.filetype) then
-            vim.cmd([[ setlocal foldexpr=NestedMarkdownFolds() ]])
-            vim.opt_local.foldlevel = 0
-            vim.opt_local.foldlevelstart = 0
-            vim.opt_local.foldnestmax = 9
-        else
-            vim.opt_local.foldexpr = "v:lua.vim.treesitter.foldexpr()"
-            vim.opt_local.foldlevel = 99
-            vim.opt_local.foldlevelstart = 99
-            vim.opt_local.foldnestmax = 2
-        end
-    end,
-})
 
 -- Telescope
 vim.pack.add({
@@ -515,6 +573,7 @@ zenmode.setup({
     options = {
         number = false,
         relativenumber = false,
+        cursorline = true,
         signcolumn = "no",
         foldcolumn = "yes:1",
         laststatus = 0,
