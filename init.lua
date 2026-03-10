@@ -39,7 +39,10 @@ vim.o.number = true
 vim.o.relativenumber = true
 vim.o.statuscolumn = "%s%l %C "
 
-require("vim._extui").enable({ enable = true, msg = { target = "msg", timeout = 4000 } })
+local ok, extui = pcall(require, "vim._extui")
+if ok then
+    extui.enable({ enable = true, msg = { target = "msg", timeout = 4000 } })
+end
 
 local hour = os.date("*t").hour
 local is_transparent = false
@@ -490,8 +493,12 @@ vim.api.nvim_create_autocmd("FileType", {
 })
 
 -- Zen mode
--- vim.pack.add({ "https://github.com/I0I-I0I/zenmode.nvim" })
-vim.opt.runtimepath:append("/home/nnofly/code/personal/zenmode.nvim")
+local zenmode_path = "/home/nnofly/code/personal/zenmode.nvim"
+if vim.fn.isdirectory(zenmode_path) == 1 then
+    vim.opt.runtimepath:append(zenmode_path)
+else
+    vim.pack.add({ "https://github.com/I0I-I0I/zenmode.nvim" })
+end
 
 vim.api.nvim_create_autocmd("VimLeavePre", {
     group = vim.api.nvim_create_augroup("ZenMode", { clear = true }),
@@ -513,14 +520,18 @@ zenmode.setup({
         laststatus = 0,
     },
     log_level = "warn",
-    default_width = 100,
+    default_width = 120,
 })
 
 vim.keymap.set("n", "<M-z>", zenmode_api.toggle, { desc = "Zenmode: open" })
 
 -- Session manager
--- vim.pack.add({ "https://github.com/i0i-i0i/sessionizer.nvim" })
-vim.opt.runtimepath:append("/home/nnofly/code/personal/sessionizer.nvim")
+local sessionizer_path = "/home/nnofly/code/personal/sessionizer.nvim"
+if vim.fn.isdirectory(sessionizer_path) == 1 then
+    vim.opt.runtimepath:append(sessionizer_path)
+else
+    vim.pack.add({ "https://github.com/i0i-i0i/sessionizer.nvim" })
+end
 
 local zenmode_state = false
 local statusline = vim.o.statusline
