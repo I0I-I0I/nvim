@@ -39,9 +39,17 @@ vim.o.number = true
 vim.o.relativenumber = true
 vim.o.statuscolumn = "%s%l %C "
 
-local ok, extui = pcall(require, "vim._extui")
-if ok then
+local ok_extui, extui = pcall(require, "vim._extui")
+if ok_extui then
     extui.enable({ enable = true, msg = { target = "msg", timeout = 4000 } })
+end
+
+local ok_ui, _ = require("vim._core.ui2")
+if ok_ui then
+    require("vim._core.ui2").enable({
+        enable = true,
+        msg = { target = "msg" }
+    })
 end
 
 local hour = os.date("*t").hour
@@ -51,12 +59,14 @@ if hour <= 7 or hour >= 21 then
 end
 
 if vim.g.neovide then
-    vim.g.neovide_scale_factor = 1.15
-    vim.o.guifont = "Maple Mono"
+    vim.g.neovide_scale_factor = 1
     vim.g.neovide_hide_mouse_when_typing = true
+    vim.o.guifont = "Maple Mono:h14"
     vim.g.neovide_no_idle = false
-    vim.g.neovide_fullscreen = false
+    vim.g.neovide_fullscreen = true
+    vim.g.neovide_refresh_rate = 144
     vim.g.neovide_window_decorations = "none"
+    vim.g.neovide_decorations = "none"
     vim.g.neovide_confirm_quit = false
     vim.g.neovide_cursor_animation_length = 0
     vim.g.neovide_position_animation_length = .15
@@ -67,7 +77,9 @@ if vim.g.neovide then
 
     vim.keymap.set({ "n", "v", "i" }, "<C-enter>", function()
         is_transparent = not is_transparent
-        vim.g.neovide_fullscreen = not is_transparent
+        local precent = is_transparent and 0.73 or 1
+        vim.g.neovide_normal_opacity = precent
+        vim.g.neovide_opacity = precent
     end, { desc = "Neovide: toggle fullscreen" })
     vim.keymap.set("n", "<C-=>", function()
         vim.g.neovide_scale_factor = vim.g.neovide_scale_factor + 0.05
@@ -223,7 +235,6 @@ vim.api.nvim_create_autocmd({ 'TermRequest' }, {
     end
 })
 
--- Plugins
 -- WhichKey
 vim.pack.add({ "https://github.com/folke/which-key.nvim" })
 require("which-key").setup()
@@ -243,7 +254,9 @@ vim.pack.add({ "https://github.com/OXY2DEV/markview.nvim",
     "https://github.com/tadmccorkle/markdown.nvim",
     "https://github.com/3rd/image.nvim" })
 
-require("image").setup({})
+if not vim.g.neovide then
+    require("image").setup({})
+end
 require("markdown").setup()
 require("markview").setup({})
 
@@ -447,63 +460,46 @@ vim.keymap.set({ "n", "x", "o" }, "t", repeat_move.builtin_t_expr, { expr = true
 vim.keymap.set({ "n", "x", "o" }, "T", repeat_move.builtin_T_expr, { expr = true })
 
 -- Telescope
+vim.pack.add({ "https://codeberg.org/comfysage/artio.nvim" })
+require("artio").setup({
+    win = { hidestatusline = true },
+    mappings = {
+        ["<C-n>"] = "down",
+        ["<C-p>"] = "up",
+        ["<cr>"] = "accept",
+        ["<esc>"] = "cancel",
+        ["<tab>"] = "mark",
+        ["<c-g>"] = "togglelive",
+        ["<c-l>"] = "togglepreview",
+        ["<c-q>"] = "setqflist",
+        ["<m-q>"] = "setqflistmark",
+    },
+})
+
+vim.ui.select = require("artio").select
+
+vim.keymap.set("n", "<M-f><M-f>", "<Plug>(artio-files)")
+vim.keymap.set("n", "<M-f><M-g>", "<Plug>(artio-grep)")
+vim.keymap.set("n", "<M-f><M-h>", "<Plug>(artio-helptags)")
+vim.keymap.set("n", "<M-f><M-b>", "<Plug>(artio-buffers)")
+vim.keymap.set("n", "<M-f><M-k>", "<Plug>(artio-keymaps)")
+vim.keymap.set("n", "<M-f><M-/>", "<Plug>(artio-buffergrep)")
+vim.keymap.set("n", "<M-f><M-o>", "<Plug>(artio-oldfiles)")
+vim.keymap.set("n", "<M-f><M-d>", "<Plug>(artio-diagnostics-buffer)")
+
 vim.pack.add({
     "https://github.com/nvim-telescope/telescope.nvim",
     "https://github.com/nvim-lua/plenary.nvim",
-    "https://github.com/nvim-telescope/telescope-ui-select.nvim",
 })
 
 local telescope = require("telescope")
-local themes = require("telescope.themes")
 local actions = require("telescope.actions")
-local builtin = require("telescope.builtin")
-
-local function ivy_full(opts)
-    return themes.get_ivy(vim.tbl_deep_extend("force", {
-        layout_config = {
-            height = vim.o.lines - vim.o.cmdheight - (vim.o.laststatus > 0 and 1 or 0),
-            width = 0.999,
-            prompt_position = "top",
-            preview_cutoff = 5,
-            preview_width = 0.65,
-        },
-        borderchars = {
-            prompt  = { " ", " ", " ", " ", " ", " ", " ", " " },
-            results = { " ", " ", " ", " ", " ", " ", " ", " " },
-            preview = { " ", " ", " ", " ", " ", " ", " ", " " },
-        },
-        results_title = false,
-        preview_title = false,
-        mappings = { i = { ["<Esc>"] = actions.close } },
-    }, opts or {}))
-end
-
-local function T(picker, opts)
-    return function() picker(ivy_full(opts)) end
-end
 
 telescope.setup({
     defaults = {
         mappings = { i = { ["<Esc>"] = actions.close } },
     },
-    extensions = {
-        ["ui-select"] = { themes.get_ivy({ border = true, layout_config = { height = 0.25 } }) },
-    },
 })
-
-telescope.load_extension("ui-select")
-
-vim.keymap.set({ "n", "i" }, "<M-f><M-g>", T(builtin.live_grep), { desc = "Telescope: live grep" })
-vim.keymap.set({ "n", "i" }, "<M-f><M-b>", T(builtin.buffers, { previewer = false }), { desc = "Telescope: buffers" })
-vim.keymap.set({ "n", "i" }, "<M-f><M-h>", T(builtin.help_tags), { desc = "Telescope: help tags" })
-vim.keymap.set({ "n", "i" }, "<M-f><M-m>", T(builtin.man_pages), { desc = "Telescope: man pages" })
-vim.keymap.set({ "n", "i" }, "<M-f><M-f>", T(builtin.fd), { desc = "Telescope: find files" })
-vim.keymap.set("n", "grs", T(builtin.lsp_workspace_symbols), { desc = "Telescope: lsp symbols" })
-vim.keymap.set("n", "grr", T(builtin.lsp_references), { desc = "Telescope: lsp references" })
-vim.keymap.set("n", "<C-]>", T(builtin.lsp_definitions), { desc = "Telescope: lsp definitions" })
-vim.keymap.set("n", "z=", function()
-    builtin.spell_suggest(themes.get_cursor({ border = true }))
-end, { desc = "Telescope: spell suggest" })
 
 -- Git integration
 vim.pack.add({ "https://github.com/MunifTanjim/nui.nvim",
@@ -579,7 +575,7 @@ zenmode.setup({
         laststatus = 0,
     },
     log_level = "warn",
-    default_width = 120,
+    default_width = 100,
 })
 
 vim.keymap.set("n", "<M-z>", zenmode_api.toggle, { desc = "Zenmode: open" })
@@ -601,6 +597,8 @@ require("sessionizer").setup({
         "~/.dotfiles/*",
         "~/.config/nvim",
         "~/Dropbox",
+        "/mnt/d/apps/Dropbox",
+        "/mnt/d/code/xray-server",
         { key = "~/.ssh/deploy_messenger.dev", path = "ssh://root@91.218.113.184/opt/messenger-mobile/" },
     },
     hide_buffers = {
