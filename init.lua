@@ -39,11 +39,6 @@ vim.o.number = true
 vim.o.relativenumber = true
 vim.o.statuscolumn = "%s%l %C "
 
-local ok_extui, extui = pcall(require, "vim._extui")
-if ok_extui then
-    extui.enable({ enable = true, msg = { target = "msg", timeout = 4000 } })
-end
-
 local ok_ui, _ = require("vim._core.ui2")
 if ok_ui then
     require("vim._core.ui2").enable({
@@ -53,13 +48,13 @@ if ok_ui then
 end
 
 local hour = os.date("*t").hour
-local is_transparent = false
-if hour <= 7 or hour >= 21 then
-    is_transparent = true
-end
+local is_transparent = true
+-- if hour <= 7 or hour >= 20 then
+--     is_transparent = true
+-- end
 
 if vim.g.neovide then
-    vim.g.neovide_scale_factor = 1
+    vim.g.neovide_scale_factor = .95
     vim.g.neovide_hide_mouse_when_typing = true
     vim.o.guifont = "Maple Mono:h14"
     vim.g.neovide_no_idle = false
@@ -129,7 +124,6 @@ vim.keymap.set({ "i", "c" }, "<M-l>", "<right>", { noremap = true })
 vim.keymap.set({ "i", "c" }, "<C-M-h>", "<C-left>", { noremap = true })
 vim.keymap.set({ "i", "c" }, "<C-M-l>", "<C-right>", { noremap = true })
 
-vim.keymap.set({ "n", "i", "v" }, "<C-s>", vim.cmd.update, { desc = "Save" })
 vim.keymap.set("v", "<M-y>", function()
     vim.cmd([[norm! "+y]])
 end, { silent = true, desc = "Copy" })
@@ -193,9 +187,15 @@ vim.keymap.set({ "n", "t", "i" }, "<M-S-o>", "<cmd>tabmove +<cr>",
 vim.keymap.set({ "n", "t", "i" }, "<M-S-i>", "<cmd>tabmove -<cr>",
     { silent = true, noremap = true, desc = "Move tab left" })
 vim.keymap.set("n", "<C-w>t", "<cmd>tab term<cr>", { silent = true, noremap = true, desc = "Open terminal tab" })
+vim.keymap.set("n", "<C-w>w", "<cmd>tab term powershell.exe<cr>",
+    { silent = true, noremap = true, desc = "Open terminal tab" })
+vim.keymap.set("n", "<C-w>V", "<cmd>vertical term<cr>",
+    { silent = true, noremap = true, desc = "Open terminal tab" })
+vim.keymap.set("n", "<C-w>S", "<cmd>term<cr>",
+    { silent = true, noremap = true, desc = "Open terminal tab" })
 vim.keymap.set("n", "<C-w>+", "<cmd>vertical resize 999<cr><cmd>resize 999<cr>",
     { silent = true, noremap = true, desc = "Open terminal tab" })
--- vim.keymap.set("n", "<C-s>", "<cmd>sp term://tmux-sessionizer | startinsert<cr>", { noremap = true })
+vim.keymap.set("n", "<C-s>", "<cmd>sp term://tmux-sessionizer | startinsert<cr>", { noremap = true })
 vim.keymap.set("t", "<C-[>", "<C-\\><C-n>", { silent = true, noremap = true, desc = "Exit terminal mode" })
 vim.keymap.set({ "n", "i", "v" }, "<C-[>", "<cmd>noh<cr><C-[>", { silent = true, noremap = true, desc = "Open link" })
 vim.keymap.set({ "n", "i" }, "<C-l>", "<cmd>t.<cr>", { silent = true, noremap = true, desc = "Duplicate current line" })
@@ -334,7 +334,7 @@ require("nvim-treesitter.configs").setup({
     indent = { enable = true },
     highlight = {
         enable = true,
-        disable = function(lang, buf)
+        disable = function(_, buf)
             local max = 200 * 1024
             local name = vim.api.nvim_buf_get_name(buf)
             local ok, stat = pcall(vim.uv.fs_stat, name)
@@ -460,46 +460,64 @@ vim.keymap.set({ "n", "x", "o" }, "t", repeat_move.builtin_t_expr, { expr = true
 vim.keymap.set({ "n", "x", "o" }, "T", repeat_move.builtin_T_expr, { expr = true })
 
 -- Telescope
-vim.pack.add({ "https://codeberg.org/comfysage/artio.nvim" })
-require("artio").setup({
-    win = { hidestatusline = true },
-    mappings = {
-        ["<C-n>"] = "down",
-        ["<C-p>"] = "up",
-        ["<cr>"] = "accept",
-        ["<esc>"] = "cancel",
-        ["<tab>"] = "mark",
-        ["<c-g>"] = "togglelive",
-        ["<c-l>"] = "togglepreview",
-        ["<c-q>"] = "setqflist",
-        ["<m-q>"] = "setqflistmark",
-    },
-})
-
-vim.ui.select = require("artio").select
-
-vim.keymap.set("n", "<M-f><M-f>", "<Plug>(artio-files)")
-vim.keymap.set("n", "<M-f><M-g>", "<Plug>(artio-grep)")
-vim.keymap.set("n", "<M-f><M-h>", "<Plug>(artio-helptags)")
-vim.keymap.set("n", "<M-f><M-b>", "<Plug>(artio-buffers)")
-vim.keymap.set("n", "<M-f><M-k>", "<Plug>(artio-keymaps)")
-vim.keymap.set("n", "<M-f><M-/>", "<Plug>(artio-buffergrep)")
-vim.keymap.set("n", "<M-f><M-o>", "<Plug>(artio-oldfiles)")
-vim.keymap.set("n", "<M-f><M-d>", "<Plug>(artio-diagnostics-buffer)")
-
 vim.pack.add({
     "https://github.com/nvim-telescope/telescope.nvim",
     "https://github.com/nvim-lua/plenary.nvim",
+    "https://github.com/nvim-telescope/telescope-ui-select.nvim",
 })
 
 local telescope = require("telescope")
+local themes = require("telescope.themes")
 local actions = require("telescope.actions")
+local builtin = require("telescope.builtin")
+
+local function ivy_full(opts)
+    return themes.get_ivy(vim.tbl_deep_extend("force", {
+        layout_config = {
+            height = vim.o.lines - vim.o.cmdheight - (vim.o.laststatus > 0 and 1 or 0),
+            width = 0.999,
+            prompt_position = "top",
+            preview_cutoff = 5,
+            preview_width = 0.65,
+        },
+        borderchars = {
+            prompt  = { " ", " ", " ", " ", " ", " ", " ", " " },
+            results = { " ", " ", " ", " ", " ", " ", " ", " " },
+            preview = { " ", " ", " ", " ", " ", " ", " ", " " },
+        },
+        results_title = false,
+        preview_title = false,
+        mappings = { i = { ["<Esc>"] = actions.close } },
+    }, opts or {}))
+end
+
+local function T(picker, opts)
+    return function() picker(ivy_full(opts)) end
+end
 
 telescope.setup({
     defaults = {
         mappings = { i = { ["<Esc>"] = actions.close } },
     },
+    extensions = {
+        ["ui-select"] = { themes.get_ivy({ border = true, layout_config = { height = 0.25 } }) },
+    },
 })
+
+telescope.load_extension("ui-select")
+
+vim.keymap.set({ "n", "i" }, "<M-f><M-g>", T(builtin.live_grep), { desc = "Telescope: live grep" })
+vim.keymap.set({ "n", "i" }, "<M-f><M-b>", T(builtin.buffers, { previewer = false }), { desc = "Telescope: buffers" })
+vim.keymap.set({ "n", "i" }, "<M-f><M-h>", T(builtin.help_tags), { desc = "Telescope: help tags" })
+vim.keymap.set({ "n", "i" }, "<M-f><M-m>", T(builtin.man_pages), { desc = "Telescope: man pages" })
+vim.keymap.set({ "n", "i" }, "<M-f><M-f>", T(builtin.fd), { desc = "Telescope: find files" })
+vim.keymap.set("n", "grs", T(builtin.lsp_workspace_symbols), { desc = "Telescope: lsp symbols" })
+vim.keymap.set("n", "grr", T(builtin.lsp_references), { desc = "Telescope: lsp references" })
+vim.keymap.set("n", "<C-]>", T(builtin.lsp_definitions), { desc = "Telescope: lsp definitions" })
+vim.keymap.set("n", "z=", function()
+    builtin.spell_suggest(themes.get_cursor({ border = true }))
+end, { desc = "Telescope: spell suggest" })
+
 
 -- Git integration
 vim.pack.add({ "https://github.com/MunifTanjim/nui.nvim",
@@ -511,7 +529,7 @@ require("neogit").setup({})
 local gitsigns = require("gitsigns")
 gitsigns.setup({ sign_priority = 100 })
 
-vim.keymap.set({ "n", "t" }, "<M-g>g", "<cmd>Neogit<cr>", { desc = "Git: open Neogit" })
+vim.keymap.set({ "n", "t" }, "<M-g><M-g>", "<cmd>Neogit<cr>", { desc = "Git: open Neogit" })
 vim.keymap.set("n", "]c", gitsigns.next_hunk, { desc = "Git: next hunk" })
 vim.keymap.set("n", "[c", gitsigns.prev_hunk, { desc = "Git: previous hunk" })
 vim.keymap.set({ "n", "t" }, "<M-g>p", gitsigns.preview_hunk, { desc = "Git: preview hunk" })
@@ -575,7 +593,7 @@ zenmode.setup({
         laststatus = 0,
     },
     log_level = "warn",
-    default_width = 100,
+    default_width = 120,
 })
 
 vim.keymap.set("n", "<M-z>", zenmode_api.toggle, { desc = "Zenmode: open" })
@@ -599,7 +617,6 @@ require("sessionizer").setup({
         "~/Dropbox",
         "/mnt/d/apps/Dropbox",
         "/mnt/d/code/xray-server",
-        { key = "~/.ssh/deploy_messenger.dev", path = "ssh://root@91.218.113.184/opt/messenger-mobile/" },
     },
     hide_buffers = {
         { name = "^term://*" },
@@ -739,12 +756,14 @@ vim.keymap.set("n", "<M-e>", "<cmd>Grapple toggle_tags scope=cwd<cr>",
     { silent = true, noremap = true, desc = "Grapple: toggle tags menu" })
 
 for i = 1, 9 do
-    vim.keymap.set("n", "<M-" .. i .. ">", "<cmd>Grapple select index=" .. i .. " scope=cwd<cr>",
+    vim.keymap.set("n", "<leader>" .. i, "<cmd>Grapple select index=" .. i .. " scope=cwd<cr>",
         { silent = true, noremap = true, desc = "Grapple: select " .. i .. " tag" })
 end
 
 -- Completion
-vim.pack.add({ { src = "https://github.com/saghen/blink.cmp", version = vim.version.range("1.*") },
+vim.pack.add({
+    { src = "https://github.com/saghen/blink.cmp",    version = vim.version.range("1.*") },
+    { src = "https://github.com/saghen/blink.compat", version = vim.version.range("2.*") },
     "https://github.com/disrupted/blink-cmp-conventional-commits",
     "https://github.com/bydlw98/blink-cmp-env",
     "https://github.com/rafamadriz/friendly-snippets" })
@@ -783,22 +802,29 @@ vim.keymap.set({ "n" }, "<M-a>c", function()
     end
 end, { desc = "AI: toggle Supermaven" })
 
-vim.pack.add({ "https://github.com/folke/sidekick.nvim" })
-require("sidekick").setup({
-    nes = { enabled = false },
-    cli = {
-        win = {
-            layout = "float",
-            keys = { buffers = { "<M-S-a>", "hide", mode = "nt", desc = "AI: hide the terminal window" } }
-        }
-    },
-})
+vim.pack.add({ "https://github.com/ThePrimeagen/99" })
+local _99 = require("99")
+_99.setup({ completion = { source = "blink" } })
 
-vim.keymap.set({ "n", "v", "i", "t" }, "<M-S-a>", function()
-    require("sidekick.cli").toggle({ name = "codex", filter = { cwd = vim.fn.getcwd() } })
-end, { noremap = true, desc = "AI: toggle codex" })
-vim.keymap.set({ "n", "v" }, "<M-a>s", require("sidekick.cli").select, { noremap = true, desc = "AI: select cli" })
-vim.keymap.set({ "n", "v", "i" }, "<M-a>p", require("sidekick.cli").prompt, { noremap = true, desc = "AI: prompt" })
+vim.keymap.set("n", "<M-a>m", function()
+    require("99.extensions.telescope").select_model()
+end, { desc = "AI: select model" })
+
+vim.keymap.set("n", "<M-a>p", function()
+    require("99.extensions.telescope").select_provider()
+end, { desc = "AI: select provider" })
+
+vim.keymap.set("v", "<M-a>v", function()
+    _99.visual()
+end, { desc = "AI: visual" })
+
+vim.keymap.set("n", "<M-a>x", function()
+    _99.stop_all_requests()
+end, { desc = "AI: stop all requests" })
+
+vim.keymap.set("n", "<M-a>s", function()
+    _99.search()
+end, { desc = "AI: search" })
 
 -- Multicursor
 vim.pack.add({ "https://github.com/jake-stewart/multicursor.nvim" })
