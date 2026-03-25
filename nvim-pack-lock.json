@@ -231,6 +231,10 @@
       "rev": "58f958a2dcfb974963d4bb772ad8c3d8a1c62774",
       "src": "https://github.com/opdavies/toggle-checkbox.nvim"
     },
+    "transparent.nvim": {
+      "rev": "8ac59883de84e9cd1850ea25cf087031c5ba7d54",
+      "src": "https://github.com/xiyaowong/transparent.nvim"
+    },
     "vim-boring": {
       "rev": "1090b4bde142fbb2f5c9c5cfa08238c5eaeceb2f",
       "src": "https://github.com/t184256/vim-boring"

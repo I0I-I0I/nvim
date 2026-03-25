@@ -979,6 +979,7 @@ end, { desc = "Expose: static server via ngrok" })
 
 -- Theme
 vim.pack.add({
+    "https://github.com/xiyaowong/transparent.nvim",
     "https://github.com/aditya-azad/candle-grey",
     "https://github.com/pbrisbin/vim-colors-off",
 })
@@ -1009,7 +1010,7 @@ local function apply(bg)
 
     vim.o.background = bg
     if bg == "dark" then
-        vim.cmd.colorscheme("candle-grey-transparent")
+        vim.cmd.colorscheme("off")
         vim.g.neovide_opacity = .73
         vim.g.neovide_normal_opacity = .73
     else
