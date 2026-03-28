@@ -79,9 +79,9 @@ end
 
 local hour = os.date("*t").hour
 local is_transparent = true
--- if hour <= 7 or hour >= 20 then
---     is_transparent = true
--- end
+if hour <= 7 or hour >= 20 then
+    is_transparent = true
+end
 
 if vim.g.neovide then
     vim.g.neovide_scale_factor = .95
@@ -174,6 +174,19 @@ vim.keymap.set({ "n", "i" }, "<M-y><M-d>", "<cmd>let @+=strftime('%F')<cr>",
     { silent = true, noremap = true, desc = "Copy date" })
 vim.keymap.set({ "n", "i" }, "<M-y><M-t>", "<cmd>let @+=strftime('%T')<cr>",
     { silent = true, noremap = true, desc = "Copy time" })
+
+vim.keymap.set({ "i", "c" }, "<C-r><C-d>", function()
+    return os.date("%F")
+end, { expr = true, noremap = true, desc = "Insert date" })
+vim.keymap.set({ "i", "c" }, "<C-r><C-t>", function()
+    return os.date("%T")
+end, { expr = true, noremap = true, desc = "Insert time" })
+vim.keymap.set({ "i", "c" }, "<C-r><C-f>", function()
+    return vim.fn.expand("%:.")
+end, { expr = true, noremap = true, desc = "Insert relative path" })
+vim.keymap.set({ "i", "c" }, "<C-r><C-p>", function()
+    return vim.fn.expand("%:p")
+end, { expr = true, noremap = true, desc = "Insert absolute path" })
 
 local function close_all_but(force)
     return function()
@@ -355,11 +368,16 @@ vim.api.nvim_create_autocmd("FileType", {
 })
 
 -- Folds
-vim.o.fillchars = "eob: ,foldopen:,foldinner:│,foldclose:"
+local load_origami = load_once(function()
+    vim.pack.add({ "https://github.com/chrisgrieser/nvim-origami" })
+    require("origami").setup({})
 
-vim.o.foldenable = true
-vim.o.foldmethod = "expr"
-vim.o.foldtext = ""
+    vim.o.fillchars = "fold: ,eob: ,foldopen:,foldinner:│,foldclose:"
+
+    vim.o.foldenable = true
+    vim.o.foldmethod = "expr"
+    vim.o.foldtext = ""
+end)
 
 vim.api.nvim_create_autocmd("BufRead", {
     callback = function()
@@ -370,7 +388,7 @@ vim.api.nvim_create_autocmd("BufRead", {
             vim.opt_local.foldlevelstart = 0
             vim.opt_local.foldnestmax = 9
         else
-            vim.opt_local.foldexpr = "v:lua.vim.treesitter.foldexpr()"
+            load_origami()
             vim.opt_local.foldlevel = 99
             vim.opt_local.foldlevelstart = 99
             vim.opt_local.foldnestmax = 2
@@ -381,21 +399,57 @@ vim.api.nvim_create_autocmd("BufRead", {
 -- Tree-sitter
 local load_treesitter = load_once(function()
     vim.pack.add({
-        { src = "https://github.com/nvim-treesitter/nvim-treesitter", version = "master" },
+        { src = "https://github.com/nvim-treesitter/nvim-treesitter", version = "main" },
     })
 
-    require("nvim-treesitter.configs").setup({
-        auto_install = true,
-        indent = { enable = true },
-        highlight = {
-            enable = true,
-            disable = function(_, buf)
-                local max = 200 * 1024
-                local name = vim.api.nvim_buf_get_name(buf)
-                local ok, stat = pcall(vim.uv.fs_stat, name)
-                return ok and stat and stat.size > max
-            end,
-        },
+    require("nvim-treesitter").setup({})
+    local ts = require("nvim-treesitter")
+
+    local installing = {}
+
+    local function parser_installed(lang)
+        local matches = vim.api.nvim_get_runtime_file("parser/" .. lang .. ".*", true)
+        return matches ~= nil and #matches > 0
+    end
+
+    vim.api.nvim_create_autocmd("FileType", {
+        pattern = "*",
+        callback = function(args)
+            if vim.bo[args.buf].buftype ~= "" then return end
+
+            local ft = vim.bo[args.buf].filetype
+            if ft == nil or ft == "" then
+                return
+            end
+
+            local ok, lang = pcall(vim.treesitter.language.get_lang, ft)
+            if not ok or not lang or lang == "" then
+                return
+            end
+
+            if not parser_installed(lang) then
+                if installing[lang] then
+                    return
+                end
+                installing[lang] = true
+
+                local ok_install, err = pcall(ts.install, { lang })
+                if not ok_install then
+                    installing[lang] = nil
+                    vim.notify(
+                        ("nvim-treesitter: failed to install parser %s: %s"):format(lang, err),
+                        vim.log.levels.WARN
+                    )
+                    return
+                end
+
+                vim.schedule(function()
+                    installing[lang] = nil
+                end)
+            end
+
+            vim.treesitter.start()
+        end,
     })
 end)
 defer(load_treesitter)
@@ -1121,11 +1175,25 @@ end, { desc = "AI: toggle Supermaven" })
 
 local _99
 local load_99 = load_once(function()
-    load_blink()
     vim.pack.add({ "https://github.com/ThePrimeagen/99" })
     _99 = require("99")
-    _99.setup({ completion = { source = "blink" } })
+    _99.setup({ provider = _99.Providers.OpenCodeProvider, model = "openai/gpt-5.4" })
 end)
+
+vim.keymap.set("v", "<M-a>", function()
+    load_99()
+    _99.visual()
+end, { desc = "AI: visual" })
+
+vim.keymap.set("n", "<M-a><M-a>", function()
+    load_99()
+    _99.vibe()
+end, { desc = "AI: vibe" })
+
+vim.keymap.set("n", "<M-a>o", function()
+    load_99()
+    _99.open()
+end, { desc = "AI: open" })
 
 vim.keymap.set("n", "<M-a>m", function()
     load_telescope()
@@ -1138,11 +1206,6 @@ vim.keymap.set("n", "<M-a>p", function()
     load_99()
     require("99.extensions.telescope").select_provider()
 end, { desc = "AI: select provider" })
-
-vim.keymap.set("v", "<M-a><M-a>", function()
-    load_99()
-    _99.visual()
-end, { desc = "AI: visual" })
 
 vim.keymap.set("n", "<M-a>x", function()
     load_99()
@@ -1356,80 +1419,9 @@ vim.keymap.set("n", "<M-x>X", function()
 end, { desc = "Expose: static server via ngrok" })
 
 -- Theme
-vim.pack.add({
-    "https://github.com/xiyaowong/transparent.nvim",
-    "https://github.com/aditya-azad/candle-grey",
-    "https://github.com/pbrisbin/vim-colors-off",
-})
-
-vim.api.nvim_create_autocmd("ColorScheme", {
-    pattern = { "candle-grey", "off" },
-    callback = function()
-        local normal = vim.api.nvim_get_hl(0, { name = "Normal" })
-        if vim.g.colors_name == "off" then
-            vim.api.nvim_set_hl(0, "CursorLineNr", { bg = string.format("#%06x", normal.bg) })
-        end
-        vim.api.nvim_set_hl(0, "TelescopeSelection",
-            { bg = string.format("#%06x", normal.bg), italic = true, bold = true })
-        local blink_color = { "BlinkCmpMenu", "BlinkCmpMenuBorder", "BlinkCmpKind" }
-        for _, color in ipairs(blink_color) do
-            vim.api.nvim_set_hl(0, color,
-                { bg = string.format("#%06x", normal.bg) })
-        end
-        vim.api.nvim_set_hl(0, "BlinkCmpMenuSelection",
-            { bg = string.format("#%06x", normal.bg), italic = true, bold = true })
-    end,
-})
-
-local state_file = vim.fn.stdpath("state") .. "/theme_bg"
-
-local function apply(bg)
-    if bg ~= "dark" and bg ~= "light" then return end
-
-    vim.o.background = bg
-    if bg == "dark" then
-        vim.cmd.colorscheme("off")
-        vim.g.neovide_opacity = .73
-        vim.g.neovide_normal_opacity = .73
-    else
-        vim.cmd.colorscheme("off")
-        vim.g.neovide_opacity = 1
-        vim.g.neovide_normal_opacity = 1
-    end
-    local normal = vim.api.nvim_get_hl(0, { name = "Normal" })
-    if normal.bg then
-        vim.api.nvim_set_hl(0, "WinSeparator", { fg = string.format("#%06x", normal.bg) })
-    end
+vim.pack.add({ "https://github.com/xiyaowong/transparent.nvim" })
+if is_transparent then
+    vim.cmd.colorscheme("theme")
+else
+    vim.cmd.colorscheme("theme_light")
 end
-
-local function load_bg()
-    -- local f = io.open(state_file, "r")
-    -- if f then
-    --     local bg = f:read("*l")
-    --     f:close()
-    --     apply(bg)
-    -- else
-    --     apply(vim.o.background)
-    -- end
-    if is_transparent then
-        apply("dark")
-    else
-        apply("light")
-    end
-end
-
-load_bg()
-
-local function save_bg()
-    local f = io.open(state_file, "w")
-    if f then
-        f:write(vim.o.background)
-        f:close()
-    end
-end
-
-vim.keymap.set("n", "<leader>t", function()
-    local next_bg = (vim.o.background == "dark") and "light" or "dark"
-    apply(next_bg)
-    save_bg()
-end, { desc = "Theme: toggle" })

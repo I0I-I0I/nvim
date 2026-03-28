@@ -59,7 +59,7 @@
       "src": "https://github.com/uga-rosa/ccc.nvim"
     },
     "codecompanion.nvim": {
-      "rev": "34ffd4b9f96726b061dee57cb57380f06813ee0a",
+      "rev": "9809e463e786dafb8e0c86093d5648f1fb40769f",
       "src": "https://github.com/olimorris/codecompanion.nvim"
     },
     "codediff.nvim": {
@@ -91,7 +91,7 @@
       "src": "https://github.com/A7Lavinraj/fyler.nvim"
     },
     "gitsigns.nvim": {
-      "rev": "0a80125bace82d82847d40bc2c38a22d62c6dc2d",
+      "rev": "50c205548d8b037b7ff6378fca6d21146f0b6161",
       "src": "https://github.com/lewis6991/gitsigns.nvim"
     },
     "grapple.nvim": {
@@ -132,7 +132,7 @@
       "src": "https://github.com/OXY2DEV/markview.nvim"
     },
     "mason-lspconfig.nvim": {
-      "rev": "a979821a975897b88493843301950c456a725982",
+      "rev": "38499e0bda64bc0f3ec6e7f03f8e13dd11c0fa00",
       "src": "https://github.com/mason-org/mason-lspconfig.nvim"
     },
     "mason.nvim": {
@@ -144,11 +144,11 @@
       "src": "https://github.com/jake-stewart/multicursor.nvim"
     },
     "neogit": {
-      "rev": "64b1a01a9fc3d3ee8b2368230563bedf3eb66e54",
+      "rev": "4681c1fdac1b730592ae195576e87406f7255750",
       "src": "https://github.com/NeogitOrg/neogit"
     },
     "neotest": {
-      "rev": "b059824dc3c9422ccf6cfdbd7349df9f65389d39",
+      "rev": "72bc8f1ec62a590fb47368c81f89610e0f353e28",
       "src": "https://github.com/nvim-neotest/neotest"
     },
     "neotest-jest": {
@@ -168,21 +168,25 @@
       "src": "https://github.com/MunifTanjim/nui.nvim"
     },
     "nvim-colorizer.lua": {
-      "rev": "ef211089af881bea206c7aa3f2693a81feee7e90",
+      "rev": "c8c2c19436d33165ec34fa90c975bc0a739fe3fb",
       "src": "https://github.com/catgoose/nvim-colorizer.lua"
     },
     "nvim-lspconfig": {
-      "rev": "46204c8fdaa36a9aa3768780450e4bc7a210025f",
+      "rev": "97774019cb17697f35872b28bc020a72b4ca1b51",
       "src": "https://github.com/neovim/nvim-lspconfig"
     },
     "nvim-nio": {
       "rev": "21f5324bfac14e22ba26553caf69ec76ae8a7662",
       "src": "https://github.com/nvim-neotest/nvim-nio"
     },
+    "nvim-origami": {
+      "rev": "e5b527f41d18c2ee5af868e1a3939b60f15fdb90",
+      "src": "https://github.com/chrisgrieser/nvim-origami"
+    },
     "nvim-treesitter": {
-      "rev": "cf12346a3414fa1b06af75c79faebe7f76df080a",
+      "rev": "f059649bc39ab39d55f2a165db752c956897d4fd",
       "src": "https://github.com/nvim-treesitter/nvim-treesitter",
-      "version": "'master'"
+      "version": "'main'"
     },
     "nvim-treesitter-textobjects": {
       "rev": "93d60a475f0b08a8eceb99255863977d3a25f310",
