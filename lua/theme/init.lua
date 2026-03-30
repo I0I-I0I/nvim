@@ -232,7 +232,6 @@ local highlight_groups = {
         groups = {
             "PmenuKind",
             "PmenuExtra",
-            "PmenuExtraSel",
             "BlinkCmpLabelDeprecated",
             "BlinkCmpLabelDetail",
             "BlinkCmpLabelDescription",
@@ -241,6 +240,14 @@ local highlight_groups = {
             "BlinkCmpDocBorder",
             "BlinkCmpDocSeparator",
             "BlinkCmpSignatureHelpBorder",
+        },
+    },
+    {
+        style = function(variant)
+            return { fg = variant.palette.comment, bg = variant.palette.cursorline }
+        end,
+        groups = {
+            "PmenuExtraSel",
         },
     },
     {
@@ -334,9 +341,71 @@ local highlight_groups = {
             "Comment",
             "@comment",
             "@comment.documentation",
+        },
+    },
+    {
+        style = function(variant)
+            return { fg = variant.palette.comment }
+        end,
+        groups = {
+            "gitcommitComment",
+            "gitcommitOnBranch",
+            "gitcommitArrow",
+        },
+    },
+    {
+        style = function(variant)
+            return { fg = variant.palette.keyword, bold = true }
+        end,
+        groups = {
             "@comment.todo",
-            "@comment.note",
+        },
+    },
+    {
+        style = function(variant)
+            return { fg = variant.palette.keyword, bold = true }
+        end,
+        groups = {
+            "Label",
+            "gitcommitSummary",
+            "gitcommitTrailerToken",
+        },
+    },
+    {
+        style = function(variant)
+            return { fg = variant.palette.git_change, bold = true }
+        end,
+        groups = {
             "@comment.warning",
+        },
+    },
+    {
+        style = function(variant)
+            return { fg = variant.palette.type, bold = true }
+        end,
+        groups = {
+            "PreProc",
+            "Title",
+            "gitcommitHeader",
+            "gitcommitType",
+            "gitcommitBranch",
+            "gitcommitNoBranch",
+            "gitcommitNoChanges",
+        },
+    },
+    {
+        style = function(variant)
+            return { fg = variant.palette.type, bold = true }
+        end,
+        groups = {
+            "@comment.note",
+        },
+    },
+    {
+        style = function(variant)
+            return { fg = variant.palette.git_delete, bold = true }
+        end,
+        groups = {
             "@comment.error",
         },
     },
@@ -352,11 +421,6 @@ local highlight_groups = {
             "Define",
             "Macro",
             "PreProc",
-            "Type",
-            "StorageClass",
-            "Structure",
-            "Typedef",
-
             "@keyword",
             "@keyword.import",
             "@keyword.function",
@@ -373,6 +437,17 @@ local highlight_groups = {
             "@attribute",
             "@attribute.builtin",
             "@label",
+        },
+    },
+    {
+        style = function(variant)
+            return { fg = variant.palette.type, bold = true }
+        end,
+        groups = {
+            "Type",
+            "StorageClass",
+            "Structure",
+            "Typedef",
         },
     },
     {
@@ -449,6 +524,42 @@ local highlight_groups = {
             "@type",
             "@type.builtin",
             "@type.definition",
+        },
+    },
+    {
+        style = function(variant)
+            return { fg = variant.palette.string }
+        end,
+        groups = {
+            "Constant",
+            "gitcommitFile",
+            "gitcommitUntrackedFile",
+        },
+    },
+    {
+        style = function(variant)
+            return { fg = variant.palette.git_add, bold = true }
+        end,
+        groups = {
+            "gitcommitSelectedType",
+            "gitcommitSelectedFile",
+            "gitcommitSelectedArrow",
+        },
+    },
+    {
+        style = function(variant)
+            return { fg = variant.palette.git_delete, bold = true }
+        end,
+        groups = {
+            "Error",
+            "gitcommitDiscardedType",
+            "gitcommitDiscardedFile",
+            "gitcommitDiscardedArrow",
+            "gitcommitUnmergedType",
+            "gitcommitUnmergedFile",
+            "gitcommitUnmergedArrow",
+            "gitcommitOverflow",
+            "gitcommitBlank",
         },
     },
 }

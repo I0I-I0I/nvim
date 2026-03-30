@@ -69,12 +69,7 @@ end
 
 local ok_ui, ui2 = pcall(require, "vim._core.ui2")
 if ok_ui then
-    defer(function()
-        ui2.enable({
-            enable = true,
-            msg = { target = "msg" }
-        })
-    end)
+    ui2.enable({ enable = true, msg = { target = "msg" } })
 end
 
 local hour = os.date("*t").hour
@@ -146,13 +141,10 @@ vim.keymap.set("v", "<M-k>", ":m '<-2<CR>gv=gv", { silent = true, noremap = true
 vim.keymap.set("v", "<M-j>", ":m '>+1<CR>gv=gv", { silent = true, noremap = true, desc = "Move selection down" })
 vim.keymap.set("n", "<M-k>", "<cmd>m -2<cr>", { silent = true, noremap = true, desc = "Move selection up" })
 vim.keymap.set("n", "<M-j>", "<cmd>m +1<cr>", { silent = true, noremap = true, desc = "Move selection down" })
-vim.keymap.set("n", "<M-^>", "kJ", { silent = true, noremap = true, desc = "Join with previous line" })
-vim.keymap.set("x", "<M-^>", "<cmd>norm! J<cr>", { silent = true, noremap = true, desc = "Join selected lines" })
 
 vim.keymap.set({ "i", "c" }, "<M-h>", "<left>", { noremap = true })
 vim.keymap.set({ "i", "c" }, "<M-l>", "<right>", { noremap = true })
-vim.keymap.set({ "i", "c" }, "<C-M-h>", "<C-left>", { noremap = true })
-vim.keymap.set({ "i", "c" }, "<C-M-l>", "<C-right>", { noremap = true })
+vim.keymap.set({ "i", "c" }, "", "<cmd>undo<cr>", { noremap = true })
 
 vim.keymap.set("v", "<M-y>", function()
     vim.cmd([[norm! "+y]])
@@ -170,10 +162,6 @@ vim.keymap.set({ "n", "i" }, "<M-y><M-f>", "<cmd>let @+=expand('%:.')<cr>",
     { silent = true, noremap = true, desc = "Copy relative path" })
 vim.keymap.set({ "n", "i" }, "<M-y><M-F>", "<cmd>let @+=expand('%:.') . ':' . line('.')<cr>",
     { silent = true, noremap = true, desc = "Copy relative path with line" })
-vim.keymap.set({ "n", "i" }, "<M-y><M-d>", "<cmd>let @+=strftime('%F')<cr>",
-    { silent = true, noremap = true, desc = "Copy date" })
-vim.keymap.set({ "n", "i" }, "<M-y><M-t>", "<cmd>let @+=strftime('%T')<cr>",
-    { silent = true, noremap = true, desc = "Copy time" })
 
 vim.keymap.set({ "i", "c" }, "<C-r><C-d>", function()
     return os.date("%F")
@@ -234,7 +222,7 @@ vim.keymap.set("n", "<C-w>w", "<cmd>tab term powershell.exe<cr>",
     { silent = true, noremap = true, desc = "Open terminal tab" })
 vim.keymap.set("n", "<C-w>V", "<cmd>vertical term<cr>",
     { silent = true, noremap = true, desc = "Open terminal tab" })
-vim.keymap.set("n", "<C-w>S", "<cmd>term<cr>",
+vim.keymap.set("n", "<C-w>S", "<cmd>split term://$SHELL<cr>",
     { silent = true, noremap = true, desc = "Open terminal tab" })
 vim.keymap.set("n", "<C-w>+", "<cmd>vertical resize 999<cr><cmd>resize 999<cr>",
     { silent = true, noremap = true, desc = "Open terminal tab" })
@@ -243,8 +231,6 @@ vim.keymap.set("t", "<C-[>", "<C-\\><C-n>", { silent = true, noremap = true, des
 vim.keymap.set({ "n", "i", "v" }, "<C-[>", "<cmd>noh<cr><C-[>", { silent = true, noremap = true, desc = "Open link" })
 vim.keymap.set({ "n", "i" }, "<C-l>", "<cmd>t.<cr>", { silent = true, noremap = true, desc = "Duplicate current line" })
 vim.keymap.set("x", "<C-l>", ":t'><cr>gv", { silent = true, noremap = true, desc = "Duplicate selection" })
-vim.keymap.set("n", "<leader>R", "<cmd>restart<cr>", { silent = true, noremap = true, desc = "Restart Neovim" })
-vim.keymap.set("n", "R", "<cmd>e<cr>", { silent = true, noremap = true, desc = "Reload buffer" })
 
 -- Auto commands
 vim.cmd([[
@@ -360,10 +346,9 @@ vim.api.nvim_create_autocmd("FileType", {
     callback = function()
         load_markdown()
         vim.keymap.set("n", "<cr>", function()
-                load_markdown()
-                vim.cmd("Markview")
-            end,
-            { buffer = true, noremap = true, silent = true, desc = "Markview: toggle" })
+            load_markdown()
+            vim.cmd("Markview")
+        end, { buffer = true, noremap = true, silent = true, desc = "Markview: toggle" })
     end,
 })
 
@@ -415,15 +400,17 @@ local load_treesitter = load_once(function()
     vim.api.nvim_create_autocmd("FileType", {
         pattern = "*",
         callback = function(args)
-            if vim.bo[args.buf].buftype ~= "" then return end
+            if vim.bo[args.buf].buftype ~= "" or vim.b[args.buf].large_file then
+                return
+            end
 
             local ft = vim.bo[args.buf].filetype
             if ft == nil or ft == "" then
                 return
             end
 
-            local ok, lang = pcall(vim.treesitter.language.get_lang, ft)
-            if not ok or not lang or lang == "" then
+            local ok_lang, lang = pcall(vim.treesitter.language.get_lang, ft)
+            if not ok_lang or not lang or lang == "" then
                 return
             end
 
@@ -431,24 +418,20 @@ local load_treesitter = load_once(function()
                 if installing[lang] then
                     return
                 end
+
                 installing[lang] = true
-
-                local ok_install, err = pcall(ts.install, { lang })
-                if not ok_install then
-                    installing[lang] = nil
-                    vim.notify(
-                        ("nvim-treesitter: failed to install parser %s: %s"):format(lang, err),
-                        vim.log.levels.WARN
-                    )
-                    return
-                end
-
                 vim.schedule(function()
+                    pcall(ts.install, { lang })
                     installing[lang] = nil
+
+                    if parser_installed(lang) then
+                        pcall(vim.treesitter.start, args.buf, lang)
+                    end
                 end)
+                return
             end
 
-            vim.treesitter.start()
+            pcall(vim.treesitter.start, args.buf, lang)
         end,
     })
 end)
@@ -529,51 +512,43 @@ end, { desc = "Textobjects: swap function with previous" })
 
 -- Move: next start
 vim.keymap.set("n", "]f", function()
-        load_treesitter_textobjects()
-        ts_move.goto_next_start("@call.outer")
-    end,
-    { desc = "Textobjects: Next function call start" })
+    load_treesitter_textobjects()
+    ts_move.goto_next_start("@call.outer")
+end, { desc = "Textobjects: Next function call start" })
 vim.keymap.set("n", "]m", function()
-        load_treesitter_textobjects()
-        ts_move.goto_next_start("@function.outer")
-    end,
-    { desc = "Textobjects: Next function start" })
+    load_treesitter_textobjects()
+    ts_move.goto_next_start("@function.outer")
+end, { desc = "Textobjects: Next function start" })
 vim.keymap.set("n", "]c", function()
-        load_treesitter_textobjects()
-        ts_move.goto_next_start("@class.outer")
-    end,
-    { desc = "Textobjects: Next class start" })
+    load_treesitter_textobjects()
+    ts_move.goto_next_start("@class.outer")
+end, { desc = "Textobjects: Next class start" })
 vim.keymap.set("n", "]i", function()
-        load_treesitter_textobjects()
-        ts_move.goto_next_start("@conditional.outer")
-    end,
-    { desc = "Textobjects: Next conditional start" })
+    load_treesitter_textobjects()
+    ts_move.goto_next_start("@conditional.outer")
+end, { desc = "Textobjects: Next conditional start" })
 vim.keymap.set("n", "]l", function()
-        load_treesitter_textobjects()
-        ts_move.goto_next_start("@loop.outer")
-    end,
-    { desc = "Textobjects: Next loop start" })
+    load_treesitter_textobjects()
+    ts_move.goto_next_start("@loop.outer")
+end, { desc = "Textobjects: Next loop start" })
 
 -- Move: next end
 vim.keymap.set("n", "]F", function()
-        load_treesitter_textobjects()
-        ts_move.goto_next_end("@call.outer")
-    end,
-    { desc = "Textobjects: Next function call end" })
+    load_treesitter_textobjects()
+    ts_move.goto_next_end("@call.outer")
+end, { desc = "Textobjects: Next function call end" })
 vim.keymap.set("n", "]M", function()
-        load_treesitter_textobjects()
-        ts_move.goto_next_end("@function.outer")
-    end,
-    { desc = "Textobjects: Next function end" })
+    load_treesitter_textobjects()
+    ts_move.goto_next_end("@function.outer")
+end, { desc = "Textobjects: Next function end" })
 vim.keymap.set("n", "]C", function()
     load_treesitter_textobjects()
     ts_move.goto_next_end("@class.outer")
 end, { desc = "Textobjects: Next class end" })
 vim.keymap.set("n", "]I", function()
-        load_treesitter_textobjects()
-        ts_move.goto_next_end("@conditional.outer")
-    end,
-    { desc = "Textobjects: Next conditional end" })
+    load_treesitter_textobjects()
+    ts_move.goto_next_end("@conditional.outer")
+end, { desc = "Textobjects: Next conditional end" })
 vim.keymap.set("n", "]L", function()
     load_treesitter_textobjects()
     ts_move.goto_next_end("@loop.outer")
@@ -581,57 +556,47 @@ end, { desc = "Textobjects: Next loop end" })
 
 -- Move: previous start
 vim.keymap.set("n", "[f", function()
-        load_treesitter_textobjects()
-        ts_move.goto_previous_start("@call.outer")
-    end,
-    { desc = "Textobjects: Prev function call start" })
+    load_treesitter_textobjects()
+    ts_move.goto_previous_start("@call.outer")
+end, { desc = "Textobjects: Prev function call start" })
 vim.keymap.set("n", "[m", function()
-        load_treesitter_textobjects()
-        ts_move.goto_previous_start("@function.outer")
-    end,
-    { desc = "Textobjects: Prev function start" })
+    load_treesitter_textobjects()
+    ts_move.goto_previous_start("@function.outer")
+end, { desc = "Textobjects: Prev function start" })
 vim.keymap.set("n", "[c", function()
-        load_treesitter_textobjects()
-        ts_move.goto_previous_start("@class.outer")
-    end,
-    { desc = "Textobjects: Prev class start" })
+    load_treesitter_textobjects()
+    ts_move.goto_previous_start("@class.outer")
+end, { desc = "Textobjects: Prev class start" })
 vim.keymap.set("n", "[i", function()
-        load_treesitter_textobjects()
-        ts_move.goto_previous_start("@conditional.outer")
-    end,
-    { desc = "Textobjects: Prev conditional start" })
+    load_treesitter_textobjects()
+    ts_move.goto_previous_start("@conditional.outer")
+end, { desc = "Textobjects: Prev conditional start" })
 vim.keymap.set("n", "[l", function()
-        load_treesitter_textobjects()
-        ts_move.goto_previous_start("@loop.outer")
-    end,
-    { desc = "Textobjects: Prev loop start" })
+    load_treesitter_textobjects()
+    ts_move.goto_previous_start("@loop.outer")
+end, { desc = "Textobjects: Prev loop start" })
 
 -- Move: previous end
 vim.keymap.set("n", "[F", function()
-        load_treesitter_textobjects()
-        ts_move.goto_previous_end("@call.outer")
-    end,
-    { desc = "Textobjects: Prev function call end" })
+    load_treesitter_textobjects()
+    ts_move.goto_previous_end("@call.outer")
+end, { desc = "Textobjects: Prev function call end" })
 vim.keymap.set("n", "[M", function()
-        load_treesitter_textobjects()
-        ts_move.goto_previous_end("@function.outer")
-    end,
-    { desc = "Textobjects: Prev function end" })
+    load_treesitter_textobjects()
+    ts_move.goto_previous_end("@function.outer")
+end, { desc = "Textobjects: Prev function end" })
 vim.keymap.set("n", "[C", function()
-        load_treesitter_textobjects()
-        ts_move.goto_previous_end("@class.outer")
-    end,
-    { desc = "Textobjects: Prev class end" })
+    load_treesitter_textobjects()
+    ts_move.goto_previous_end("@class.outer")
+end, { desc = "Textobjects: Prev class end" })
 vim.keymap.set("n", "[I", function()
-        load_treesitter_textobjects()
-        ts_move.goto_previous_end("@conditional.outer")
-    end,
-    { desc = "Textobjects: Prev conditional end" })
+    load_treesitter_textobjects()
+    ts_move.goto_previous_end("@conditional.outer")
+end, { desc = "Textobjects: Prev conditional end" })
 vim.keymap.set("n", "[L", function()
-        load_treesitter_textobjects()
-        ts_move.goto_previous_end("@loop.outer")
-    end,
-    { desc = "Textobjects: Prev loop end" })
+    load_treesitter_textobjects()
+    ts_move.goto_previous_end("@loop.outer")
+end, { desc = "Textobjects: Prev loop end" })
 
 -- Repeat motions with ; and ,
 vim.keymap.set({ "n", "x", "o" }, ";", function()
@@ -994,63 +959,52 @@ local load_neotest = load_once(function()
 end)
 
 vim.keymap.set("n", "<M-t>t", function()
-        load_neotest()
-        nt.run.run()
-    end,
-    { silent = true, noremap = true, desc = "Test: run nearest" })
+    load_neotest()
+    nt.run.run()
+end, { silent = true, noremap = true, desc = "Test: run nearest" })
 vim.keymap.set("n", "<M-t>T", function()
-        load_neotest()
-        nt.run.run(vim.fn.expand("%"))
-    end,
-    { silent = true, noremap = true, desc = "Test: run file" })
+    load_neotest()
+    nt.run.run(vim.fn.expand("%"))
+end, { silent = true, noremap = true, desc = "Test: run file" })
 vim.keymap.set("n", "<M-t>a", function()
-        load_neotest()
-        nt.run.run((vim.uv or vim.loop).cwd())
-    end,
-    { silent = true, noremap = true, desc = "Test: run all (cwd)" })
+    load_neotest()
+    nt.run.run((vim.uv or vim.loop).cwd())
+end, { silent = true, noremap = true, desc = "Test: run all (cwd)" })
 
 vim.keymap.set("n", "<M-t>d", function()
-        load_neotest()
-        nt.run.run({ strategy = "dap" })
-    end,
-    { silent = true, noremap = true, desc = "Test: debug nearest (DAP)" })
+    load_neotest()
+    nt.run.run({ strategy = "dap" })
+end, { silent = true, noremap = true, desc = "Test: debug nearest (DAP)" })
 vim.keymap.set("n", "<M-t>D", function()
-        load_neotest()
-        nt.run.run({ vim.fn.expand("%"), strategy = "dap" })
-    end,
-    { silent = true, noremap = true, desc = "Test: debug file (DAP)" })
+    load_neotest()
+    nt.run.run({ vim.fn.expand("%"), strategy = "dap" })
+end, { silent = true, noremap = true, desc = "Test: debug file (DAP)" })
 
 vim.keymap.set("n", "<M-t>s", function()
-        load_neotest()
-        nt.summary.toggle()
-    end,
-    { silent = true, noremap = true, desc = "Test: toggle summary" })
+    load_neotest()
+    nt.summary.toggle()
+end, { silent = true, noremap = true, desc = "Test: toggle summary" })
 vim.keymap.set("n", "<M-t>o", function()
-        load_neotest()
-        nt.output.open({ enter = true, auto_close = true })
-    end,
-    { silent = true, noremap = true, desc = "Test: open output" })
+    load_neotest()
+    nt.output.open({ enter = true, auto_close = true })
+end, { silent = true, noremap = true, desc = "Test: open output" })
 vim.keymap.set("n", "<M-t>O", function()
-        load_neotest()
-        nt.output_panel.toggle()
-    end,
-    { silent = true, noremap = true, desc = "Test: toggle output panel" })
+    load_neotest()
+    nt.output_panel.toggle()
+end, { silent = true, noremap = true, desc = "Test: toggle output panel" })
 
 vim.keymap.set("n", "<M-t>S", function()
-        load_neotest()
-        nt.run.stop()
-    end,
-    { silent = true, noremap = true, desc = "Test: stop" })
+    load_neotest()
+    nt.run.stop()
+end, { silent = true, noremap = true, desc = "Test: stop" })
 vim.keymap.set("n", "]t", function()
-        load_neotest()
-        nt.jump.next({ status = "failed" })
-    end,
-    { silent = true, noremap = true, desc = "Test: next failed" })
+    load_neotest()
+    nt.jump.next({ status = "failed" })
+end, { silent = true, noremap = true, desc = "Test: next failed" })
 vim.keymap.set("n", "[t", function()
-        load_neotest()
-        nt.jump.prev({ status = "failed" })
-    end,
-    { silent = true, noremap = true, desc = "Test: prev failed" })
+    load_neotest()
+    nt.jump.prev({ status = "failed" })
+end, { silent = true, noremap = true, desc = "Test: prev failed" })
 
 vim.api.nvim_create_autocmd("FileType", {
     pattern = { "neotest-summary", "neotest-output", "neotest-output-panel" },
@@ -1099,22 +1053,19 @@ local load_grapple = load_once(function()
 end)
 
 vim.keymap.set("n", "<M-0>", function()
-        load_grapple()
-        vim.cmd("Grapple toggle scope=cwd")
-    end,
-    { silent = true, noremap = true, desc = "Grapple: tag a file" })
+    load_grapple()
+    vim.cmd("Grapple toggle scope=cwd")
+end, { silent = true, noremap = true, desc = "Grapple: tag a file" })
 vim.keymap.set("n", "<M-e>", function()
-        load_grapple()
-        vim.cmd("Grapple toggle_tags scope=cwd")
-    end,
-    { silent = true, noremap = true, desc = "Grapple: toggle tags menu" })
+    load_grapple()
+    vim.cmd("Grapple toggle_tags scope=cwd")
+end, { silent = true, noremap = true, desc = "Grapple: toggle tags menu" })
 
 for i = 1, 9 do
     vim.keymap.set("n", "<leader>" .. i, function()
-            load_grapple()
-            vim.cmd("Grapple select index=" .. i .. " scope=cwd")
-        end,
-        { silent = true, noremap = true, desc = "Grapple: select " .. i .. " tag" })
+        load_grapple()
+        vim.cmd("Grapple select index=" .. i .. " scope=cwd")
+    end, { silent = true, noremap = true, desc = "Grapple: select " .. i .. " tag" })
 end
 
 -- Completion
@@ -1159,7 +1110,9 @@ vim.api.nvim_create_autocmd("InsertEnter", {
 -- AI
 local load_supermaven = load_once(function()
     vim.pack.add({ "https://github.com/supermaven-inc/supermaven-nvim" })
-    require("supermaven-nvim").setup({})
+    require("supermaven-nvim").setup({
+        ignore_filetypes = { "markdown", "markdown_inline", "fyler", "Fyler", "99prompt", "gitcommit" },
+    })
 end)
 defer(load_supermaven)
 
@@ -1345,7 +1298,15 @@ vim.keymap.set("n", "grh", function()
     vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled())
 end, { desc = "LSP: toggle inlay hints" })
 
-vim.diagnostic.config({ jump = { float = true }, signs = false, underline = true })
+vim.diagnostic.config({
+    jump = {
+        on_jump = function(_, bufnr)
+            vim.diagnostic.open_float({ bufnr = bufnr, scope = "cursor", focus = false })
+        end,
+    },
+    signs = false,
+    underline = true,
+})
 
 vim.api.nvim_create_autocmd("LspAttach", {
     group = vim.api.nvim_create_augroup("LspOnAttach", { clear = true }),
