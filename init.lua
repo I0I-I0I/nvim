@@ -267,6 +267,26 @@ vim.api.nvim_create_autocmd({ 'TermRequest' }, {
 -- Plugins
 vim.pack.add({ "https://github.com/nvim-lua/plenary.nvim" })
 
+-- Undotree
+
+local load_undotree = load_once(function()
+    vim.cmd.packadd("nvim.undotree")
+end)
+defer(load_undotree)
+
+vim.keymap.set("n", "<M-u>", "<cmd>Undotree<cr>", { silent = true, noremap = true, desc = "Undotree: open" })
+
+vim.api.nvim_create_autocmd("FileType", {
+    pattern = "nvim-undotree",
+    callback = function()
+        vim.keymap.set("n", "q", "<cmd>close<cr>", { buffer = true, desc = "Undotree: close" })
+        vim.opt_local.rnu = false
+        vim.opt_local.nu = false
+        vim.opt_local.signcolumn = "no"
+        vim.opt_local.foldcolumn = "0"
+    end,
+})
+
 -- WhichKey
 local load_which_key = load_once(function()
     vim.pack.add({ "https://github.com/folke/which-key.nvim" })
