@@ -131,9 +131,6 @@ vim.keymap.set({ "n", "x" }, "k", function()
         return "k"
     end
 end, { expr = true, remap = true, silent = true, desc = "Move up by display line" })
-vim.keymap.set("n", "^", "g^", { silent = true, noremap = true, desc = "Go to line start (display)" })
-vim.keymap.set("n", "$", "g$", { silent = true, noremap = true, desc = "Go to line end (display)" })
-vim.keymap.set("n", "0", "g0", { silent = true, noremap = true, desc = "Go to column 0 (display)" })
 vim.keymap.set("n", "J", "mzJ`z", { silent = true, noremap = true, desc = "Join line and keep cursor" })
 vim.keymap.set("n", "n", "nzzzv", { desc = "Next search result centered" })
 vim.keymap.set("n", "N", "Nzzzv", { desc = "Previous search result centered" })
@@ -227,7 +224,7 @@ vim.keymap.set("n", "<C-w>S", "<cmd>split term://$SHELL<cr>",
 vim.keymap.set("n", "<C-w>+", "<cmd>vertical resize 999<cr><cmd>resize 999<cr>",
     { silent = true, noremap = true, desc = "Open terminal tab" })
 vim.keymap.set("n", "<C-s>", "<cmd>sp term://tmux-sessionizer | startinsert<cr>", { noremap = true })
-vim.keymap.set("t", "<C-[>", "<C-\\><C-n>", { silent = true, noremap = true, desc = "Exit terminal mode" })
+vim.keymap.set("t", "<C-[><C-]>", "<C-\\><C-n>", { silent = true, noremap = true, desc = "Exit terminal mode" })
 vim.keymap.set({ "n", "i", "v" }, "<C-[>", "<cmd>noh<cr><C-[>", { silent = true, noremap = true, desc = "Open link" })
 vim.keymap.set({ "n", "i" }, "<C-l>", "<cmd>t.<cr>", { silent = true, noremap = true, desc = "Duplicate current line" })
 vim.keymap.set("x", "<C-l>", ":t'><cr>gv", { silent = true, noremap = true, desc = "Duplicate selection" })
@@ -306,7 +303,7 @@ local load_img_clip = load_once(function()
     vim.pack.add({ "https://github.com/HakonHarnes/img-clip.nvim" })
     require("img-clip").setup({})
 end)
-vim.keymap.set("n", "<leader><M-p>", function()
+vim.keymap.set({ "n", "i" }, "<M-S-p>", function()
     load_img_clip()
     vim.cmd("PasteImage")
 end, { noremap = true, silent = true, desc = "Img-clip: paste image from clipboard" })
@@ -322,11 +319,13 @@ local load_markdown = load_once(function()
         "https://github.com/tadmccorkle/markdown.nvim",
         "https://github.com/3rd/image.nvim",
         "https://github.com/masukomi/vim-markdown-folding",
+        "https://github.com/SCJangra/table-nvim",
     })
 
     if has_ui and not vim.g.neovide then
         require("image").setup({})
     end
+    require("table-nvim").setup({})
     require("markdown").setup()
     require("markview").setup({})
 end)
@@ -678,6 +677,7 @@ local load_telescope = load_once(function()
     telescope.load_extension("ui-select")
     pcall(telescope.load_extension, "sessionizer")
 end)
+defer(load_telescope)
 
 local function ivy_full(opts)
     load_telescope()
@@ -702,7 +702,6 @@ end
 
 local function T(picker, opts)
     return function()
-        load_telescope()
         builtin[picker](ivy_full(opts))
     end
 end
@@ -978,42 +977,42 @@ local load_neotest = load_once(function()
     })
 end)
 
-vim.keymap.set("n", "<M-t>t", function()
+vim.keymap.set("n", "tt", function()
     load_neotest()
     nt.run.run()
 end, { silent = true, noremap = true, desc = "Test: run nearest" })
-vim.keymap.set("n", "<M-t>T", function()
+vim.keymap.set("n", "tT", function()
     load_neotest()
     nt.run.run(vim.fn.expand("%"))
 end, { silent = true, noremap = true, desc = "Test: run file" })
-vim.keymap.set("n", "<M-t>a", function()
+vim.keymap.set("n", "ta", function()
     load_neotest()
     nt.run.run((vim.uv or vim.loop).cwd())
 end, { silent = true, noremap = true, desc = "Test: run all (cwd)" })
 
-vim.keymap.set("n", "<M-t>d", function()
+vim.keymap.set("n", "td", function()
     load_neotest()
     nt.run.run({ strategy = "dap" })
 end, { silent = true, noremap = true, desc = "Test: debug nearest (DAP)" })
-vim.keymap.set("n", "<M-t>D", function()
+vim.keymap.set("n", "tD", function()
     load_neotest()
     nt.run.run({ vim.fn.expand("%"), strategy = "dap" })
 end, { silent = true, noremap = true, desc = "Test: debug file (DAP)" })
 
-vim.keymap.set("n", "<M-t>s", function()
+vim.keymap.set("n", "ts", function()
     load_neotest()
     nt.summary.toggle()
 end, { silent = true, noremap = true, desc = "Test: toggle summary" })
-vim.keymap.set("n", "<M-t>o", function()
+vim.keymap.set("n", "to", function()
     load_neotest()
     nt.output.open({ enter = true, auto_close = true })
 end, { silent = true, noremap = true, desc = "Test: open output" })
-vim.keymap.set("n", "<M-t>O", function()
+vim.keymap.set("n", "tO", function()
     load_neotest()
     nt.output_panel.toggle()
 end, { silent = true, noremap = true, desc = "Test: toggle output panel" })
 
-vim.keymap.set("n", "<M-t>S", function()
+vim.keymap.set("n", "tS", function()
     load_neotest()
     nt.run.stop()
 end, { silent = true, noremap = true, desc = "Test: stop" })
@@ -1146,6 +1145,35 @@ vim.keymap.set({ "n" }, "<M-a>c", function()
     end
 end, { desc = "AI: toggle Supermaven" })
 
+local load_sidekick = load_once(function()
+    vim.pack.add({ "https://github.com/folke/sidekick.nvim" })
+    require("sidekick").setup({
+        nes = { enabled = false },
+        cli = {
+            win = {
+                layout = "float",
+                keys = { buffers = { "<M-S-a>", "hide", mode = "nt", desc = "AI: hide the terminal window" } }
+            },
+            tools = { gemini = {} },
+        },
+    })
+end)
+
+vim.keymap.set({ "n", "t" }, "<M-S-a>", function()
+    load_sidekick()
+    require("sidekick.cli").toggle({ name = "gemini" })
+end, { desc = "AI: toggle Sidekick" })
+
+vim.keymap.set({ "n", "x" }, "<M-a>p", function()
+    load_sidekick()
+    require("sidekick.cli").prompt({ name = "gemini" })
+end, { desc = "AI: Sidekick prompt picker" })
+
+vim.keymap.set({ "n", "x" }, "<M-a>s", function()
+    load_sidekick()
+    require("sidekick.cli").send({ name = "gemini", msg = "{this}" })
+end, { desc = "AI: send current context to Sidekick" })
+
 local _99
 local load_99 = load_once(function()
     vim.pack.add({ "https://github.com/ThePrimeagen/99" })
@@ -1153,42 +1181,42 @@ local load_99 = load_once(function()
     _99.setup({ provider = _99.Providers.OpenCodeProvider, model = "openai/gpt-5.4" })
 end)
 
-vim.keymap.set("v", "<M-a>", function()
+vim.keymap.set("v", "<M-a>a", function()
     load_99()
     _99.visual()
-end, { desc = "AI: visual" })
+end, { desc = "AI(99): visual" })
 
-vim.keymap.set("n", "<M-a><M-a>", function()
+vim.keymap.set("n", "<M-a>A", function()
     load_99()
     _99.vibe()
-end, { desc = "AI: vibe" })
+end, { desc = "AI(99): vibe" })
 
-vim.keymap.set("n", "<M-a>o", function()
+vim.keymap.set("n", "<M-a>H", function()
     load_99()
     _99.open()
-end, { desc = "AI: open" })
+end, { desc = "AI(99): open history" })
 
-vim.keymap.set("n", "<M-a>m", function()
+vim.keymap.set("n", "<M-a>M", function()
     load_telescope()
     load_99()
     require("99.extensions.telescope").select_model()
-end, { desc = "AI: select model" })
+end, { desc = "AI(99): select model" })
 
-vim.keymap.set("n", "<M-a>p", function()
+vim.keymap.set("n", "<M-a>P", function()
     load_telescope()
     load_99()
     require("99.extensions.telescope").select_provider()
-end, { desc = "AI: select provider" })
+end, { desc = "AI(99): select provider" })
 
-vim.keymap.set("n", "<M-a>x", function()
+vim.keymap.set("n", "<M-a>X", function()
     load_99()
     _99.stop_all_requests()
-end, { desc = "AI: stop all requests" })
+end, { desc = "AI(99): stop all requests" })
 
-vim.keymap.set("n", "<M-a>s", function()
+vim.keymap.set("n", "<M-a>S", function()
     load_99()
     _99.search()
-end, { desc = "AI: search" })
+end, { desc = "AI(99): search" })
 
 -- Multicursor
 local mc
@@ -1198,10 +1226,10 @@ local load_multicursor = load_once(function()
     mc.setup()
 
     mc.addKeymapLayer(function(layerSet)
-        layerSet({ "n", "x" }, "<C-S-k>", function() mc.lineSkipCursor(-1) end, { desc = "Multicursor: skip line" })
-        layerSet({ "n", "x" }, "<C-S-j>", function() mc.lineSkipCursor(1) end, { desc = "Multicursor: skip line" })
-        layerSet({ "n", "v" }, "<C-S-n>", function() mc.matchSkipCursor(1) end, { desc = "Multicursor: skip match" })
-        layerSet({ "n", "v" }, "<C-S-p>", function() mc.matchSkipCursor(-1) end, { desc = "Multicursor: skip match" })
+        layerSet({ "n", "x" }, "<M-k>", function() mc.lineSkipCursor(-1) end, { desc = "Multicursor: skip line" })
+        layerSet({ "n", "x" }, "<M-j>", function() mc.lineSkipCursor(1) end, { desc = "Multicursor: skip line" })
+        layerSet({ "n", "v" }, "<M-n>", function() mc.matchSkipCursor(1) end, { desc = "Multicursor: skip match" })
+        layerSet({ "n", "v" }, "<M-p>", function() mc.matchSkipCursor(-1) end, { desc = "Multicursor: skip match" })
         layerSet({ "n", "x" }, "<C-h>", mc.prevCursor, { desc = "Multicursor: prev cursor" })
         layerSet({ "n", "x" }, "<C-l>", mc.nextCursor, { desc = "Multicursor: next cursor" })
         layerSet({ "n", "x" }, "<C-d>", mc.deleteCursor, { desc = "Multicursor: delete cursor" })
