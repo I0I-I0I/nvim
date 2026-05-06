@@ -1,5 +1,5 @@
-require("theme.init").apply({
-    name = "threecolors",
+require("theme").apply({
+    name = "theme",
     background = "dark",
     comment_italic = true,
     palette = {
@@ -9,6 +9,7 @@ require("theme.init").apply({
         keyword = "#ff6347",
         type = "#a3d5f7",
         string = "#7bd88f",
+        cursor = "#ffffff",
         cursorline = "#1a1a1a",
 
         git_add = "#7bd88f",

@@ -9,6 +9,7 @@
 ---@field keyword string
 ---@field type string
 ---@field string string
+---@field cursor string
 ---@field cursorline string
 ---@field git_add string
 ---@field git_delete string
@@ -23,12 +24,32 @@
 ---@field background? string
 ---@field palette ThreeColorsPalette
 ---@field comment_italic? boolean
+---@field guicursor? string|boolean
 
 ---@class ThreeColorsGroupSpec
 ---@field style fun(variant: ThreeColorsVariant): ThreeColorsHighlightOpts
 ---@field groups ThreeColorsGroup[]
 
 local M = {}
+
+local initial_guicursor = vim.o.guicursor
+
+---@param current string
+---@param hl_group string
+---@return string
+local function apply_cursor_hl(current, hl_group)
+    local parts = vim.split(current, ",")
+    local new_parts = {}
+    for _, part in ipairs(parts) do
+        if part:find(":") then
+            -- Append the highlight group. Neovim uses the last one if multiple are present.
+            table.insert(new_parts, part .. "-" .. hl_group)
+        else
+            table.insert(new_parts, part)
+        end
+    end
+    return table.concat(new_parts, ",")
+end
 
 ---@type fun(ns_id: integer, name: string, val: vim.api.keyset.highlight)
 local set = vim.api.nvim_set_hl
@@ -140,7 +161,7 @@ local highlight_groups = {
     },
     {
         style = function(variant)
-            return { fg = cursor_fg(variant), bg = variant.palette.fg, nocombine = true }
+            return { fg = cursor_fg(variant), bg = variant.palette.cursor, nocombine = true }
         end,
         groups = {
             "Cursor",
@@ -414,6 +435,7 @@ local highlight_groups = {
             return { fg = variant.palette.keyword, bold = true }
         end,
         groups = {
+            "Statement",
             "Keyword",
             "Conditional",
             "Repeat",
@@ -588,6 +610,21 @@ function M.apply(variant)
 
     for _, spec in ipairs(highlight_groups) do
         apply(spec.groups, spec.style(variant))
+    end
+
+    if variant.guicursor == false then
+        return
+    end
+
+    if type(variant.guicursor) == "string" then
+        vim.opt.guicursor = variant.guicursor
+    else
+        -- Only update initial_guicursor if it doesn't already contain our highlight group
+        -- to prevent accumulation if M.apply is called multiple times.
+        if not vim.o.guicursor:find("Cursor") then
+            initial_guicursor = vim.o.guicursor
+        end
+        vim.opt.guicursor = apply_cursor_hl(initial_guicursor, "Cursor")
     end
 end
 

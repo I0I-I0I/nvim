@@ -73,7 +73,7 @@ if ok_ui then
 end
 
 local hour = os.date("*t").hour
-local is_transparent = true
+local is_transparent = false
 if hour <= 7 or hour >= 20 then
     is_transparent = true
 end
@@ -215,15 +215,12 @@ vim.keymap.set({ "n", "t", "i" }, "<M-S-o>", "<cmd>tabmove +<cr>",
 vim.keymap.set({ "n", "t", "i" }, "<M-S-i>", "<cmd>tabmove -<cr>",
     { silent = true, noremap = true, desc = "Move tab left" })
 vim.keymap.set("n", "<C-w>t", "<cmd>tab term<cr>", { silent = true, noremap = true, desc = "Open terminal tab" })
-vim.keymap.set("n", "<C-w>w", "<cmd>tab term powershell.exe<cr>",
-    { silent = true, noremap = true, desc = "Open terminal tab" })
 vim.keymap.set("n", "<C-w>V", "<cmd>vertical term<cr>",
-    { silent = true, noremap = true, desc = "Open terminal tab" })
+    { silent = true, noremap = true, desc = "Open terminal vertically" })
 vim.keymap.set("n", "<C-w>S", "<cmd>split term://$SHELL<cr>",
-    { silent = true, noremap = true, desc = "Open terminal tab" })
+    { silent = true, noremap = true, desc = "Open terminal horizontally" })
 vim.keymap.set("n", "<C-w>+", "<cmd>vertical resize 999<cr><cmd>resize 999<cr>",
-    { silent = true, noremap = true, desc = "Open terminal tab" })
-vim.keymap.set("n", "<C-s>", "<cmd>sp term://tmux-sessionizer | startinsert<cr>", { noremap = true })
+    { silent = true, noremap = true, desc = "Miximize current window" })
 vim.keymap.set("t", "<C-[><C-]>", "<C-\\><C-n>", { silent = true, noremap = true, desc = "Exit terminal mode" })
 vim.keymap.set({ "n", "i", "v" }, "<C-[>", "<cmd>noh<cr><C-[>", { silent = true, noremap = true, desc = "Open link" })
 vim.keymap.set({ "n", "i" }, "<C-l>", "<cmd>t.<cr>", { silent = true, noremap = true, desc = "Duplicate current line" })
@@ -236,21 +233,22 @@ vim.cmd([[
     autocmd FileType netrw setlocal bufhidden=wipe
     autocmd FileType fyler setlocal nospell
     autocmd TermOpen * setlocal nospell | set ft=shell | startinsert
-    autocmd FocusGained,BufEnter,CursorHold * checktime
+    autocmd BufEnter term://* startinsert
+    autocmd FocusGained,BufEnter,CursorHold,CursorHoldI * checktime
     autocmd BufReadPost *
         \ if line("'\"") > 1 && line("'\"") <= line("$") |
         \   silent! normal! g`"zz |
         \ endif
     autocmd BufWritePre * call mkdir(expand("<afile>:p:h"), "p") ]])
 
-vim.api.nvim_create_autocmd({ 'TermRequest' }, {
-    desc = 'Handles OSC 7 dir change requests',
+vim.api.nvim_create_autocmd({ "TermRequest" }, {
+    desc = "Handles OSC 7 dir change requests",
     callback = function(ev)
-        local val, n = string.gsub(ev.data.sequence, '\027]7;file://[^/]*', '')
+        local val, n = string.gsub(ev.data.sequence, "\027]7;file://[^/]*", "")
         if n > 0 then
             local dir = val
             if vim.fn.isdirectory(dir) == 0 then
-                vim.notify('invalid dir: ' .. dir)
+                vim.notify("invalid dir: " .. dir)
                 return
             end
             vim.b[ev.buf].osc7_dir = dir
@@ -269,9 +267,11 @@ vim.pack.add({ "https://github.com/nvim-lua/plenary.nvim" })
 local load_undotree = load_once(function()
     vim.cmd.packadd("nvim.undotree")
 end)
-defer(load_undotree)
 
-vim.keymap.set("n", "<M-u>", "<cmd>Undotree<cr>", { silent = true, noremap = true, desc = "Undotree: open" })
+vim.keymap.set("n", "<M-u>", function()
+    load_undotree()
+    require("undotree").open()
+end, { silent = true, noremap = true, desc = "Undotree: open" })
 
 vim.api.nvim_create_autocmd("FileType", {
     pattern = "nvim-undotree",
@@ -402,251 +402,10 @@ vim.api.nvim_create_autocmd("BufRead", {
 
 -- Tree-sitter
 local load_treesitter = load_once(function()
-    vim.pack.add({
-        { src = "https://github.com/nvim-treesitter/nvim-treesitter", version = "main" },
-    })
-
-    require("nvim-treesitter").setup({})
-    local ts = require("nvim-treesitter")
-
-    local installing = {}
-
-    local function parser_installed(lang)
-        local matches = vim.api.nvim_get_runtime_file("parser/" .. lang .. ".*", true)
-        return matches ~= nil and #matches > 0
-    end
-
-    vim.api.nvim_create_autocmd("FileType", {
-        pattern = "*",
-        callback = function(args)
-            if vim.bo[args.buf].buftype ~= "" or vim.b[args.buf].large_file then
-                return
-            end
-
-            local ft = vim.bo[args.buf].filetype
-            if ft == nil or ft == "" then
-                return
-            end
-
-            local ok_lang, lang = pcall(vim.treesitter.language.get_lang, ft)
-            if not ok_lang or not lang or lang == "" then
-                return
-            end
-
-            if not parser_installed(lang) then
-                if installing[lang] then
-                    return
-                end
-
-                installing[lang] = true
-                vim.schedule(function()
-                    pcall(ts.install, { lang })
-                    installing[lang] = nil
-
-                    if parser_installed(lang) then
-                        pcall(vim.treesitter.start, args.buf, lang)
-                    end
-                end)
-                return
-            end
-
-            pcall(vim.treesitter.start, args.buf, lang)
-        end,
-    })
+    vim.pack.add({ "https://github.com/romus204/tree-sitter-manager.nvim" })
+    require("tree-sitter-manager").setup({ auto_install = true })
 end)
 defer(load_treesitter)
-
-local ts_select
-local ts_move
-local ts_swap
-local repeat_move
-
-local load_treesitter_textobjects = load_once(function()
-    load_treesitter()
-    vim.pack.add({
-        { src = "https://github.com/nvim-treesitter/nvim-treesitter-textobjects" },
-    })
-
-    ts_select = require("nvim-treesitter-textobjects.select")
-    ts_move = require("nvim-treesitter-textobjects.move")
-    ts_swap = require("nvim-treesitter-textobjects.swap")
-    repeat_move = require("nvim-treesitter-textobjects.repeatable_move")
-
-    require("nvim-treesitter-textobjects").setup({
-        select = { enable = true, lookahead = true },
-        swap = { enable = true },
-        move = { enable = true, set_jumps = true },
-    })
-end)
-
-local function select(query, desc)
-    vim.keymap.set({ "x", "o" }, desc.lhs, function()
-        load_treesitter_textobjects()
-        ts_select.select_textobject(query, "textobjects")
-    end, { desc = desc.text })
-end
-
--- Select
-select("@assignment.outer", { lhs = "a=", text = "Textobjects: select outer part of assignment" })
-select("@assignment.inner", { lhs = "i=", text = "Textobjects: select inner part of assignment" })
-
-select("@parameter.outer", { lhs = "aa", text = "Textobjects: select outer part of parameter/argument" })
-select("@parameter.inner", { lhs = "ia", text = "Textobjects: select inner part of parameter/argument" })
-
-select("@conditional.outer", { lhs = "ai", text = "Textobjects: select outer part of conditional" })
-select("@conditional.inner", { lhs = "ii", text = "Textobjects: select inner part of conditional" })
-
-select("@loop.outer", { lhs = "al", text = "Textobjects: select outer part of loop" })
-select("@loop.inner", { lhs = "il", text = "Textobjects: select inner part of loop" })
-
-select("@call.outer", { lhs = "af", text = "Textobjects: select outer part of function call" })
-select("@call.inner", { lhs = "if", text = "Textobjects: select inner part of function call" })
-
-select("@function.outer", { lhs = "am", text = "Textobjects: select outer part of method/function definition" })
-select("@function.inner", { lhs = "im", text = "Textobjects: select inner part of method/function definition" })
-
-select("@class.outer", { lhs = "ac", text = "Textobjects: select outer part of class" })
-select("@class.inner", { lhs = "ic", text = "Textobjects: select inner part of class" })
-
--- Swap
-vim.keymap.set("n", "<leader>an", function()
-    load_treesitter_textobjects()
-    ts_swap.swap_next("@parameter.inner")
-end, { desc = "Textobjects: swap parameter with next" })
-
-vim.keymap.set("n", "<leader>ap", function()
-    load_treesitter_textobjects()
-    ts_swap.swap_previous("@parameter.inner")
-end, { desc = "Textobjects: swap parameter with previous" })
-
-vim.keymap.set("n", "<leader>fn", function()
-    load_treesitter_textobjects()
-    ts_swap.swap_next("@function.outer")
-end, { desc = "Textobjects: swap function with next" })
-
-vim.keymap.set("n", "<leader>fp", function()
-    load_treesitter_textobjects()
-    ts_swap.swap_previous("@function.outer")
-end, { desc = "Textobjects: swap function with previous" })
-
--- Move: next start
-vim.keymap.set("n", "]f", function()
-    load_treesitter_textobjects()
-    ts_move.goto_next_start("@call.outer")
-end, { desc = "Textobjects: Next function call start" })
-vim.keymap.set("n", "]m", function()
-    load_treesitter_textobjects()
-    ts_move.goto_next_start("@function.outer")
-end, { desc = "Textobjects: Next function start" })
-vim.keymap.set("n", "]c", function()
-    load_treesitter_textobjects()
-    ts_move.goto_next_start("@class.outer")
-end, { desc = "Textobjects: Next class start" })
-vim.keymap.set("n", "]i", function()
-    load_treesitter_textobjects()
-    ts_move.goto_next_start("@conditional.outer")
-end, { desc = "Textobjects: Next conditional start" })
-vim.keymap.set("n", "]l", function()
-    load_treesitter_textobjects()
-    ts_move.goto_next_start("@loop.outer")
-end, { desc = "Textobjects: Next loop start" })
-
--- Move: next end
-vim.keymap.set("n", "]F", function()
-    load_treesitter_textobjects()
-    ts_move.goto_next_end("@call.outer")
-end, { desc = "Textobjects: Next function call end" })
-vim.keymap.set("n", "]M", function()
-    load_treesitter_textobjects()
-    ts_move.goto_next_end("@function.outer")
-end, { desc = "Textobjects: Next function end" })
-vim.keymap.set("n", "]C", function()
-    load_treesitter_textobjects()
-    ts_move.goto_next_end("@class.outer")
-end, { desc = "Textobjects: Next class end" })
-vim.keymap.set("n", "]I", function()
-    load_treesitter_textobjects()
-    ts_move.goto_next_end("@conditional.outer")
-end, { desc = "Textobjects: Next conditional end" })
-vim.keymap.set("n", "]L", function()
-    load_treesitter_textobjects()
-    ts_move.goto_next_end("@loop.outer")
-end, { desc = "Textobjects: Next loop end" })
-
--- Move: previous start
-vim.keymap.set("n", "[f", function()
-    load_treesitter_textobjects()
-    ts_move.goto_previous_start("@call.outer")
-end, { desc = "Textobjects: Prev function call start" })
-vim.keymap.set("n", "[m", function()
-    load_treesitter_textobjects()
-    ts_move.goto_previous_start("@function.outer")
-end, { desc = "Textobjects: Prev function start" })
-vim.keymap.set("n", "[c", function()
-    load_treesitter_textobjects()
-    ts_move.goto_previous_start("@class.outer")
-end, { desc = "Textobjects: Prev class start" })
-vim.keymap.set("n", "[i", function()
-    load_treesitter_textobjects()
-    ts_move.goto_previous_start("@conditional.outer")
-end, { desc = "Textobjects: Prev conditional start" })
-vim.keymap.set("n", "[l", function()
-    load_treesitter_textobjects()
-    ts_move.goto_previous_start("@loop.outer")
-end, { desc = "Textobjects: Prev loop start" })
-
--- Move: previous end
-vim.keymap.set("n", "[F", function()
-    load_treesitter_textobjects()
-    ts_move.goto_previous_end("@call.outer")
-end, { desc = "Textobjects: Prev function call end" })
-vim.keymap.set("n", "[M", function()
-    load_treesitter_textobjects()
-    ts_move.goto_previous_end("@function.outer")
-end, { desc = "Textobjects: Prev function end" })
-vim.keymap.set("n", "[C", function()
-    load_treesitter_textobjects()
-    ts_move.goto_previous_end("@class.outer")
-end, { desc = "Textobjects: Prev class end" })
-vim.keymap.set("n", "[I", function()
-    load_treesitter_textobjects()
-    ts_move.goto_previous_end("@conditional.outer")
-end, { desc = "Textobjects: Prev conditional end" })
-vim.keymap.set("n", "[L", function()
-    load_treesitter_textobjects()
-    ts_move.goto_previous_end("@loop.outer")
-end, { desc = "Textobjects: Prev loop end" })
-
--- Repeat motions with ; and ,
-vim.keymap.set({ "n", "x", "o" }, ";", function()
-    load_treesitter_textobjects()
-    repeat_move.repeat_last_move_next()
-end, {
-    desc = "Textobjects: Repeat last Treesitter move forward",
-})
-vim.keymap.set({ "n", "x", "o" }, ",", function()
-    load_treesitter_textobjects()
-    repeat_move.repeat_last_move_previous()
-end, {
-    desc = "Textobjects: Repeat last Treesitter move backward",
-})
-
-vim.keymap.set({ "n", "x", "o" }, "f", function()
-    load_treesitter_textobjects()
-    return repeat_move.builtin_f_expr()
-end, { expr = true })
-vim.keymap.set({ "n", "x", "o" }, "F", function()
-    load_treesitter_textobjects()
-    return repeat_move.builtin_F_expr()
-end, { expr = true })
-vim.keymap.set({ "n", "x", "o" }, "t", function()
-    load_treesitter_textobjects()
-    return repeat_move.builtin_t_expr()
-end, { expr = true })
-vim.keymap.set({ "n", "x", "o" }, "T", function()
-    load_treesitter_textobjects()
-    return repeat_move.builtin_T_expr()
-end, { expr = true })
 
 -- Telescope
 local telescope
@@ -856,7 +615,7 @@ end, { desc = "Zenmode: open" })
 local sessionizer_path = "/home/nnofly/code/personal/sessionizer.nvim"
 
 local zenmode_state = false
-local statusline = vim.o.statusline
+-- local statusline = vim.o.statusline
 
 local load_sessionizer = load_once(function()
     load_zenmode()
@@ -891,22 +650,22 @@ local load_sessionizer = load_once(function()
         },
         after_load = {
             custom = function()
-                local session = require("sessionizer.api").get.current().name or ""
-                if session ~= "" then
-                    session = "[" .. session .. "] "
-                end
-                vim.o.statusline = session .. statusline
+                -- local session = require("sessionizer.api").get.current().name or ""
+                -- if session ~= "" then
+                --     session = "[" .. session .. "] "
+                -- end
+                -- vim.o.statusline = session .. statusline
 
                 if zenmode_state then
                     zenmode_api.open()
                 end
             end,
         },
-        on_unload = {
-            custom = function()
-                vim.o.statusline = statusline
-            end,
-        },
+        -- on_unload = {
+        --     custom = function()
+        --         vim.o.statusline = statusline
+        --     end,
+        -- },
     })
 
     if telescope then
@@ -977,42 +736,42 @@ local load_neotest = load_once(function()
     })
 end)
 
-vim.keymap.set("n", "tt", function()
+vim.keymap.set("n", "<M-t>t", function()
     load_neotest()
     nt.run.run()
 end, { silent = true, noremap = true, desc = "Test: run nearest" })
-vim.keymap.set("n", "tT", function()
+vim.keymap.set("n", "<M-t>T", function()
     load_neotest()
     nt.run.run(vim.fn.expand("%"))
 end, { silent = true, noremap = true, desc = "Test: run file" })
-vim.keymap.set("n", "ta", function()
+vim.keymap.set("n", "<M-t>a", function()
     load_neotest()
     nt.run.run((vim.uv or vim.loop).cwd())
 end, { silent = true, noremap = true, desc = "Test: run all (cwd)" })
 
-vim.keymap.set("n", "td", function()
+vim.keymap.set("n", "<M-t>d", function()
     load_neotest()
     nt.run.run({ strategy = "dap" })
 end, { silent = true, noremap = true, desc = "Test: debug nearest (DAP)" })
-vim.keymap.set("n", "tD", function()
+vim.keymap.set("n", "<M-t>D", function()
     load_neotest()
     nt.run.run({ vim.fn.expand("%"), strategy = "dap" })
 end, { silent = true, noremap = true, desc = "Test: debug file (DAP)" })
 
-vim.keymap.set("n", "ts", function()
+vim.keymap.set("n", "<M-t>s", function()
     load_neotest()
     nt.summary.toggle()
 end, { silent = true, noremap = true, desc = "Test: toggle summary" })
-vim.keymap.set("n", "to", function()
+vim.keymap.set("n", "<M-t>o", function()
     load_neotest()
     nt.output.open({ enter = true, auto_close = true })
 end, { silent = true, noremap = true, desc = "Test: open output" })
-vim.keymap.set("n", "tO", function()
+vim.keymap.set("n", "<M-t>O", function()
     load_neotest()
     nt.output_panel.toggle()
 end, { silent = true, noremap = true, desc = "Test: toggle output panel" })
 
-vim.keymap.set("n", "tS", function()
+vim.keymap.set("n", "<M-t>S", function()
     load_neotest()
     nt.run.stop()
 end, { silent = true, noremap = true, desc = "Test: stop" })
@@ -1118,15 +877,18 @@ local load_blink = load_once(function()
         },
     })
 end)
+
 vim.api.nvim_create_autocmd("InsertEnter", {
     group = vim.api.nvim_create_augroup("BlinkLazyLoad", { clear = true }),
     once = true,
-    callback = function()
-        vim.schedule(load_blink)
-    end,
+    callback = function() vim.schedule(load_blink) end,
 })
 
 -- AI
+vim.keymap.set("n", "<C-w>a", function()
+    vim.cmd("tab term gemini --yolo")
+end, { desc = "AI: open pi" })
+
 local load_supermaven = load_once(function()
     vim.pack.add({ "https://github.com/supermaven-inc/supermaven-nvim" })
     require("supermaven-nvim").setup({
@@ -1144,35 +906,6 @@ vim.keymap.set({ "n" }, "<M-a>c", function()
         print("Supermaven is disabled")
     end
 end, { desc = "AI: toggle Supermaven" })
-
-local load_sidekick = load_once(function()
-    vim.pack.add({ "https://github.com/folke/sidekick.nvim" })
-    require("sidekick").setup({
-        nes = { enabled = false },
-        cli = {
-            win = {
-                layout = "float",
-                keys = { buffers = { "<M-S-a>", "hide", mode = "nt", desc = "AI: hide the terminal window" } }
-            },
-            tools = { gemini = {} },
-        },
-    })
-end)
-
-vim.keymap.set({ "n", "t" }, "<M-S-a>", function()
-    load_sidekick()
-    require("sidekick.cli").toggle({ name = "gemini" })
-end, { desc = "AI: toggle Sidekick" })
-
-vim.keymap.set({ "n", "x" }, "<M-a>p", function()
-    load_sidekick()
-    require("sidekick.cli").prompt({ name = "gemini" })
-end, { desc = "AI: Sidekick prompt picker" })
-
-vim.keymap.set({ "n", "x" }, "<M-a>s", function()
-    load_sidekick()
-    require("sidekick.cli").send({ name = "gemini", msg = "{this}" })
-end, { desc = "AI: send current context to Sidekick" })
 
 local _99
 local load_99 = load_once(function()
@@ -1325,6 +1058,8 @@ local load_lsp = load_once(function()
         ensure_installed = lsp_servers,
     })
 
+    local capabilities = vim.lsp.protocol.make_client_capabilities()
+    vim.lsp.config("*", { capabilities = capabilities })
     vim.lsp.enable(lsp_servers)
 end)
 defer(load_lsp)
@@ -1341,6 +1076,7 @@ vim.keymap.set("n", "grd", function()
         vim.cmd("wincmd p")
     end, 200)
 end, { silent = true, desc = "LSP: workspace diagnostics" })
+
 vim.keymap.set("n", "grh", function()
     load_lsp()
     vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled())

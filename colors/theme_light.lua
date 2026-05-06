@@ -1,15 +1,17 @@
-require("theme.init").apply({
-    name = "threecolors_light",
+require("theme").apply({
+    name = "theme-light",
     background = "light",
     comment_italic = true,
     palette = {
         bg = "#faf7f0",
         fg = "#1f2430",
+
         comment = "#6f7683",
-        keyword = "#cf5044",
+        keyword = "#d89e9e",
         type = "#3f7ea6",
         string = "#4d7f57",
-        cursorline = "#f0ede5",
+        cursor = "#9b9b9b",
+        cursorline = "#e1dbcd",
 
         git_add = "#5f8f6b",
         git_add_bg = "#d9eadf",
