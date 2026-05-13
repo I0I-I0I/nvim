@@ -1,7 +1,22 @@
 vim.loader.enable()
 
 -- Settings
-vim.g.mapleader = " "
+local map_leader = "<M-g>"
+local function map(mode, key, cmd, opts)
+    if key:sub(1, #map_leader) == map_leader then
+        if type(cmd) == "string" then
+            cmd = "<C-\\><C-n>" .. cmd
+        elseif type(cmd) == "function" then
+            local cb = cmd
+            cmd = function()
+                vim.cmd.stopinsert()
+                cb()
+            end
+        end
+    end
+    vim.keymap.set(mode, key, cmd, opts)
+end
+
 vim.o.lazyredraw = true
 vim.o.swapfile = false
 vim.o.wildmode = "longest:list,full"
@@ -16,6 +31,7 @@ vim.o.expandtab = true
 vim.o.shiftwidth = 4
 vim.o.tabstop = 4
 vim.o.completeopt = "menu,menuone,noinsert,popup,fuzzy"
+vim.o.pumheight = 5
 vim.o.winborder = "single"
 vim.o.undofile = true
 vim.o.undolevels = 10000000
@@ -32,6 +48,23 @@ vim.o.spell = true
 vim.o.spelllang = "en,ru"
 vim.o.mousescroll = "ver:1,hor:1"
 vim.o.linebreak = true
+
+if os.getenv("WAYLAND_DISPLAY") == nil and os.getenv("XDG_SESSION_TYPE") == "wayland" then
+    vim.env.WAYLAND_DISPLAY = "wayland-0"
+end
+
+vim.g.clipboard = {
+    name = "wayland",
+    copy = {
+        ["+"] = "wl-copy",
+        ["*"] = "wl-copy",
+    },
+    paste = {
+        ["+"] = "wl-paste",
+        ["*"] = "wl-paste",
+    },
+    cache_enabled = 1,
+}
 
 vim.o.signcolumn = "yes:2"
 vim.o.foldcolumn = "1"
@@ -95,17 +128,17 @@ if vim.g.neovide then
 
     vim.o.mousescroll = "ver:4,hor:4"
 
-    vim.keymap.set({ "n", "v", "i" }, "<C-enter>", function()
+    map({ "n", "v", "i" }, "<C-enter>", function()
         is_transparent = not is_transparent
         local precent = is_transparent and 0.73 or 1
         vim.g.neovide_normal_opacity = precent
         vim.g.neovide_opacity = precent
     end, { desc = "Neovide: toggle fullscreen" })
-    vim.keymap.set("n", "<C-=>", function()
+    map("n", "<C-=>", function()
         vim.g.neovide_scale_factor = vim.g.neovide_scale_factor + 0.05
         vim.notify("Scale: " .. vim.g.neovide_scale_factor)
     end, { noremap = true, desc = "Neovide: increase scale" })
-    vim.keymap.set("n", "<C-->", function()
+    map("n", "<C-->", function()
         vim.g.neovide_scale_factor = vim.g.neovide_scale_factor - 0.05
         vim.notify("Scale: " .. vim.g.neovide_scale_factor)
     end, { noremap = true, desc = "Neovide: decrease scale" })
@@ -117,59 +150,57 @@ vim.cmd.cabbrev("Wa wa")
 vim.cmd.cabbrev("n norm")
 
 -- Keymaps
-vim.keymap.set({ "n", "x" }, "j", function()
+map({ "n", "x" }, "j", function()
     if vim.v.count == 0 then
         return "gj"
     else
         return "j"
     end
 end, { expr = true, remap = true, silent = true, desc = "Move down by display line" })
-vim.keymap.set({ "n", "x" }, "k", function()
+map({ "n", "x" }, "k", function()
     if vim.v.count == 0 then
         return "gk"
     else
         return "k"
     end
 end, { expr = true, remap = true, silent = true, desc = "Move up by display line" })
-vim.keymap.set("n", "J", "mzJ`z", { silent = true, noremap = true, desc = "Join line and keep cursor" })
-vim.keymap.set("n", "n", "nzzzv", { desc = "Next search result centered" })
-vim.keymap.set("n", "N", "Nzzzv", { desc = "Previous search result centered" })
-vim.keymap.set("v", "<M-k>", ":m '<-2<CR>gv=gv", { silent = true, noremap = true, desc = "Move selection up" })
-vim.keymap.set("v", "<M-j>", ":m '>+1<CR>gv=gv", { silent = true, noremap = true, desc = "Move selection down" })
-vim.keymap.set("n", "<M-k>", "<cmd>m -2<cr>", { silent = true, noremap = true, desc = "Move selection up" })
-vim.keymap.set("n", "<M-j>", "<cmd>m +1<cr>", { silent = true, noremap = true, desc = "Move selection down" })
+map("n", "J", "mzJ`z", { silent = true, noremap = true, desc = "Join line and keep cursor" })
+map("n", "n", "nzzzv", { desc = "Next search result centered" })
+map("n", "N", "Nzzzv", { desc = "Previous search result centered" })
+map("v", "K", ":m '<-2<CR>gv=gv", { silent = true, noremap = true, desc = "Move selection up" })
+map("v", "J", ":m '>+1<CR>gv=gv", { silent = true, noremap = true, desc = "Move selection down" })
 
-vim.keymap.set({ "i", "c" }, "<M-h>", "<left>", { noremap = true })
-vim.keymap.set({ "i", "c" }, "<M-l>", "<right>", { noremap = true })
-vim.keymap.set({ "i", "c" }, "", "<cmd>undo<cr>", { noremap = true })
+map({ "i", "c" }, "<M-h>", "<left>", { noremap = true })
+map({ "i", "c" }, "<M-l>", "<right>", { noremap = true })
+map("i", "", "<cmd>undo<cr>", { noremap = true })
 
-vim.keymap.set("v", "<M-y>", function()
+map("v", "<M-y>", function()
     vim.cmd([[norm! "+y]])
 end, { silent = true, desc = "Copy" })
-vim.keymap.set({ "n" }, "<M-y>", "\"+y", { silent = true, desc = "Copy" })
-vim.keymap.set({ "n", "i", "v", "c", "t" }, "<M-p>", function()
+map({ "n" }, "<M-y>", "\"+y", { silent = true, desc = "Copy" })
+map({ "n", "i", "v", "c", "t" }, "<M-p>", function()
     vim.api.nvim_paste(vim.fn.getreg("+"), true, -1)
 end, { silent = true, desc = "Paste" })
 
-vim.keymap.set({ "n", "i" }, "<M-y><M-p>", "<cmd>let @+=expand('%:p')<cr>",
+map({ "n", "i" }, "<M-y><M-p>", "<cmd>let @+=expand('%:p')<cr>",
     { silent = true, noremap = true, desc = "Copy absolute path" })
-vim.keymap.set({ "n", "i" }, "<M-y><M-P>", "<cmd>let @+=expand('%:p') . ':' . line('.')<cr>",
+map({ "n", "i" }, "<M-y><M-P>", "<cmd>let @+=expand('%:p') . ':' . line('.')<cr>",
     { silent = true, noremap = true, desc = "Copy absolute path with line" })
-vim.keymap.set({ "n", "i" }, "<M-y><M-f>", "<cmd>let @+=expand('%:.')<cr>",
+map({ "n", "i" }, "<M-y><M-f>", "<cmd>let @+=expand('%:.')<cr>",
     { silent = true, noremap = true, desc = "Copy relative path" })
-vim.keymap.set({ "n", "i" }, "<M-y><M-F>", "<cmd>let @+=expand('%:.') . ':' . line('.')<cr>",
+map({ "n", "i" }, "<M-y><M-F>", "<cmd>let @+=expand('%:.') . ':' . line('.')<cr>",
     { silent = true, noremap = true, desc = "Copy relative path with line" })
 
-vim.keymap.set({ "i", "c" }, "<C-r><C-d>", function()
+map({ "i", "c" }, "<C-r><C-d>", function()
     return os.date("%F")
 end, { expr = true, noremap = true, desc = "Insert date" })
-vim.keymap.set({ "i", "c" }, "<C-r><C-t>", function()
+map({ "i", "c" }, "<C-r><C-t>", function()
     return os.date("%T")
 end, { expr = true, noremap = true, desc = "Insert time" })
-vim.keymap.set({ "i", "c" }, "<C-r><C-f>", function()
+map({ "i", "c" }, "<C-r><C-f>", function()
     return vim.fn.expand("%:.")
 end, { expr = true, noremap = true, desc = "Insert relative path" })
-vim.keymap.set({ "i", "c" }, "<C-r><C-p>", function()
+map({ "i", "c" }, "<C-r><C-p>", function()
     return vim.fn.expand("%:p")
 end, { expr = true, noremap = true, desc = "Insert absolute path" })
 
@@ -189,57 +220,135 @@ local function close_all_but(force)
     end
 end
 
-vim.keymap.set("n", "<leader>gw", close_all_but(), { silent = true, noremap = true, desc = "Close all buffers" })
-vim.keymap.set("n", "<leader>gW", close_all_but(true),
+map({ "n", "t" }, map_leader .. "gw", close_all_but(),
+    { silent = true, noremap = true, desc = "Close all buffers" })
+map({ "n", "t" }, map_leader .. "gW", close_all_but(true),
     { silent = true, noremap = true, desc = "Force close all buffers" })
-vim.keymap.set("n", "gw", "<cmd>bp|bd #<cr>", { silent = true, noremap = true, desc = "Close current buffer" })
-vim.keymap.set("n", "gW", "<cmd>bp|bd! #<cr>", { silent = true, noremap = true, desc = "Force close current buffer" })
+map("n", "gw", "<cmd>bp|bd #<cr>", { silent = true, noremap = true, desc = "Close current buffer" })
+map("n", "gW", "<cmd>bp|bd! #<cr>", { silent = true, noremap = true, desc = "Force close current buffer" })
 
-vim.keymap.set("n", "\\", "za", { desc = "Toggle fold" })
-vim.keymap.set("n", "<M-\\>", "zA", { desc = "Toggle fold recursively" })
-vim.keymap.set("n", "<backspace>", "zc", { desc = "Close fold" })
-vim.keymap.set("n", "<leader>c", "<cmd>tcd %:p:h<cr>", { desc = "Set cwd to current file directory" })
-vim.keymap.set({ "n", "i" }, "<C-f>", "<C-\\><C-n>:e <C-r>=expand('%:p:h')<cr>/<C-d>",
+map("n", "<space>", "za", { desc = "Toggle fold" })
+map("n", "<C-space>", "zA", { desc = "Toggle fold recursively" })
+map("n", "<backspace>", "zc", { desc = "Close fold" })
+map({ "n", "t" }, map_leader .. "c", "<cmd>tcd %:p:h<cr>", { desc = "Set cwd to current file directory" })
+map({ "n", "i" }, "<C-f>", "<C-\\><C-n>:e <C-r>=expand('%:p:h')<cr>/<C-d>",
     { noremap = true, desc = "Edit file from current file directory" })
-vim.keymap.set({ "n", "i", "t" }, "<C-\\><C-f>", "<C-\\><C-n>:e <C-r>=getcwd()<cr>/<C-d>",
+map({ "n", "i", "t" }, "<C-\\><C-f>", "<C-\\><C-n>:e <C-r>=getcwd()<cr>/<C-d>",
     { noremap = true, desc = "Edit file from cwd" })
-vim.keymap.set({ "n", "v" }, "<C-e>", "4<C-e>", { silent = true, noremap = true, desc = "Scroll down 4 lines" })
-vim.keymap.set({ "n", "v" }, "<C-y>", "4<C-y>", { silent = true, noremap = true, desc = "Scroll up 4 lines" })
-vim.keymap.set("n", "<M-K>", "<cmd>cprev<CR>zz", { silent = true, noremap = true, desc = "Previous quickfix item" })
-vim.keymap.set("n", "<M-J>", "<cmd>cnext<CR>zz", { silent = true, noremap = true, desc = "Next quickfix item" })
-vim.keymap.set({ "n", "t", "i" }, "<M-i>", "<cmd>tabprevious<cr>",
+map({ "n", "v" }, "<C-e>", "4<C-e>", { silent = true, noremap = true, desc = "Scroll down 4 lines" })
+map({ "n", "v" }, "<C-y>", "4<C-y>", { silent = true, noremap = true, desc = "Scroll up 4 lines" })
+map("n", "<M-K>", "<cmd>cprev<CR>zz", { silent = true, noremap = true, desc = "Previous quickfix item" })
+map("n", "<M-J>", "<cmd>cnext<CR>zz", { silent = true, noremap = true, desc = "Next quickfix item" })
+map({ "n", "t", "i" }, "<M-i>", "<cmd>tabprevious<cr>",
     { silent = true, noremap = true, desc = "Previous tab" })
-vim.keymap.set({ "n", "t", "i" }, "<M-o>", "<cmd>tabnext<cr>", { silent = true, noremap = true, desc = "Next tab" })
-vim.keymap.set({ "n", "t", "i" }, "<M-S-o>", "<cmd>tabmove +<cr>",
+map({ "n", "t", "i" }, "<M-o>", "<cmd>tabnext<cr>", { silent = true, noremap = true, desc = "Next tab" })
+map({ "n", "t", "i" }, "<M-S-o>", "<cmd>tabmove +<cr>",
     { silent = true, noremap = true, desc = "Move tab right" })
-vim.keymap.set({ "n", "t", "i" }, "<M-S-i>", "<cmd>tabmove -<cr>",
+map({ "n", "t", "i" }, "<M-S-i>", "<cmd>tabmove -<cr>",
     { silent = true, noremap = true, desc = "Move tab left" })
-vim.keymap.set("n", "<C-w>t", "<cmd>tab term<cr>", { silent = true, noremap = true, desc = "Open terminal tab" })
-vim.keymap.set("n", "<C-w>V", "<cmd>vertical term<cr>",
+
+map("t", "<C-[><C-w>", "<C-\\><C-n><C-w>", { silent = true, noremap = true, desc = "Exit terminal mode" })
+map("t", "<C-[><C-r>", function()
+    return "<C-\\><C-n>\"" .. vim.fn.nr2char(vim.fn.getchar()) .. "pi"
+end, { expr = true })
+map("n", "<C-w>t", "<cmd>tab term<cr>", { silent = true, noremap = true, desc = "Open terminal tab" })
+map("n", "<C-w>V", "<cmd>vertical term<cr>",
     { silent = true, noremap = true, desc = "Open terminal vertically" })
-vim.keymap.set("n", "<C-w>S", "<cmd>split term://$SHELL<cr>",
+map("n", "<C-w>S", "<cmd>split term://$SHELL<cr>",
     { silent = true, noremap = true, desc = "Open terminal horizontally" })
-vim.keymap.set("n", "<C-w>+", "<cmd>vertical resize 999<cr><cmd>resize 999<cr>",
+map("n", "<C-w>+", "<cmd>vertical resize 999<cr><cmd>resize 999<cr>",
     { silent = true, noremap = true, desc = "Miximize current window" })
-vim.keymap.set("t", "<C-[><C-]>", "<C-\\><C-n>", { silent = true, noremap = true, desc = "Exit terminal mode" })
-vim.keymap.set({ "n", "i", "v" }, "<C-[>", "<cmd>noh<cr><C-[>", { silent = true, noremap = true, desc = "Open link" })
-vim.keymap.set({ "n", "i" }, "<C-l>", "<cmd>t.<cr>", { silent = true, noremap = true, desc = "Duplicate current line" })
-vim.keymap.set("x", "<C-l>", ":t'><cr>gv", { silent = true, noremap = true, desc = "Duplicate selection" })
+map("t", "<M-[>", "<C-\\><C-n>", { silent = true, noremap = true, desc = "Exit terminal mode" })
+map({ "n", "i", "v" }, "<C-[>", "<cmd>noh<cr><C-[>", { silent = true, noremap = true, desc = "Open link" })
+map({ "n", "i" }, "<C-l>", "<cmd>t.<cr>", { silent = true, noremap = true, desc = "Duplicate current line" })
+map("x", "<C-l>", ":t'><cr>gv", { silent = true, noremap = true, desc = "Duplicate selection" })
 
 -- Auto commands
-vim.cmd([[
-    autocmd BufWritePre * %s/\s\+$//e
-    autocmd TextYankPost * silent! lua vim.hl.on_yank({higroup="IncSearch", timeout=150})
-    autocmd FileType netrw setlocal bufhidden=wipe
-    autocmd FileType fyler setlocal nospell
-    autocmd TermOpen * setlocal nospell | set ft=shell | startinsert
-    autocmd BufEnter term://* startinsert
-    autocmd FocusGained,BufEnter,CursorHold,CursorHoldI * checktime
-    autocmd BufReadPost *
-        \ if line("'\"") > 1 && line("'\"") <= line("$") |
-        \   silent! normal! g`"zz |
-        \ endif
-    autocmd BufWritePre * call mkdir(expand("<afile>:p:h"), "p") ]])
+local main_group = vim.api.nvim_create_augroup("MainGroup", { clear = true })
+
+vim.api.nvim_create_autocmd("BufWritePre", {
+    group = main_group,
+    callback = function()
+        local save_cursor = vim.fn.getpos(".")
+        vim.cmd([[keeppatterns %s/\s\+$//e]])
+        vim.fn.setpos(".", save_cursor)
+    end,
+})
+
+vim.api.nvim_create_autocmd("TextYankPost", {
+    group = main_group,
+    callback = function()
+        vim.hl.on_yank({ higroup = "IncSearch", timeout = 150 })
+    end,
+})
+
+vim.api.nvim_create_autocmd("FileType", {
+    group = main_group,
+    pattern = "netrw",
+    callback = function()
+        vim.opt_local.bufhidden = "wipe"
+    end,
+})
+
+vim.api.nvim_create_autocmd("FileType", {
+    group = main_group,
+    pattern = "fyler",
+    callback = function()
+        vim.opt_local.spell = false
+    end,
+})
+
+vim.api.nvim_create_autocmd("TermOpen", {
+    group = main_group,
+    callback = function()
+        vim.opt_local.spell = false
+        vim.bo.filetype = "shell"
+    end,
+})
+
+vim.api.nvim_create_autocmd("BufEnter", {
+    group = main_group,
+    pattern = "term://*",
+    callback = function(args)
+        vim.schedule(function()
+            if vim.api.nvim_get_current_buf() == args.buf and vim.bo.buftype == "terminal" then
+                vim.cmd.startinsert()
+            end
+        end)
+    end,
+})
+
+vim.api.nvim_create_autocmd({ "FocusGained", "BufEnter", "CursorHold", "CursorHoldI" }, {
+    group = main_group,
+    callback = function()
+        if vim.api.nvim_get_mode().mode ~= "c" then
+            vim.cmd.checktime()
+        end
+    end,
+})
+
+vim.api.nvim_create_autocmd("BufReadPost", {
+    group = main_group,
+    callback = function()
+        local mark = vim.api.nvim_buf_get_mark(0, '"')
+        local lcount = vim.api.nvim_buf_line_count(0)
+        if mark[1] > 0 and mark[1] <= lcount then
+            pcall(vim.api.nvim_win_set_cursor, 0, mark)
+            vim.cmd("normal! zz")
+        end
+    end,
+})
+
+vim.api.nvim_create_autocmd("BufWritePre", {
+    group = main_group,
+    callback = function(event)
+        if event.match:match("^%w%w+:[\\/][\\/]") then
+            return
+        end
+        local file = vim.uv.fs_realpath(event.match) or event.match
+        vim.fn.mkdir(vim.fn.fnamemodify(file, ":p:h"), "p")
+    end,
+})
 
 vim.api.nvim_create_autocmd({ "TermRequest" }, {
     desc = "Handles OSC 7 dir change requests",
@@ -260,7 +369,24 @@ vim.api.nvim_create_autocmd({ "TermRequest" }, {
 })
 
 -- Plugins
-vim.pack.add({ "https://github.com/nvim-lua/plenary.nvim" })
+local load_store = load_once(function()
+    vim.pack.add({ "https://github.com/alex-popov-tech/store.nvim" })
+    require("store").setup({
+        layout = "tab",
+        plugin_manager = "vim.pack",
+        telemetry = false,
+    })
+end)
+
+map({ "n", "t" }, map_leader .. "S", function()
+    load_store()
+    require("store").open()
+end, { desc = "Store: open" })
+
+local load_plenary = load_once(function()
+    vim.pack.add({ "https://github.com/nvim-lua/plenary.nvim" })
+end)
+defer(load_plenary)
 
 -- Undotree
 
@@ -268,7 +394,7 @@ local load_undotree = load_once(function()
     vim.cmd.packadd("nvim.undotree")
 end)
 
-vim.keymap.set("n", "<M-u>", function()
+map("n", map_leader .. "u", function()
     load_undotree()
     require("undotree").open()
 end, { silent = true, noremap = true, desc = "Undotree: open" })
@@ -276,7 +402,7 @@ end, { silent = true, noremap = true, desc = "Undotree: open" })
 vim.api.nvim_create_autocmd("FileType", {
     pattern = "nvim-undotree",
     callback = function()
-        vim.keymap.set("n", "q", "<cmd>close<cr>", { buffer = true, desc = "Undotree: close" })
+        map("n", "q", "<cmd>close<cr>", { buffer = true, desc = "Undotree: close" })
         vim.opt_local.rnu = false
         vim.opt_local.nu = false
         vim.opt_local.signcolumn = "no"
@@ -303,7 +429,8 @@ local load_img_clip = load_once(function()
     vim.pack.add({ "https://github.com/HakonHarnes/img-clip.nvim" })
     require("img-clip").setup({})
 end)
-vim.keymap.set({ "n", "i" }, "<M-S-p>", function()
+
+map({ "n", "i" }, "<M-S-p>", function()
     load_img_clip()
     vim.cmd("PasteImage")
 end, { noremap = true, silent = true, desc = "Img-clip: paste image from clipboard" })
@@ -360,17 +487,6 @@ vim.api.nvim_create_autocmd("BufEnter", {
     end,
 })
 
-vim.api.nvim_create_autocmd("FileType", {
-    pattern = { "markdown", "markdown_inline" },
-    callback = function()
-        load_markdown()
-        vim.keymap.set("n", "<cr>", function()
-            load_markdown()
-            vim.cmd("Markview")
-        end, { buffer = true, noremap = true, silent = true, desc = "Markview: toggle" })
-    end,
-})
-
 -- Folds
 local load_origami = load_once(function()
     vim.pack.add({ "https://github.com/chrisgrieser/nvim-origami" })
@@ -383,19 +499,26 @@ local load_origami = load_once(function()
     vim.o.foldtext = ""
 end)
 
-vim.api.nvim_create_autocmd("BufRead", {
+vim.api.nvim_create_autocmd("FileType", {
     callback = function()
-        if is_markdown(vim.bo.filetype) then
-            load_markdown()
-            vim.cmd([[ setlocal foldexpr=NestedMarkdownFolds() ]])
-            vim.opt_local.foldlevel = 0
-            vim.opt_local.foldlevelstart = 0
-            vim.opt_local.foldnestmax = 9
-        else
+        if not is_markdown(vim.bo.filetype) then
             load_origami()
             vim.opt_local.foldlevel = 99
             vim.opt_local.foldlevelstart = 99
             vim.opt_local.foldnestmax = 2
+        else
+            load_markdown()
+
+            vim.cmd([[ setlocal foldexpr=NestedMarkdownFolds() ]])
+            vim.opt_local.foldlevel = 0
+            vim.opt_local.foldlevelstart = 0
+            vim.opt_local.foldnestmax = 9
+            vim.opt_local.wrap = false
+
+            map("n", "<cr>", function()
+                load_markdown()
+                vim.cmd("Markview")
+            end, { buffer = true, noremap = true, silent = true, desc = "Markview: toggle" })
         end
     end,
 })
@@ -403,7 +526,10 @@ vim.api.nvim_create_autocmd("BufRead", {
 -- Tree-sitter
 local load_treesitter = load_once(function()
     vim.pack.add({ "https://github.com/romus204/tree-sitter-manager.nvim" })
-    require("tree-sitter-manager").setup({ auto_install = true })
+    require("tree-sitter-manager").setup({
+        auto_install = true,
+        ensure_installed = { "markdown", "markdown_inline", "latex" }
+    })
 end)
 defer(load_treesitter)
 
@@ -465,78 +591,107 @@ local function T(picker, opts)
     end
 end
 
-vim.keymap.set({ "n", "i" }, "<M-f><M-g>", T("live_grep"), { desc = "Telescope: live grep" })
-vim.keymap.set({ "n", "i" }, "<M-f><M-b>", T("buffers", { previewer = false }), { desc = "Telescope: buffers" })
-vim.keymap.set({ "n", "i" }, "<M-f><M-h>", T("help_tags"), { desc = "Telescope: help tags" })
-vim.keymap.set({ "n", "i" }, "<M-f><M-m>", T("man_pages"), { desc = "Telescope: man pages" })
-vim.keymap.set({ "n", "i" }, "<M-f><M-f>", T("fd"), { desc = "Telescope: find files" })
-vim.keymap.set("n", "grs", T("lsp_workspace_symbols"), { desc = "Telescope: lsp symbols" })
-vim.keymap.set("n", "grr", T("lsp_references"), { desc = "Telescope: lsp references" })
-vim.keymap.set("n", "<C-]>", T("lsp_definitions"), { desc = "Telescope: lsp definitions" })
-vim.keymap.set("n", "z=", function()
+map({ "n" }, "tp", T("fd"), { desc = "Telescope: project files" })
+map({ "n" }, "tg", T("live_grep"), { desc = "Telescope: live grep" })
+map({ "n" }, "tb", T("buffers", { previewer = false }), { desc = "Telescope: buffers" })
+map({ "n" }, "th", T("help_tags"), { desc = "Telescope: help tags" })
+map({ "n" }, "tm", T("man_pages"), { desc = "Telescope: man pages" })
+map("n", "grs", T("lsp_workspace_symbols"), { desc = "Telescope: lsp symbols" })
+map("n", "grr", T("lsp_references"), { desc = "Telescope: lsp references" })
+map("n", "<C-]>", T("lsp_definitions"), { desc = "Telescope: lsp definitions" })
+map("n", "z=", function()
     load_telescope()
     builtin.spell_suggest(themes.get_cursor({ border = true }))
 end, { desc = "Telescope: spell suggest" })
 
-
 -- Git integration
+local load_codediff = load_once(function()
+    vim.pack.add({ "https://github.com/esmuellert/codediff.nvim" })
+    require("codediff").setup({
+        diff = {
+            compute_moves = true,
+            jump_to_first_change = false
+        },
+        explorer = {
+            initial_focus = "modified",
+            view_mode = "tree"
+        }
+    })
+end)
+load_codediff()
+
 local gitsigns
 
 local load_git = load_once(function()
     vim.pack.add({
         "https://github.com/MunifTanjim/nui.nvim",
         "https://github.com/NeogitOrg/neogit",
-        "https://github.com/esmuellert/codediff.nvim",
         "https://github.com/lewis6991/gitsigns.nvim",
     })
 
-    require("neogit").setup({})
+    require("neogit").setup({
+        graph_style = "kitty",
+        process_spinner = true,
+        kind = "split_above",
+    })
     gitsigns = require("gitsigns")
     gitsigns.setup({ sign_priority = 100 })
 end)
 defer(load_git)
 
-vim.keymap.set({ "n", "t" }, "<M-g><M-g>", function()
+map({ "n", "t" }, map_leader .. "gg", function()
     load_git()
     vim.cmd("Neogit")
 end, { desc = "Git: open Neogit" })
-vim.keymap.set("n", "]c", function()
+map("n", "]c", function()
     load_git()
     gitsigns.next_hunk()
 end, { desc = "Git: next hunk" })
-vim.keymap.set("n", "[c", function()
+map("n", "[c", function()
     load_git()
     gitsigns.prev_hunk()
 end, { desc = "Git: previous hunk" })
-vim.keymap.set({ "n", "t" }, "<M-g>p", function()
+map({ "n", "t" }, map_leader .. "gp", function()
     load_git()
     gitsigns.preview_hunk()
 end, { desc = "Git: preview hunk" })
-vim.keymap.set({ "n", "t" }, "<M-g>Q", function()
+map({ "n", "t" }, map_leader .. "gQ", function()
     load_git()
     gitsigns.setqflist("all")
 end, { desc = "Git: quickfix all hunks" })
-vim.keymap.set({ "n", "t" }, "<M-g>q", function()
+map({ "n", "t" }, map_leader .. "gq", function()
     load_git()
     gitsigns.setqflist()
 end, { desc = "Git: quickfix buffer hunks" })
-vim.keymap.set({ "n", "t" }, "<M-g>r", function()
+map({ "n", "t" }, map_leader .. "gr", function()
     load_git()
     gitsigns.reset_hunk()
 end, { desc = "Git: reset hunk" })
-vim.keymap.set({ "n", "t" }, "<M-g>b", function()
+map("n", map_leader .. "gS", function()
+    load_git()
+    vim.cmd("Gitsigns stage_buffer")
+end, { desc = "Git: stage current file" })
+map("n", map_leader .. "gs", function()
+    load_git()
+    vim.cmd("Gitsigns stage_hunk")
+end, { desc = "Git: stage current hunk" })
+map("n", map_leader .. "gU", function()
+    load_git()
+    vim.cmd("Gitsigns reset_buffer_index")
+end, { desc = "Git: unstage current file" })
+map("n", map_leader .. "gu", function()
+    load_git()
+    vim.cmd("Gitsigns undo_stage_hunk")
+end, { desc = "Git: unstage current hunk" })
+map({ "n", "t" }, map_leader .. "gb", function()
     load_git()
     gitsigns.blame()
 end, { desc = "Git: blame current line" })
-vim.keymap.set({ "n", "t" }, "<M-g>D", function()
+map({ "n", "t" }, map_leader .. "gd", function()
     load_git()
     vim.cmd("CodeDiff")
 end, { desc = "Git: explorer (git status)" })
-vim.keymap.set({ "n", "t" }, "<M-g>d", function()
-    load_git()
-    vim.cmd("CodeDiff file HEAD")
-end, { desc = "Git: current file vs HEAD" })
-vim.keymap.set({ "n", "t" }, "<M-g>h", function()
+map({ "n", "t" }, map_leader .. "gh", function()
     load_git()
     vim.cmd("CodeDiff history")
 end, { desc = "Git: history" })
@@ -550,16 +705,14 @@ local load_fyler = load_once(function()
                 confirm_simple = true,
                 default_explorer = true,
                 mappings = { ["<tab>"] = "Select" },
-                watcher = { enabled = false },
-                win = { kind = "float" }
+                watcher = { enabled = true },
+                win = { kind = "replace" }
             }
         },
         integrations = { icon = "none" }
     })
 
-    vim.keymap.set("n", "-", function()
-        vim.cmd("Fyler")
-    end, { desc = "Fyler: open" })
+    map("n", "-", vim.cmd.Fyler, { desc = "Fyler: open" })
 end)
 load_fyler()
 
@@ -567,6 +720,18 @@ vim.api.nvim_create_autocmd("FileType", {
     pattern = { "fyler", "Fyler" },
     callback = function()
         vim.wo.cursorline = true
+    end,
+})
+
+local load_lsp_file_operations = load_once(function()
+    vim.pack.add({ "https://github.com/antosha417/nvim-lsp-file-operations" })
+    require("lsp-file-operations").setup()
+end)
+
+vim.api.nvim_create_autocmd("LspAttach", {
+    group = vim.api.nvim_create_augroup("LspFileOperations", { clear = true }),
+    callback = function()
+        defer(load_lsp_file_operations)
     end,
 })
 
@@ -606,7 +771,7 @@ vim.api.nvim_create_autocmd("VimLeavePre", {
     end,
 })
 
-vim.keymap.set("n", "<M-z>", function()
+map({ "n", "t" }, map_leader .. "z", function()
     load_zenmode()
     zenmode_api.toggle()
 end, { desc = "Zenmode: open" })
@@ -615,7 +780,6 @@ end, { desc = "Zenmode: open" })
 local sessionizer_path = "/home/nnofly/code/personal/sessionizer.nvim"
 
 local zenmode_state = false
--- local statusline = vim.o.statusline
 
 local load_sessionizer = load_once(function()
     load_zenmode()
@@ -650,39 +814,28 @@ local load_sessionizer = load_once(function()
         },
         after_load = {
             custom = function()
-                -- local session = require("sessionizer.api").get.current().name or ""
-                -- if session ~= "" then
-                --     session = "[" .. session .. "] "
-                -- end
-                -- vim.o.statusline = session .. statusline
-
                 if zenmode_state then
                     zenmode_api.open()
                 end
             end,
         },
-        -- on_unload = {
-        --     custom = function()
-        --         vim.o.statusline = statusline
-        --     end,
-        -- },
     })
 
     if telescope then
         pcall(telescope.load_extension, "sessionizer")
     end
 
-    vim.keymap.set("n", "<M-f><M-s>", function()
+    map("n", "ts", function()
         load_telescope()
         vim.cmd("Sess list")
     end, { noremap = true, desc = "Telescope: sessions" })
-    vim.keymap.set({ "n", "t" }, "<M-s>s", function()
+    map({ "n", "t" }, map_leader .. "ss", function()
         vim.cmd("Sess save")
     end, { noremap = true, desc = "Sess: save" })
-    vim.keymap.set({ "n", "t" }, "<M-s>l", function()
+    map({ "n", "t" }, map_leader .. "sl", function()
         vim.cmd("Sess last")
     end, { noremap = true, desc = "Sess: load last" })
-    vim.keymap.set({ "n", "t" }, "<M-s>p", function()
+    map({ "n", "t" }, map_leader .. "sp", function()
         vim.cmd("Sess pin")
     end, { noremap = true, desc = "Sess: pin current" })
 end)
@@ -736,50 +889,50 @@ local load_neotest = load_once(function()
     })
 end)
 
-vim.keymap.set("n", "<M-t>t", function()
+map("n", map_leader .. "tt", function()
     load_neotest()
     nt.run.run()
 end, { silent = true, noremap = true, desc = "Test: run nearest" })
-vim.keymap.set("n", "<M-t>T", function()
+map("n", map_leader .. "tT", function()
     load_neotest()
     nt.run.run(vim.fn.expand("%"))
 end, { silent = true, noremap = true, desc = "Test: run file" })
-vim.keymap.set("n", "<M-t>a", function()
+map("n", map_leader .. "ta", function()
     load_neotest()
     nt.run.run((vim.uv or vim.loop).cwd())
 end, { silent = true, noremap = true, desc = "Test: run all (cwd)" })
 
-vim.keymap.set("n", "<M-t>d", function()
+map("n", map_leader .. "td", function()
     load_neotest()
     nt.run.run({ strategy = "dap" })
 end, { silent = true, noremap = true, desc = "Test: debug nearest (DAP)" })
-vim.keymap.set("n", "<M-t>D", function()
+map("n", map_leader .. "tD", function()
     load_neotest()
     nt.run.run({ vim.fn.expand("%"), strategy = "dap" })
 end, { silent = true, noremap = true, desc = "Test: debug file (DAP)" })
 
-vim.keymap.set("n", "<M-t>s", function()
+map("n", map_leader .. "ts", function()
     load_neotest()
     nt.summary.toggle()
 end, { silent = true, noremap = true, desc = "Test: toggle summary" })
-vim.keymap.set("n", "<M-t>o", function()
+map("n", map_leader .. "to", function()
     load_neotest()
     nt.output.open({ enter = true, auto_close = true })
 end, { silent = true, noremap = true, desc = "Test: open output" })
-vim.keymap.set("n", "<M-t>O", function()
+map("n", map_leader .. "tO", function()
     load_neotest()
     nt.output_panel.toggle()
 end, { silent = true, noremap = true, desc = "Test: toggle output panel" })
 
-vim.keymap.set("n", "<M-t>S", function()
+map("n", map_leader .. "tS", function()
     load_neotest()
     nt.run.stop()
 end, { silent = true, noremap = true, desc = "Test: stop" })
-vim.keymap.set("n", "]t", function()
+map("n", "]t", function()
     load_neotest()
     nt.jump.next({ status = "failed" })
 end, { silent = true, noremap = true, desc = "Test: next failed" })
-vim.keymap.set("n", "[t", function()
+map("n", "[t", function()
     load_neotest()
     nt.jump.prev({ status = "failed" })
 end, { silent = true, noremap = true, desc = "Test: prev failed" })
@@ -787,7 +940,7 @@ end, { silent = true, noremap = true, desc = "Test: prev failed" })
 vim.api.nvim_create_autocmd("FileType", {
     pattern = { "neotest-summary", "neotest-output", "neotest-output-panel" },
     callback = function()
-        vim.keymap.set("n", "q", "<cmd>close<cr>",
+        map("n", "q", "<cmd>close<cr>",
             { buffer = true, desc = "Test: close output panel" })
     end
 })
@@ -797,13 +950,7 @@ local load_fidget = load_once(function()
     vim.pack.add({ "https://github.com/j-hui/fidget.nvim" })
     require("fidget").setup({})
 end)
-vim.api.nvim_create_autocmd("LspAttach", {
-    group = vim.api.nvim_create_augroup("FidgetLazyLoad", { clear = true }),
-    once = true,
-    callback = function()
-        vim.schedule(load_fidget)
-    end,
-})
+defer(load_fidget)
 
 -- DB
 local load_dadbod = load_once(function()
@@ -818,7 +965,7 @@ vim.api.nvim_create_autocmd("FileType", {
     callback = load_dadbod,
 })
 
-vim.keymap.set({ "n", "t" }, "<M-D>", function()
+map({ "n", "t" }, map_leader .. "D", function()
     load_dadbod()
     vim.cmd("tabnew")
     vim.cmd("DBUIToggle")
@@ -830,21 +977,31 @@ local load_grapple = load_once(function()
     require("grapple").setup({ icons = false })
 end)
 
-vim.keymap.set("n", "<M-0>", function()
+map("n", "\\a", function()
     load_grapple()
     vim.cmd("Grapple toggle scope=cwd")
 end, { silent = true, noremap = true, desc = "Grapple: tag a file" })
-vim.keymap.set("n", "<M-e>", function()
+map("n", "<M-e>", function()
     load_grapple()
     vim.cmd("Grapple toggle_tags scope=cwd")
 end, { silent = true, noremap = true, desc = "Grapple: toggle tags menu" })
 
 for i = 1, 9 do
-    vim.keymap.set("n", "<leader>" .. i, function()
+    map("n", "\\" .. i, function()
         load_grapple()
         vim.cmd("Grapple select index=" .. i .. " scope=cwd")
     end, { silent = true, noremap = true, desc = "Grapple: select " .. i .. " tag" })
 end
+
+vim.api.nvim_create_autocmd("FileType", {
+    pattern = { "grapple" },
+    callback = function(args)
+        map("n", "<M-k>", "<cmd>m -2<cr>",
+            { silent = true, noremap = true, desc = "Move selection up", buffer = args.buf })
+        map("n", "<M-j>", "<cmd>m +1<cr>",
+            { silent = true, noremap = true, desc = "Move selection down", buffer = args.buf })
+    end,
+})
 
 -- Completion
 local load_blink = load_once(function()
@@ -860,9 +1017,13 @@ local load_blink = load_once(function()
         keymap = { preset = "default" },
         completion = {
             documentation = { auto_show = true },
-            menu = { border = "single" }
+            menu = { border = "single" },
         },
-        cmdline = { enabled = false },
+        cmdline = {
+            enabled = false,
+            keymap = { preset = "inherit" },
+            completion = { menu = { auto_show = true } },
+        },
         sources = {
             default = { "lsp", "path", "snippets", "buffer", "env" },
             per_filetype = {
@@ -885,9 +1046,9 @@ vim.api.nvim_create_autocmd("InsertEnter", {
 })
 
 -- AI
-vim.keymap.set("n", "<C-w>a", function()
+map("n", map_leader .. "aa", function()
     vim.cmd("tab term gemini --yolo")
-end, { desc = "AI: open pi" })
+end, { desc = "AI: open agent (gemini)" })
 
 local load_supermaven = load_once(function()
     vim.pack.add({ "https://github.com/supermaven-inc/supermaven-nvim" })
@@ -897,7 +1058,7 @@ local load_supermaven = load_once(function()
 end)
 defer(load_supermaven)
 
-vim.keymap.set({ "n" }, "<M-a>c", function()
+map({ "n", "t" }, map_leader .. "ac", function()
     load_supermaven()
     require("supermaven-nvim.api").toggle()
     if require("supermaven-nvim.api").is_running() then
@@ -914,39 +1075,39 @@ local load_99 = load_once(function()
     _99.setup({ provider = _99.Providers.OpenCodeProvider, model = "openai/gpt-5.4" })
 end)
 
-vim.keymap.set("v", "<M-a>a", function()
+map("v", map_leader .. "<M-a>", function()
     load_99()
     _99.visual()
 end, { desc = "AI(99): visual" })
 
-vim.keymap.set("n", "<M-a>A", function()
+map({ "n", "t" }, map_leader .. "av", function()
     load_99()
     _99.vibe()
 end, { desc = "AI(99): vibe" })
 
-vim.keymap.set("n", "<M-a>H", function()
+map({ "n", "t" }, map_leader .. "ah", function()
     load_99()
     _99.open()
 end, { desc = "AI(99): open history" })
 
-vim.keymap.set("n", "<M-a>M", function()
+map({ "n", "t" }, map_leader .. "am", function()
     load_telescope()
     load_99()
     require("99.extensions.telescope").select_model()
 end, { desc = "AI(99): select model" })
 
-vim.keymap.set("n", "<M-a>P", function()
+map({ "n", "t" }, map_leader .. "ap", function()
     load_telescope()
     load_99()
     require("99.extensions.telescope").select_provider()
 end, { desc = "AI(99): select provider" })
 
-vim.keymap.set("n", "<M-a>X", function()
+map({ "n", "t" }, map_leader .. "ax", function()
     load_99()
     _99.stop_all_requests()
 end, { desc = "AI(99): stop all requests" })
 
-vim.keymap.set("n", "<M-a>S", function()
+map({ "n", "t" }, map_leader .. "as", function()
     load_99()
     _99.search()
 end, { desc = "AI(99): search" })
@@ -959,13 +1120,13 @@ local load_multicursor = load_once(function()
     mc.setup()
 
     mc.addKeymapLayer(function(layerSet)
-        layerSet({ "n", "x" }, "<M-k>", function() mc.lineSkipCursor(-1) end, { desc = "Multicursor: skip line" })
-        layerSet({ "n", "x" }, "<M-j>", function() mc.lineSkipCursor(1) end, { desc = "Multicursor: skip line" })
-        layerSet({ "n", "v" }, "<M-n>", function() mc.matchSkipCursor(1) end, { desc = "Multicursor: skip match" })
-        layerSet({ "n", "v" }, "<M-p>", function() mc.matchSkipCursor(-1) end, { desc = "Multicursor: skip match" })
-        layerSet({ "n", "x" }, "<C-h>", mc.prevCursor, { desc = "Multicursor: prev cursor" })
-        layerSet({ "n", "x" }, "<C-l>", mc.nextCursor, { desc = "Multicursor: next cursor" })
-        layerSet({ "n", "x" }, "<C-d>", mc.deleteCursor, { desc = "Multicursor: delete cursor" })
+        layerSet({ "n", "x" }, "<M-S-k>", function() mc.lineSkipCursor(-1) end, { desc = "Multicursor: skip line" })
+        layerSet({ "n", "x" }, "<M-S-j>", function() mc.lineSkipCursor(1) end, { desc = "Multicursor: skip line" })
+        layerSet({ "n", "v" }, "<M-S-n>", function() mc.matchSkipCursor(1) end, { desc = "Multicursor: skip match" })
+        layerSet({ "n", "v" }, "<M-S-p>", function() mc.matchSkipCursor(-1) end, { desc = "Multicursor: skip match" })
+        layerSet({ "n", "x" }, "<M-h>", mc.prevCursor, { desc = "Multicursor: prev cursor" })
+        layerSet({ "n", "x" }, "<M-l>", mc.nextCursor, { desc = "Multicursor: next cursor" })
+        layerSet({ "n", "x" }, "<M-x>", mc.deleteCursor, { desc = "Multicursor: delete cursor" })
         layerSet("n", "<C-[>", function()
             if not mc.cursorsEnabled() then
                 mc.enableCursors()
@@ -976,36 +1137,36 @@ local load_multicursor = load_once(function()
     end)
 end)
 
-vim.keymap.set({ "n", "x" }, "<C-M-a>", function()
+map({ "n", "x" }, "<M-a>", function()
     load_multicursor()
     mc.matchAllAddCursors()
 end, { desc = "Multicursor: add all matches" })
-vim.keymap.set({ "n", "x" }, "<C-q>", function()
+map({ "n", "x" }, "<M-q>", function()
     load_multicursor()
     mc.toggleCursor()
 end, { desc = "Multicursor: toggle cursor" })
-vim.keymap.set({ "n", "x" }, "<C-k>", function()
+map({ "n", "x" }, "<M-k>", function()
     load_multicursor()
     mc.lineAddCursor(-1)
 end, { desc = "Multicursor: add cursor above" })
-vim.keymap.set({ "n", "x" }, "<C-j>", function()
+map({ "n", "x" }, "<M-j>", function()
     load_multicursor()
     mc.lineAddCursor(1)
 end, { desc = "Multicursor: add cursor below" })
-vim.keymap.set({ "n", "v" }, "<C-n>", function()
+map({ "n", "v" }, "<M-n>", function()
     load_multicursor()
     mc.matchAddCursor(1)
 end, { desc = "Multicursor: next match" })
-vim.keymap.set({ "n", "v" }, "<C-p>", function()
+map({ "n", "v" }, "<M-p>", function()
     load_multicursor()
     mc.matchAddCursor(-1)
 end, { desc = "Multicursor: previous match" })
 
-vim.keymap.set("x", "I", function()
+map("x", "I", function()
     load_multicursor()
     mc.insertVisual()
 end, { desc = "Multicursor: insert at starts" })
-vim.keymap.set("x", "A", function()
+map("x", "A", function()
     load_multicursor()
     mc.appendVisual()
 end, { desc = "Multicursor: append at ends" })
@@ -1024,7 +1185,7 @@ local load_conform = load_once(function()
             javascriptreact = { "prettierd", "prettier", stop_after_first = true },
         },
         format_on_save = {
-            timeout_ms = 500,
+            timeout_ms = 1000,
             lsp_format = "fallback",
         },
     })
@@ -1036,7 +1197,10 @@ local lsp_servers = {
     "lua_ls",
     "basedpyright",
     "ruff",
+    "svelte",
     "vtsls",
+    -- "tsgo",
+    "wc_ls",
     "eslint",
     "biome",
     "cssls",
@@ -1059,12 +1223,17 @@ local load_lsp = load_once(function()
     })
 
     local capabilities = vim.lsp.protocol.make_client_capabilities()
+    local has_file_ops, file_ops = pcall(require, "lsp-file-operations")
+    if has_file_ops then
+        local file_ops_caps = file_ops.default_capabilities()
+        capabilities = vim.tbl_deep_extend("force", capabilities, file_ops_caps)
+    end
     vim.lsp.config("*", { capabilities = capabilities })
     vim.lsp.enable(lsp_servers)
 end)
 defer(load_lsp)
 
-vim.keymap.set("n", "grd", function()
+map("n", "grd", function()
     load_lsp()
     for _, client in ipairs(vim.lsp.get_clients()) do
         if client.supports_method and client:supports_method("workspace/diagnostic") then
@@ -1077,7 +1246,7 @@ vim.keymap.set("n", "grd", function()
     end, 200)
 end, { silent = true, desc = "LSP: workspace diagnostics" })
 
-vim.keymap.set("n", "grh", function()
+map("n", "grh", function()
     load_lsp()
     vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled())
 end, { desc = "LSP: toggle inlay hints" })
@@ -1092,12 +1261,33 @@ vim.diagnostic.config({
     underline = true,
 })
 
+vim.o.updatetime = 400
+local lsp_document_highlight = vim.api.nvim_create_augroup("lsp_document_highlight", { clear = true })
+
 vim.api.nvim_create_autocmd("LspAttach", {
     group = vim.api.nvim_create_augroup("LspOnAttach", { clear = true }),
     callback = function(args)
         local client = vim.lsp.get_client_by_id(args.data.client_id)
         if not client then return end
         vim.lsp.semantic_tokens.enable(false, { bufnr = args.buf })
+
+        if client.server_capabilities.documentHighlightProvider then
+            vim.api.nvim_clear_autocmds({ group = lsp_document_highlight, buffer = args.buf })
+            vim.api.nvim_create_autocmd({ "CursorHold", "CursorHoldI" }, {
+                group = "lsp_document_highlight",
+                buffer = args.buf,
+                callback = vim.lsp.buf.document_highlight,
+            })
+            vim.api.nvim_create_autocmd("CursorMoved", {
+                group = "lsp_document_highlight",
+                buffer = args.buf,
+                callback = vim.lsp.buf.clear_references,
+            })
+            local opts = { italic = true, underdotted = true }
+            vim.api.nvim_set_hl(0, "LspReferenceText", opts)
+            vim.api.nvim_set_hl(0, "LspReferenceRead", opts)
+            vim.api.nvim_set_hl(0, "LspReferenceWrite", opts)
+        end
     end,
 })
 
@@ -1113,10 +1303,14 @@ local load_pantran = load_once(function()
     require("pantran").setup({
         default_engine = "yandex",
         engines = { yandex = { default_source = "auto", default_target = "ru" } },
+        ui = {
+            width_percentage = 0.9,
+            height_percentage = 0.8,
+        },
     })
 end)
 
-vim.keymap.set({ "n", "x" }, "<M-l>i", function()
+map({ "n", "x" }, map_leader .. "li", function()
     load_pantran()
     vim.ui.select({ "ru", "en" }, { prompt = "Select translation target:" }, function(choice)
         if not choice then return end
@@ -1124,20 +1318,26 @@ vim.keymap.set({ "n", "x" }, "<M-l>i", function()
     end)
 end, { noremap = true, silent = true, desc = "Translate: interactively" })
 
-vim.keymap.set({ "n", "x" }, "<M-l>r", function()
+map({ "n", "x" }, map_leader .. "lr", function()
     load_pantran()
-    vim.cmd("Pantran mode=hover source=auto target=ru")
-end, { noremap = true, silent = true, desc = "Translate: hover to Russian" })
-vim.keymap.set({ "n", "x" }, "<M-l>e", function()
+    if vim.tbl_contains({ "V", "v" }, vim.api.nvim_get_mode().mode) then
+        return ":Pantran mode=hover source=auto target=ru<CR>"
+    end
+    return ":Pantran mode=interactive source=auto target=ru<CR>"
+end, { expr = true, noremap = true, silent = true, desc = "Translate: to Russian" })
+map({ "n", "x" }, map_leader .. "le", function()
     load_pantran()
-    vim.cmd("Pantran mode=hover source=auto target=en")
-end, { noremap = true, silent = true, desc = "Translate: hover to English" })
+    if vim.tbl_contains({ "V", "v" }, vim.api.nvim_get_mode().mode) then
+        return ":Pantran mode=hover source=auto target=en<CR>"
+    end
+    return ":Pantran mode=interactive source=auto target=en<CR>"
+end, { expr = true, noremap = true, silent = true, desc = "Translate: to English" })
 
 local load_expose = load_once(function()
     vim.pack.add({ "https://github.com/azratul/expose-localhost.nvim" })
 end)
 
-vim.keymap.set("n", "<M-x>x", function()
+map({ "n", "t" }, map_leader .. "xx", function()
     load_expose()
     require("expose-localhost").stop()
     vim.ui.input({ prompt = "Port to expose: " }, function(input)
@@ -1146,7 +1346,7 @@ vim.keymap.set("n", "<M-x>x", function()
     end)
 end, { desc = "Expose: custom port via ngrok" })
 
-vim.keymap.set("n", "<M-x>X", function()
+map({ "n", "t" }, map_leader .. "xX", function()
     load_expose()
     require("expose-localhost").stop()
     local port = 53439
