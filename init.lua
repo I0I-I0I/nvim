@@ -72,6 +72,8 @@ vim.o.number = true
 vim.o.relativenumber = true
 vim.o.statuscolumn = "%s%l %C "
 
+require("tabs").setup()
+
 local startup_group = vim.api.nvim_create_augroup("StartupLazyLoad", { clear = true })
 local has_ui = #vim.api.nvim_list_uis() > 0
 
@@ -150,59 +152,61 @@ vim.cmd.cabbrev("Wa wa")
 vim.cmd.cabbrev("n norm")
 
 -- Keymaps
+local opts = { silent = true, noremap = true }
+
 map({ "n", "x" }, "j", function()
     if vim.v.count == 0 then
         return "gj"
     else
         return "j"
     end
-end, { expr = true, remap = true, silent = true, desc = "Move down by display line" })
+end, vim.tbl_extend("force", opts, { expr = true, remap = true, desc = "Move down by display line" }))
 map({ "n", "x" }, "k", function()
     if vim.v.count == 0 then
         return "gk"
     else
         return "k"
     end
-end, { expr = true, remap = true, silent = true, desc = "Move up by display line" })
-map("n", "J", "mzJ`z", { silent = true, noremap = true, desc = "Join line and keep cursor" })
-map("n", "n", "nzzzv", { desc = "Next search result centered" })
-map("n", "N", "Nzzzv", { desc = "Previous search result centered" })
-map("v", "K", ":m '<-2<CR>gv=gv", { silent = true, noremap = true, desc = "Move selection up" })
-map("v", "J", ":m '>+1<CR>gv=gv", { silent = true, noremap = true, desc = "Move selection down" })
+end, vim.tbl_extend("force", opts, { expr = true, remap = true, desc = "Move up by display line" }))
+map("n", "J", "mzJ`z", vim.tbl_extend("force", opts, { desc = "Join line and keep cursor" }))
+map("n", "n", "nzzzv", vim.tbl_extend("force", opts, { desc = "Next search result centered" }))
+map("n", "N", "Nzzzv", vim.tbl_extend("force", opts, { desc = "Previous search result centered" }))
+map("v", "K", ":m '<-2<CR>gv=gv", vim.tbl_extend("force", opts, { desc = "Move selection up" }))
+map("v", "J", ":m '>+1<CR>gv=gv", vim.tbl_extend("force", opts, { desc = "Move selection down" }))
 
-map({ "i", "c" }, "<M-h>", "<left>", { noremap = true })
-map({ "i", "c" }, "<M-l>", "<right>", { noremap = true })
-map("i", "", "<cmd>undo<cr>", { noremap = true })
+map({ "i", "c" }, "<M-h>", "<left>", opts)
+map({ "i", "c" }, "<M-l>", "<right>", opts)
+map("i", "", "<cmd>undo<cr>", opts)
 
 map("v", "<M-y>", function()
     vim.cmd([[norm! "+y]])
-end, { silent = true, desc = "Copy" })
-map({ "n" }, "<M-y>", "\"+y", { silent = true, desc = "Copy" })
+end, vim.tbl_extend("force", opts, { desc = "Copy" }))
+map({ "n" }, "<M-y>", "\"+y", vim.tbl_extend("force", opts, { desc = "Copy" }))
 map({ "n", "i", "v", "c", "t" }, "<M-p>", function()
     vim.api.nvim_paste(vim.fn.getreg("+"), true, -1)
-end, { silent = true, desc = "Paste" })
+end, vim.tbl_extend("force", opts, { desc = "Paste" }))
 
 map({ "n", "i" }, "<M-y><M-p>", "<cmd>let @+=expand('%:p')<cr>",
-    { silent = true, noremap = true, desc = "Copy absolute path" })
+    vim.tbl_extend("force", opts, { desc = "Copy absolute path" }))
 map({ "n", "i" }, "<M-y><M-P>", "<cmd>let @+=expand('%:p') . ':' . line('.')<cr>",
-    { silent = true, noremap = true, desc = "Copy absolute path with line" })
+    vim.tbl_extend("force", opts, { desc = "Copy absolute path with line" }))
 map({ "n", "i" }, "<M-y><M-f>", "<cmd>let @+=expand('%:.')<cr>",
-    { silent = true, noremap = true, desc = "Copy relative path" })
+    vim.tbl_extend("force", opts, { desc = "Copy relative path" }))
 map({ "n", "i" }, "<M-y><M-F>", "<cmd>let @+=expand('%:.') . ':' . line('.')<cr>",
-    { silent = true, noremap = true, desc = "Copy relative path with line" })
+    vim.tbl_extend("force", opts, { desc = "Copy relative path with line" }))
 
 map({ "i", "c" }, "<C-r><C-d>", function()
     return os.date("%F")
-end, { expr = true, noremap = true, desc = "Insert date" })
+end, vim.tbl_extend("force", opts, { expr = true, desc = "Insert date" }))
 map({ "i", "c" }, "<C-r><C-t>", function()
     return os.date("%T")
-end, { expr = true, noremap = true, desc = "Insert time" })
+end, vim.tbl_extend("force", opts, { expr = true, desc = "Insert time" }))
 map({ "i", "c" }, "<C-r><C-f>", function()
     return vim.fn.expand("%:.")
-end, { expr = true, noremap = true, desc = "Insert relative path" })
+end, vim.tbl_extend("force", opts, { expr = true, desc = "Insert relative path" }))
 map({ "i", "c" }, "<C-r><C-p>", function()
     return vim.fn.expand("%:p")
-end, { expr = true, noremap = true, desc = "Insert absolute path" })
+end, vim.tbl_extend("force", opts, { expr = true, desc = "Insert absolute path" }))
 
 local function close_all_but(force)
     return function()
@@ -221,47 +225,59 @@ local function close_all_but(force)
 end
 
 map({ "n", "t" }, map_leader .. "gw", close_all_but(),
-    { silent = true, noremap = true, desc = "Close all buffers" })
+    vim.tbl_extend("force", opts, { desc = "Close all buffers" }))
 map({ "n", "t" }, map_leader .. "gW", close_all_but(true),
-    { silent = true, noremap = true, desc = "Force close all buffers" })
-map("n", "gw", "<cmd>bp|bd #<cr>", { silent = true, noremap = true, desc = "Close current buffer" })
-map("n", "gW", "<cmd>bp|bd! #<cr>", { silent = true, noremap = true, desc = "Force close current buffer" })
+    vim.tbl_extend("force", opts, { desc = "Force close all buffers" }))
+map("n", "gw", "<cmd>bp|bd #<cr>", vim.tbl_extend("force", opts, { desc = "Close current buffer" }))
+map("n", "gW", "<cmd>bp|bd! #<cr>", vim.tbl_extend("force", opts, { desc = "Force close current buffer" }))
 
-map("n", "<space>", "za", { desc = "Toggle fold" })
-map("n", "<C-space>", "zA", { desc = "Toggle fold recursively" })
-map("n", "<backspace>", "zc", { desc = "Close fold" })
-map({ "n", "t" }, map_leader .. "c", "<cmd>tcd %:p:h<cr>", { desc = "Set cwd to current file directory" })
+map("n", "<space>", "za", vim.tbl_extend("force", opts, { desc = "Toggle fold" }))
+map("n", "<C-space>", "zA", vim.tbl_extend("force", opts, { desc = "Toggle fold recursively" }))
+map("n", "<backspace>", "zc", vim.tbl_extend("force", opts, { desc = "Close fold" }))
+map({ "n", "t" }, map_leader .. "c", "<cmd>tcd %:p:h<cr>",
+    vim.tbl_extend("force", opts, { desc = "Set cwd to current file directory" }))
 map({ "n", "i" }, "<C-f>", "<C-\\><C-n>:e <C-r>=expand('%:p:h')<cr>/<C-d>",
-    { noremap = true, desc = "Edit file from current file directory" })
+    vim.tbl_extend("force", opts, { desc = "Edit file from current file directory" }))
 map({ "n", "i", "t" }, "<C-\\><C-f>", "<C-\\><C-n>:e <C-r>=getcwd()<cr>/<C-d>",
-    { noremap = true, desc = "Edit file from cwd" })
-map({ "n", "v" }, "<C-e>", "4<C-e>", { silent = true, noremap = true, desc = "Scroll down 4 lines" })
-map({ "n", "v" }, "<C-y>", "4<C-y>", { silent = true, noremap = true, desc = "Scroll up 4 lines" })
-map("n", "<M-K>", "<cmd>cprev<CR>zz", { silent = true, noremap = true, desc = "Previous quickfix item" })
-map("n", "<M-J>", "<cmd>cnext<CR>zz", { silent = true, noremap = true, desc = "Next quickfix item" })
-map({ "n", "t", "i" }, "<M-i>", "<cmd>tabprevious<cr>",
-    { silent = true, noremap = true, desc = "Previous tab" })
-map({ "n", "t", "i" }, "<M-o>", "<cmd>tabnext<cr>", { silent = true, noremap = true, desc = "Next tab" })
-map({ "n", "t", "i" }, "<M-S-o>", "<cmd>tabmove +<cr>",
-    { silent = true, noremap = true, desc = "Move tab right" })
-map({ "n", "t", "i" }, "<M-S-i>", "<cmd>tabmove -<cr>",
-    { silent = true, noremap = true, desc = "Move tab left" })
+    vim.tbl_extend("force", opts, { desc = "Edit file from cwd" }))
+map({ "n", "v" }, "<C-e>", "4<C-e>", vim.tbl_extend("force", opts, { desc = "Scroll down 4 lines" }))
+map({ "n", "v" }, "<C-y>", "4<C-y>", vim.tbl_extend("force", opts, { desc = "Scroll up 4 lines" }))
+map("n", "<M-K>", "<cmd>cprev<CR>zz", vim.tbl_extend("force", opts, { desc = "Previous quickfix item" }))
+map("n", "<M-J>", "<cmd>cnext<CR>zz", vim.tbl_extend("force", opts, { desc = "Next quickfix item" }))
 
-map("t", "<C-[><C-w>", "<C-\\><C-n><C-w>", { silent = true, noremap = true, desc = "Exit terminal mode" })
+map("t", "<C-[><C-w>", "<C-\\><C-n><C-w>", vim.tbl_extend("force", opts, { desc = "Exit terminal mode" }))
 map("t", "<C-[><C-r>", function()
     return "<C-\\><C-n>\"" .. vim.fn.nr2char(vim.fn.getchar()) .. "pi"
-end, { expr = true })
-map("n", "<C-w>t", "<cmd>tab term<cr>", { silent = true, noremap = true, desc = "Open terminal tab" })
+end, vim.tbl_extend("force", opts, { expr = true, desc = "Paste register in terminal" }))
 map("n", "<C-w>V", "<cmd>vertical term<cr>",
-    { silent = true, noremap = true, desc = "Open terminal vertically" })
+    vim.tbl_extend("force", opts, { desc = "Open terminal vertically" }))
 map("n", "<C-w>S", "<cmd>split term://$SHELL<cr>",
-    { silent = true, noremap = true, desc = "Open terminal horizontally" })
+    vim.tbl_extend("force", opts, { desc = "Open terminal horizontally" }))
 map("n", "<C-w>+", "<cmd>vertical resize 999<cr><cmd>resize 999<cr>",
-    { silent = true, noremap = true, desc = "Miximize current window" })
-map("t", "<M-[>", "<C-\\><C-n>", { silent = true, noremap = true, desc = "Exit terminal mode" })
-map({ "n", "i", "v" }, "<C-[>", "<cmd>noh<cr><C-[>", { silent = true, noremap = true, desc = "Open link" })
-map({ "n", "i" }, "<C-l>", "<cmd>t.<cr>", { silent = true, noremap = true, desc = "Duplicate current line" })
-map("x", "<C-l>", ":t'><cr>gv", { silent = true, noremap = true, desc = "Duplicate selection" })
+    vim.tbl_extend("force", opts, { desc = "Miximize current window" }))
+map("t", "<M-[>", "<C-\\><C-n>", vim.tbl_extend("force", opts, { desc = "Exit terminal mode" }))
+map({ "n", "i", "v" }, "<C-[>", "<cmd>noh<cr><C-[>",
+    vim.tbl_extend("force", opts, { desc = "Open link" }))
+map({ "n", "i" }, "<C-l>", "<cmd>t.<cr>",
+    vim.tbl_extend("force", opts, { desc = "Duplicate current line" }))
+map("x", "<C-l>", ":t'><cr>gv", vim.tbl_extend("force", opts, { desc = "Duplicate selection" }))
+
+for i = 1, 9 do
+    local idx_str = tostring(i)
+    vim.keymap.set({ "n", "t", "i" }, "<M-" .. idx_str .. ">", "<cmd>tabnext " .. idx_str .. "<cr>",
+        vim.tbl_extend("force", opts, { desc = "Select " .. idx_str .. " tab" }))
+end
+
+vim.keymap.set({ "n", "t", "i" }, "<M-i>", "<cmd>tabprevious<cr>",
+    vim.tbl_extend("force", opts, { desc = "Previous tab" }))
+vim.keymap.set({ "n", "t", "i" }, "<M-o>", "<cmd>tabnext<cr>",
+    vim.tbl_extend("force", opts, { desc = "Next tab" }))
+vim.keymap.set({ "n", "t", "i" }, "<M-S-o>", "<cmd>tabmove +<cr>",
+    vim.tbl_extend("force", opts, { desc = "Move tab right" }))
+vim.keymap.set({ "n", "t", "i" }, "<M-S-i>", "<cmd>tabmove -<cr>",
+    vim.tbl_extend("force", opts, { desc = "Move tab left" }))
+vim.keymap.set("n", "<C-w>t", "<cmd>tab term<cr>",
+    vim.tbl_extend("force", opts, { desc = "Open terminal tab" }))
 
 -- Auto commands
 local main_group = vim.api.nvim_create_augroup("MainGroup", { clear = true })
@@ -632,7 +648,6 @@ local load_git = load_once(function()
     require("neogit").setup({
         graph_style = "kitty",
         process_spinner = true,
-        kind = "split_above",
     })
     gitsigns = require("gitsigns")
     gitsigns.setup({ sign_priority = 100 })
