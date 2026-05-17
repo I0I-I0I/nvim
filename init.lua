@@ -1,8 +1,21 @@
 vim.loader.enable()
 
 -- Settings
+vim.g.mapleader = "\\"
 local map_leader = "<M-g>"
+
+---@param mode string|string[] The Vim mode(s) for the mapping (e.g., 'n', 't', { 'n', 'v' })
+---@param key string|string[] A single key sequence or a list of key sequences to bind
+---@param cmd string|function The command string or Lua callback function to execute
+---@param opts? vim.keymap.set.Opts Optional table of mapping configurations (e.g., { desc = "...", silent = true })
 local function map(mode, key, cmd, opts)
+    if type(key) == "table" then
+        for _, k in ipairs(key) do
+            map(mode, k, cmd, opts)
+        end
+        return
+    end
+
     if key:sub(1, #map_leader) == map_leader then
         if type(cmd) == "string" then
             cmd = "<C-\\><C-n>" .. cmd
@@ -14,6 +27,7 @@ local function map(mode, key, cmd, opts)
             end
         end
     end
+
     vim.keymap.set(mode, key, cmd, opts)
 end
 
@@ -224,9 +238,9 @@ local function close_all_but(force)
     end
 end
 
-map({ "n", "t" }, map_leader .. "gw", close_all_but(),
+map({ "n", "t", "i" }, map_leader .. "gw", close_all_but(),
     vim.tbl_extend("force", opts, { desc = "Close all buffers" }))
-map({ "n", "t" }, map_leader .. "gW", close_all_but(true),
+map({ "n", "t", "i" }, map_leader .. "gW", close_all_but(true),
     vim.tbl_extend("force", opts, { desc = "Force close all buffers" }))
 map("n", "gw", "<cmd>bp|bd #<cr>", vim.tbl_extend("force", opts, { desc = "Close current buffer" }))
 map("n", "gW", "<cmd>bp|bd! #<cr>", vim.tbl_extend("force", opts, { desc = "Force close current buffer" }))
@@ -234,7 +248,7 @@ map("n", "gW", "<cmd>bp|bd! #<cr>", vim.tbl_extend("force", opts, { desc = "Forc
 map("n", "<space>", "za", vim.tbl_extend("force", opts, { desc = "Toggle fold" }))
 map("n", "<C-space>", "zA", vim.tbl_extend("force", opts, { desc = "Toggle fold recursively" }))
 map("n", "<backspace>", "zc", vim.tbl_extend("force", opts, { desc = "Close fold" }))
-map({ "n", "t" }, map_leader .. "c", "<cmd>tcd %:p:h<cr>",
+map({ "n", "t", "i" }, map_leader .. "c", "<cmd>tcd %:p:h<cr>",
     vim.tbl_extend("force", opts, { desc = "Set cwd to current file directory" }))
 map({ "n", "i" }, "<C-f>", "<C-\\><C-n>:e <C-r>=expand('%:p:h')<cr>/<C-d>",
     vim.tbl_extend("force", opts, { desc = "Edit file from current file directory" }))
@@ -245,8 +259,12 @@ map({ "n", "v" }, "<C-y>", "4<C-y>", vim.tbl_extend("force", opts, { desc = "Scr
 map("n", "<M-K>", "<cmd>cprev<CR>zz", vim.tbl_extend("force", opts, { desc = "Previous quickfix item" }))
 map("n", "<M-J>", "<cmd>cnext<CR>zz", vim.tbl_extend("force", opts, { desc = "Next quickfix item" }))
 
-map("t", "<C-[><C-w>", "<C-\\><C-n><C-w>", vim.tbl_extend("force", opts, { desc = "Exit terminal mode" }))
-map("t", "<C-[><C-r>", function()
+map("t", { "<C-[><C-w>", "<M-w>" }, function()
+    vim.cmd("stopinsert")
+    local ctrl_w = vim.api.nvim_replace_termcodes("<C-w>", true, false, true)
+    vim.api.nvim_feedkeys(ctrl_w, "m", true)
+end, vim.tbl_extend("force", opts, { desc = "Exit terminal mode" }))
+map("t", { "<C-[><C-r>", "<M-r>" }, function()
     return "<C-\\><C-n>\"" .. vim.fn.nr2char(vim.fn.getchar()) .. "pi"
 end, vim.tbl_extend("force", opts, { expr = true, desc = "Paste register in terminal" }))
 map("n", "<C-w>V", "<cmd>vertical term<cr>",
@@ -316,21 +334,33 @@ vim.api.nvim_create_autocmd("FileType", {
 
 vim.api.nvim_create_autocmd("TermOpen", {
     group = main_group,
-    callback = function()
+    callback = function(args)
         vim.opt_local.spell = false
         vim.bo.filetype = "shell"
+
+        vim.api.nvim_create_autocmd({ "BufEnter", "WinEnter" }, {
+            buffer = args.buf,
+            callback = function()
+                vim.schedule(function()
+                    if vim.api.nvim_get_current_buf() == args.buf then
+                        vim.cmd("startinsert")
+                    end
+                end)
+            end,
+        })
+
+        vim.schedule(function()
+            if vim.api.nvim_get_current_buf() == args.buf then
+                vim.cmd("startinsert")
+            end
+        end)
     end,
 })
 
-vim.api.nvim_create_autocmd("BufEnter", {
-    group = main_group,
-    pattern = "term://*",
-    callback = function(args)
-        vim.schedule(function()
-            if vim.api.nvim_get_current_buf() == args.buf and vim.bo.buftype == "terminal" then
-                vim.cmd.startinsert()
-            end
-        end)
+vim.api.nvim_create_autocmd("TermClose", {
+    pattern = "*",
+    callback = function()
+        vim.cmd("bdelete!")
     end,
 })
 
@@ -394,7 +424,7 @@ local load_store = load_once(function()
     })
 end)
 
-map({ "n", "t" }, map_leader .. "S", function()
+map({ "n", "t", "i" }, map_leader .. "S", function()
     load_store()
     require("store").open()
 end, { desc = "Store: open" })
@@ -544,7 +574,8 @@ local load_treesitter = load_once(function()
     vim.pack.add({ "https://github.com/romus204/tree-sitter-manager.nvim" })
     require("tree-sitter-manager").setup({
         auto_install = true,
-        ensure_installed = { "markdown", "markdown_inline", "latex" }
+        highlight = true,
+        ensure_installed = { "markdown", "markdown_inline", "latex", "svelte", "html", "css", "javascript", "typescript" },
     })
 end)
 defer(load_treesitter)
@@ -580,7 +611,7 @@ local load_telescope = load_once(function()
 end)
 defer(load_telescope)
 
-local function ivy_full(opts)
+local function ivy_full(telescope_opts)
     load_telescope()
     return themes.get_ivy(vim.tbl_deep_extend("force", {
         layout_config = {
@@ -598,12 +629,12 @@ local function ivy_full(opts)
         results_title = false,
         preview_title = false,
         mappings = { i = { ["<Esc>"] = actions.close } },
-    }, opts or {}))
+    }, telescope_opts or {}))
 end
 
-local function T(picker, opts)
+local function T(picker, telescope_opts)
     return function()
-        builtin[picker](ivy_full(opts))
+        builtin[picker](ivy_full(telescope_opts))
     end
 end
 
@@ -612,6 +643,7 @@ map({ "n" }, "tg", T("live_grep"), { desc = "Telescope: live grep" })
 map({ "n" }, "tb", T("buffers", { previewer = false }), { desc = "Telescope: buffers" })
 map({ "n" }, "th", T("help_tags"), { desc = "Telescope: help tags" })
 map({ "n" }, "tm", T("man_pages"), { desc = "Telescope: man pages" })
+map({ "n" }, "tk", T("keymaps"), { desc = "Telescope: man pages" })
 map("n", "grs", T("lsp_workspace_symbols"), { desc = "Telescope: lsp symbols" })
 map("n", "grr", T("lsp_references"), { desc = "Telescope: lsp references" })
 map("n", "<C-]>", T("lsp_definitions"), { desc = "Telescope: lsp definitions" })
@@ -634,7 +666,7 @@ local load_codediff = load_once(function()
         }
     })
 end)
-load_codediff()
+defer(load_codediff)
 
 local gitsigns
 
@@ -654,7 +686,7 @@ local load_git = load_once(function()
 end)
 defer(load_git)
 
-map({ "n", "t" }, map_leader .. "gg", function()
+map({ "n", "t", "i" }, map_leader .. "gg", function()
     load_git()
     vim.cmd("Neogit")
 end, { desc = "Git: open Neogit" })
@@ -666,19 +698,19 @@ map("n", "[c", function()
     load_git()
     gitsigns.prev_hunk()
 end, { desc = "Git: previous hunk" })
-map({ "n", "t" }, map_leader .. "gp", function()
+map({ "n", "t", "i" }, map_leader .. "gp", function()
     load_git()
     gitsigns.preview_hunk()
 end, { desc = "Git: preview hunk" })
-map({ "n", "t" }, map_leader .. "gQ", function()
+map({ "n", "t", "i" }, map_leader .. "gQ", function()
     load_git()
     gitsigns.setqflist("all")
 end, { desc = "Git: quickfix all hunks" })
-map({ "n", "t" }, map_leader .. "gq", function()
+map({ "n", "t", "i" }, map_leader .. "gq", function()
     load_git()
     gitsigns.setqflist()
 end, { desc = "Git: quickfix buffer hunks" })
-map({ "n", "t" }, map_leader .. "gr", function()
+map({ "n", "t", "i" }, map_leader .. "gr", function()
     load_git()
     gitsigns.reset_hunk()
 end, { desc = "Git: reset hunk" })
@@ -698,15 +730,15 @@ map("n", map_leader .. "gu", function()
     load_git()
     vim.cmd("Gitsigns undo_stage_hunk")
 end, { desc = "Git: unstage current hunk" })
-map({ "n", "t" }, map_leader .. "gb", function()
+map({ "n", "t", "i" }, map_leader .. "gb", function()
     load_git()
     gitsigns.blame()
 end, { desc = "Git: blame current line" })
-map({ "n", "t" }, map_leader .. "gd", function()
+map({ "n", "t", "i" }, map_leader .. "gd", function()
     load_git()
     vim.cmd("CodeDiff")
 end, { desc = "Git: explorer (git status)" })
-map({ "n", "t" }, map_leader .. "gh", function()
+map({ "n", "t", "i" }, map_leader .. "gh", function()
     load_git()
     vim.cmd("CodeDiff history")
 end, { desc = "Git: history" })
@@ -786,7 +818,7 @@ vim.api.nvim_create_autocmd("VimLeavePre", {
     end,
 })
 
-map({ "n", "t" }, map_leader .. "z", function()
+map({ "n", "t", "i" }, map_leader .. "z", function()
     load_zenmode()
     zenmode_api.toggle()
 end, { desc = "Zenmode: open" })
@@ -844,13 +876,13 @@ local load_sessionizer = load_once(function()
         load_telescope()
         vim.cmd("Sess list")
     end, { noremap = true, desc = "Telescope: sessions" })
-    map({ "n", "t" }, map_leader .. "ss", function()
+    map({ "n", "t", "i" }, map_leader .. "ss", function()
         vim.cmd("Sess save")
     end, { noremap = true, desc = "Sess: save" })
-    map({ "n", "t" }, map_leader .. "sl", function()
+    map({ "n", "t", "i" }, map_leader .. "sl", function()
         vim.cmd("Sess last")
     end, { noremap = true, desc = "Sess: load last" })
-    map({ "n", "t" }, map_leader .. "sp", function()
+    map({ "n", "t", "i" }, map_leader .. "sp", function()
         vim.cmd("Sess pin")
     end, { noremap = true, desc = "Sess: pin current" })
 end)
@@ -863,7 +895,6 @@ local load_neotest = load_once(function()
     vim.pack.add({
         "https://github.com/nvim-lua/plenary.nvim",
         "https://github.com/antoinemadec/FixCursorHold.nvim",
-        { src = "https://github.com/nvim-treesitter/nvim-treesitter", version = "master" },
         "https://github.com/nvim-neotest/nvim-nio",
         "https://github.com/nvim-neotest/neotest",
         "https://github.com/nvim-neotest/neotest-python",
@@ -980,7 +1011,7 @@ vim.api.nvim_create_autocmd("FileType", {
     callback = load_dadbod,
 })
 
-map({ "n", "t" }, map_leader .. "D", function()
+map({ "n", "t", "i" }, map_leader .. "D", function()
     load_dadbod()
     vim.cmd("tabnew")
     vim.cmd("DBUIToggle")
@@ -1073,7 +1104,7 @@ local load_supermaven = load_once(function()
 end)
 defer(load_supermaven)
 
-map({ "n", "t" }, map_leader .. "ac", function()
+map({ "n", "t", "i" }, map_leader .. "ac", function()
     load_supermaven()
     require("supermaven-nvim.api").toggle()
     if require("supermaven-nvim.api").is_running() then
@@ -1095,34 +1126,34 @@ map("v", map_leader .. "<M-a>", function()
     _99.visual()
 end, { desc = "AI(99): visual" })
 
-map({ "n", "t" }, map_leader .. "av", function()
+map({ "n", "t", "i" }, map_leader .. "av", function()
     load_99()
     _99.vibe()
 end, { desc = "AI(99): vibe" })
 
-map({ "n", "t" }, map_leader .. "ah", function()
+map({ "n", "t", "i" }, map_leader .. "ah", function()
     load_99()
     _99.open()
 end, { desc = "AI(99): open history" })
 
-map({ "n", "t" }, map_leader .. "am", function()
+map({ "n", "t", "i" }, map_leader .. "am", function()
     load_telescope()
     load_99()
     require("99.extensions.telescope").select_model()
 end, { desc = "AI(99): select model" })
 
-map({ "n", "t" }, map_leader .. "ap", function()
+map({ "n", "t", "i" }, map_leader .. "ap", function()
     load_telescope()
     load_99()
     require("99.extensions.telescope").select_provider()
 end, { desc = "AI(99): select provider" })
 
-map({ "n", "t" }, map_leader .. "ax", function()
+map({ "n", "t", "i" }, map_leader .. "ax", function()
     load_99()
     _99.stop_all_requests()
 end, { desc = "AI(99): stop all requests" })
 
-map({ "n", "t" }, map_leader .. "as", function()
+map({ "n", "t", "i" }, map_leader .. "as", function()
     load_99()
     _99.search()
 end, { desc = "AI(99): search" })
@@ -1206,6 +1237,31 @@ local load_conform = load_once(function()
     })
 end)
 defer(load_conform)
+
+-- Locale
+local load_locale = load_once(function()
+    vim.pack.add({
+        "https://github.com/yelog/i18n.nvim",
+        "https://github.com/Strehk/lazy-watson",
+    })
+    require("i18n").setup({
+        auto_detect = true,
+        func_type = {
+            "typescript",
+            "javascript",
+            "svelte",
+            "typescriptreact",
+            "javascriptreact",
+        },
+        func_pattern = {
+            "t",
+            "$t",
+            "m%.([%w_]+)%s*%(",
+        },
+    })
+    require("lazy-watson").setup({})
+end)
+defer(load_locale)
 
 -- LSP
 local lsp_servers = {
@@ -1298,10 +1354,10 @@ vim.api.nvim_create_autocmd("LspAttach", {
                 buffer = args.buf,
                 callback = vim.lsp.buf.clear_references,
             })
-            local opts = { italic = true, underdotted = true }
-            vim.api.nvim_set_hl(0, "LspReferenceText", opts)
-            vim.api.nvim_set_hl(0, "LspReferenceRead", opts)
-            vim.api.nvim_set_hl(0, "LspReferenceWrite", opts)
+            local lsp_opts = { italic = true, underdotted = true }
+            vim.api.nvim_set_hl(0, "LspReferenceText", lsp_opts)
+            vim.api.nvim_set_hl(0, "LspReferenceRead", lsp_opts)
+            vim.api.nvim_set_hl(0, "LspReferenceWrite", lsp_opts)
         end
     end,
 })
@@ -1352,7 +1408,7 @@ local load_expose = load_once(function()
     vim.pack.add({ "https://github.com/azratul/expose-localhost.nvim" })
 end)
 
-map({ "n", "t" }, map_leader .. "xx", function()
+map({ "n", "t", "i" }, map_leader .. "xx", function()
     load_expose()
     require("expose-localhost").stop()
     vim.ui.input({ prompt = "Port to expose: " }, function(input)
@@ -1361,7 +1417,7 @@ map({ "n", "t" }, map_leader .. "xx", function()
     end)
 end, { desc = "Expose: custom port via ngrok" })
 
-map({ "n", "t" }, map_leader .. "xX", function()
+map({ "n", "t", "i" }, map_leader .. "xX", function()
     load_expose()
     require("expose-localhost").stop()
     local port = 53439
@@ -1379,9 +1435,10 @@ map({ "n", "t" }, map_leader .. "xX", function()
 end, { desc = "Expose: static server via ngrok" })
 
 -- Theme
-vim.pack.add({ "https://github.com/xiyaowong/transparent.nvim" })
+vim.opt.runtimepath:append(vim.fn.stdpath("config") .. "/theme")
+require("theme").setup()
 if is_transparent then
-    vim.cmd.colorscheme("theme")
+    vim.cmd.colorscheme("theme-no-colors")
 else
-    vim.cmd.colorscheme("theme_light")
+    vim.cmd.colorscheme("theme-light")
 end
