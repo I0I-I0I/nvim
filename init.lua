@@ -783,14 +783,17 @@ vim.api.nvim_create_autocmd("LspAttach", {
 })
 
 -- Zen mode
-local zenmode_path = "/home/nnofly/code/personal/zenmode.nvim"
+local zenmode_path = {
+    dir = "/home/nnofly/code/personal/zenmode.nvim",
+    url = "https://github.com/I0I-I0I/zenmode.nvim"
+}
 local zenmode_api
 
 local load_zenmode = load_once(function()
-    if vim.fn.isdirectory(zenmode_path) == 1 then
-        vim.opt.runtimepath:append(zenmode_path)
+    if vim.fn.isdirectory(zenmode_path.dir) == 1 then
+        vim.opt.runtimepath:append(zenmode_path.dir)
     else
-        vim.pack.add({ "https://github.com/I0I-I0I/zenmode.nvim" })
+        vim.pack.add({ zenmode_path.url })
     end
 
     local zenmode = require("zenmode")
@@ -824,17 +827,20 @@ map({ "n", "t", "i" }, map_leader .. "z", function()
 end, { desc = "Zenmode: open" })
 
 -- Session manager
-local sessionizer_path = "/home/nnofly/code/personal/sessionizer.nvim"
+local sessionizer_path = {
+    dir = "/home/nnofly/code/personal/sessionizer.nvim",
+    url = "https://github.com/i0i-i0i/sessionizer.nvim"
+}
 
 local zenmode_state = false
 
 local load_sessionizer = load_once(function()
     load_zenmode()
 
-    if vim.fn.isdirectory(sessionizer_path) == 1 then
-        vim.opt.runtimepath:append(sessionizer_path)
+    if vim.fn.isdirectory(sessionizer_path.dir) == 1 then
+        vim.opt.runtimepath:append(sessionizer_path.dir)
     else
-        vim.pack.add({ "https://github.com/i0i-i0i/sessionizer.nvim" })
+        vim.pack.add({ sessionizer_path.url })
     end
 
     require("sessionizer").setup({
@@ -1372,8 +1378,11 @@ defer(load_colorizer)
 local load_pantran = load_once(function()
     vim.pack.add({ "https://github.com/potamides/pantran.nvim" })
     require("pantran").setup({
-        default_engine = "yandex",
-        engines = { yandex = { default_source = "auto", default_target = "ru" } },
+        default_engine = "google",
+        engines = {
+            yandex = { default_source = "auto", default_target = "ru" },
+            google = { default_source = "auto", default_target = "ru" },
+        },
         ui = {
             width_percentage = 0.9,
             height_percentage = 0.8,
@@ -1392,17 +1401,19 @@ end, { noremap = true, silent = true, desc = "Translate: interactively" })
 map({ "n", "x" }, map_leader .. "lr", function()
     load_pantran()
     if vim.tbl_contains({ "V", "v" }, vim.api.nvim_get_mode().mode) then
-        return ":Pantran mode=hover source=auto target=ru<CR>"
+        vim.cmd("Pantran mode=hover source=auto target=ru")
+        return
     end
-    return ":Pantran mode=interactive source=auto target=ru<CR>"
-end, { expr = true, noremap = true, silent = true, desc = "Translate: to Russian" })
+    vim.cmd("Pantran mode=interactive source=auto target=ru")
+end, { noremap = true, silent = true, desc = "Translate: to Russian" })
 map({ "n", "x" }, map_leader .. "le", function()
     load_pantran()
     if vim.tbl_contains({ "V", "v" }, vim.api.nvim_get_mode().mode) then
-        return ":Pantran mode=hover source=auto target=en<CR>"
+        vim.cmd("Pantran mode=hover source=auto target=en")
+        return
     end
-    return ":Pantran mode=interactive source=auto target=en<CR>"
-end, { expr = true, noremap = true, silent = true, desc = "Translate: to English" })
+    vim.cmd("Pantran mode=interactive source=auto target=en")
+end, { noremap = true, silent = true, desc = "Translate: to English" })
 
 local load_expose = load_once(function()
     vim.pack.add({ "https://github.com/azratul/expose-localhost.nvim" })
@@ -1435,10 +1446,20 @@ map({ "n", "t", "i" }, map_leader .. "xX", function()
 end, { desc = "Expose: static server via ngrok" })
 
 -- Theme
-vim.opt.runtimepath:append(vim.fn.stdpath("config") .. "/theme")
-require("theme").setup()
-if is_transparent then
-    vim.cmd.colorscheme("theme-no-colors")
+local stille_path = {
+    dir = "/home/nnofly/code/personal/stille.nvim",
+    url = "https://github.com/I0I-I0I/stille.nvim"
+}
+
+if vim.fn.isdirectory(stille_path.dir) == 1 then
+    vim.opt.runtimepath:append(stille_path.dir)
 else
-    vim.cmd.colorscheme("theme-light")
+    vim.pack.add({ stille_path.url })
+end
+
+require("stille").setup({ transparent = is_transparent })
+if is_transparent then
+    vim.cmd.colorscheme("stille-leere")
+else
+    vim.cmd.colorscheme("stille-hell")
 end
