@@ -122,45 +122,6 @@ if ok_ui then
     ui2.enable({ enable = true, msg = { target = "msg" } })
 end
 
-local hour = os.date("*t").hour
-local is_transparent = false
-if hour <= 7 or hour >= 20 then
-    is_transparent = true
-end
-
-if vim.g.neovide then
-    vim.g.neovide_scale_factor = .95
-    vim.g.neovide_hide_mouse_when_typing = true
-    vim.o.guifont = "Maple Mono:h14"
-    vim.g.neovide_no_idle = false
-    vim.g.neovide_fullscreen = true
-    vim.g.neovide_refresh_rate = 144
-    vim.g.neovide_window_decorations = "none"
-    vim.g.neovide_decorations = "none"
-    vim.g.neovide_confirm_quit = false
-    vim.g.neovide_cursor_animation_length = 0
-    vim.g.neovide_position_animation_length = .15
-    vim.g.neovide_scroll_animation_length = .15
-    vim.g.neovide_cursor_vfx_mode = ""
-
-    vim.o.mousescroll = "ver:4,hor:4"
-
-    map({ "n", "v", "i" }, "<C-enter>", function()
-        is_transparent = not is_transparent
-        local precent = is_transparent and 0.73 or 1
-        vim.g.neovide_normal_opacity = precent
-        vim.g.neovide_opacity = precent
-    end, { desc = "Neovide: toggle fullscreen" })
-    map("n", "<C-=>", function()
-        vim.g.neovide_scale_factor = vim.g.neovide_scale_factor + 0.05
-        vim.notify("Scale: " .. vim.g.neovide_scale_factor)
-    end, { noremap = true, desc = "Neovide: increase scale" })
-    map("n", "<C-->", function()
-        vim.g.neovide_scale_factor = vim.g.neovide_scale_factor - 0.05
-        vim.notify("Scale: " .. vim.g.neovide_scale_factor)
-    end, { noremap = true, desc = "Neovide: decrease scale" })
-end
-
 -- Abbreviations
 vim.cmd.cabbrev("W w")
 vim.cmd.cabbrev("Wa wa")
@@ -188,6 +149,19 @@ map("n", "n", "nzzzv", vim.tbl_extend("force", opts, { desc = "Next search resul
 map("n", "N", "Nzzzv", vim.tbl_extend("force", opts, { desc = "Previous search result centered" }))
 map("v", "K", ":m '<-2<CR>gv=gv", vim.tbl_extend("force", opts, { desc = "Move selection up" }))
 map("v", "J", ":m '>+1<CR>gv=gv", vim.tbl_extend("force", opts, { desc = "Move selection down" }))
+map("n", "<leader>o", function()
+    local file = vim.fn.expand("%:h")
+    local os = vim.loop.os_uname().sysname
+    local cmd
+    if os == "Linux" then
+        cmd = "xdg-open"
+    elseif os == "Darwin" then
+        cmd = "open"
+    elseif os == "Windows" then
+        cmd = "explorer"
+    end
+    vim.fn.system(cmd .. " " .. file)
+end, vim.tbl_extend("force", opts, { desc = "Open explorer from current file" }))
 
 map("n", "<C-s>", "<cmd>write<cr>", vim.tbl_extend("force", opts, { desc = "Save file" }))
 
@@ -1501,9 +1475,15 @@ else
     vim.pack.add({ stille_path.url })
 end
 
-require("stille").setup({ transparent = is_transparent, terminal_colors = false })
-if is_transparent then
-    vim.cmd.colorscheme("stille-leere")
-else
-    vim.cmd.colorscheme("stille-hell")
-end
+require("gnome-track").setup(function(scheme)
+    local theme, is_transparent
+    if scheme == "prefer-dark" then
+        is_transparent = true
+        theme = "stille-leere"
+    else
+        is_transparent = false
+        theme = "stille-hell"
+    end
+    require("stille").setup({ transparent = is_transparent, terminal_colors = false })
+    vim.cmd.colo(theme)
+end)
