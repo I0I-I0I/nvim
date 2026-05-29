@@ -62,6 +62,7 @@ vim.o.spell = true
 vim.o.spelllang = "en,ru"
 vim.o.mousescroll = "ver:1,hor:1"
 vim.o.linebreak = true
+vim.opt.shortmess:append("c")
 
 if os.getenv("WAYLAND_DISPLAY") == nil and os.getenv("XDG_SESSION_TYPE") == "wayland" then
     vim.env.WAYLAND_DISPLAY = "wayland-0"
@@ -188,6 +189,8 @@ map("n", "N", "Nzzzv", vim.tbl_extend("force", opts, { desc = "Previous search r
 map("v", "K", ":m '<-2<CR>gv=gv", vim.tbl_extend("force", opts, { desc = "Move selection up" }))
 map("v", "J", ":m '>+1<CR>gv=gv", vim.tbl_extend("force", opts, { desc = "Move selection down" }))
 
+map("n", "<C-s>", "<cmd>write<cr>", vim.tbl_extend("force", opts, { desc = "Save file" }))
+
 map({ "i", "c" }, "<M-h>", "<left>", opts)
 map({ "i", "c" }, "<M-l>", "<right>", opts)
 map("i", "", "<cmd>undo<cr>", opts)
@@ -238,9 +241,9 @@ local function close_all_but(force)
     end
 end
 
-map({ "n", "t", "i" }, map_leader .. "gw", close_all_but(),
+map({ "n", "t", "i" }, "<leader>gw", close_all_but(),
     vim.tbl_extend("force", opts, { desc = "Close all buffers" }))
-map({ "n", "t", "i" }, map_leader .. "gW", close_all_but(true),
+map({ "n", "t", "i" }, "<leader>gW", close_all_but(true),
     vim.tbl_extend("force", opts, { desc = "Force close all buffers" }))
 map("n", "gw", "<cmd>bp|bd #<cr>", vim.tbl_extend("force", opts, { desc = "Close current buffer" }))
 map("n", "gW", "<cmd>bp|bd! #<cr>", vim.tbl_extend("force", opts, { desc = "Force close current buffer" }))
@@ -248,7 +251,7 @@ map("n", "gW", "<cmd>bp|bd! #<cr>", vim.tbl_extend("force", opts, { desc = "Forc
 map("n", "<space>", "za", vim.tbl_extend("force", opts, { desc = "Toggle fold" }))
 map("n", "<C-space>", "zA", vim.tbl_extend("force", opts, { desc = "Toggle fold recursively" }))
 map("n", "<backspace>", "zc", vim.tbl_extend("force", opts, { desc = "Close fold" }))
-map({ "n", "t", "i" }, map_leader .. "c", "<cmd>tcd %:p:h<cr>",
+map({ "n", "t", "i" }, "<leader>c", "<cmd>tcd %:p:h<cr>",
     vim.tbl_extend("force", opts, { desc = "Set cwd to current file directory" }))
 map({ "n", "i" }, "<C-f>", "<C-\\><C-n>:e <C-r>=expand('%:p:h')<cr>/<C-d>",
     vim.tbl_extend("force", opts, { desc = "Edit file from current file directory" }))
@@ -256,15 +259,15 @@ map({ "n", "i", "t" }, "<C-\\><C-f>", "<C-\\><C-n>:e <C-r>=getcwd()<cr>/<C-d>",
     vim.tbl_extend("force", opts, { desc = "Edit file from cwd" }))
 map({ "n", "v" }, "<C-e>", "4<C-e>", vim.tbl_extend("force", opts, { desc = "Scroll down 4 lines" }))
 map({ "n", "v" }, "<C-y>", "4<C-y>", vim.tbl_extend("force", opts, { desc = "Scroll up 4 lines" }))
-map("n", "<M-K>", "<cmd>cprev<CR>zz", vim.tbl_extend("force", opts, { desc = "Previous quickfix item" }))
-map("n", "<M-J>", "<cmd>cnext<CR>zz", vim.tbl_extend("force", opts, { desc = "Next quickfix item" }))
+map("n", "<C-k>", "<cmd>cprev<CR>zz", vim.tbl_extend("force", opts, { desc = "Previous quickfix item" }))
+map("n", "<C-j>", "<cmd>cnext<CR>zz", vim.tbl_extend("force", opts, { desc = "Next quickfix item" }))
 
-map("t", { "<C-[><C-w>", "<M-w>" }, function()
+map("t", { "<C-]><C-w>", "<M-w>" }, function()
     vim.cmd("stopinsert")
     local ctrl_w = vim.api.nvim_replace_termcodes("<C-w>", true, false, true)
     vim.api.nvim_feedkeys(ctrl_w, "m", true)
 end, vim.tbl_extend("force", opts, { desc = "Exit terminal mode" }))
-map("t", { "<C-[><C-r>", "<M-r>" }, function()
+map("t", { "<C-]><C-r>", "<M-r>" }, function()
     return "<C-\\><C-n>\"" .. vim.fn.nr2char(vim.fn.getchar()) .. "pi"
 end, vim.tbl_extend("force", opts, { expr = true, desc = "Paste register in terminal" }))
 map("n", "<C-w>V", "<cmd>vertical term<cr>",
@@ -312,7 +315,7 @@ vim.api.nvim_create_autocmd("BufWritePre", {
 vim.api.nvim_create_autocmd("TextYankPost", {
     group = main_group,
     callback = function()
-        vim.hl.on_yank({ higroup = "IncSearch", timeout = 150 })
+        vim.hl.hl_op({ higroup = "IncSearch", timeout = 150 })
     end,
 })
 
@@ -358,9 +361,11 @@ vim.api.nvim_create_autocmd("TermOpen", {
 })
 
 vim.api.nvim_create_autocmd("TermClose", {
-    pattern = "*",
-    callback = function()
-        vim.cmd("bdelete!")
+    pattern = "term://*",
+    callback = function(args)
+        if vim.api.nvim_buf_is_valid(args.buf) then
+            vim.api.nvim_buf_delete(args.buf, { force = true })
+        end
     end,
 })
 
@@ -580,6 +585,17 @@ local load_treesitter = load_once(function()
 end)
 defer(load_treesitter)
 
+-- Surround
+local load_surround = load_once(function()
+    vim.pack.add({
+        {
+            src = "https://github.com/kylechui/nvim-surround",
+            version = vim.version.range("4.x")
+        }
+    })
+end)
+defer(load_surround)
+
 -- Telescope
 local telescope
 local themes
@@ -599,7 +615,12 @@ local load_telescope = load_once(function()
 
     telescope.setup({
         defaults = {
-            mappings = { i = { ["<Esc>"] = actions.close } },
+            mappings = {
+                i = {
+                    ["<Esc>"] = actions.close,
+                    ["<C-x>"] = actions.delete_buffer,
+                },
+            },
         },
         extensions = {
             ["ui-select"] = { themes.get_ivy({ border = true, layout_config = { height = 0.25 } }) },
@@ -641,9 +662,11 @@ end
 map({ "n" }, "tp", T("fd"), { desc = "Telescope: project files" })
 map({ "n" }, "tg", T("live_grep"), { desc = "Telescope: live grep" })
 map({ "n" }, "tb", T("buffers", { previewer = false }), { desc = "Telescope: buffers" })
+map({ "n" }, "tt", T("buffers", { default_text = "term://", previewer = false }),
+    { desc = "Telescope: terminal buffers" })
 map({ "n" }, "th", T("help_tags"), { desc = "Telescope: help tags" })
 map({ "n" }, "tm", T("man_pages"), { desc = "Telescope: man pages" })
-map({ "n" }, "tk", T("keymaps"), { desc = "Telescope: man pages" })
+map({ "n" }, "tk", T("keymaps"), { desc = "Telescope: keymaps" })
 map("n", "grs", T("lsp_workspace_symbols"), { desc = "Telescope: lsp symbols" })
 map("n", "grr", T("lsp_references"), { desc = "Telescope: lsp references" })
 map("n", "<C-]>", T("lsp_definitions"), { desc = "Telescope: lsp definitions" })
@@ -673,23 +696,30 @@ local gitsigns
 local load_git = load_once(function()
     vim.pack.add({
         "https://github.com/MunifTanjim/nui.nvim",
-        "https://github.com/NeogitOrg/neogit",
+        -- "https://github.com/NeogitOrg/neogit",
         "https://github.com/lewis6991/gitsigns.nvim",
     })
 
-    require("neogit").setup({
-        graph_style = "kitty",
-        process_spinner = true,
-    })
+    -- require("neogit").setup({
+    --     graph_style = "kitty",
+    --     process_spinner = true,
+    -- })
     gitsigns = require("gitsigns")
     gitsigns.setup({ sign_priority = 100 })
 end)
 defer(load_git)
 
-map({ "n", "t", "i" }, map_leader .. "gg", function()
-    load_git()
-    vim.cmd("Neogit")
-end, { desc = "Git: open Neogit" })
+map({ "n", "t" }, { map_leader .. "gg", "<M-S-g>" }, function()
+    vim.cmd("tabnew")
+    local cmd_str = string.format("GITU_SHOW_EDITOR='nvim --server %s --remote-tab' gitu", vim.v.servername)
+    vim.cmd("terminal " .. cmd_str)
+    vim.cmd("startinsert")
+end, { desc = "Git: open gitu" })
+
+-- map({ "n", "t", "i" }, map_leader .. "gg", function()
+--     load_git()
+--     vim.cmd("Neogit")
+-- end, { desc = "Git: open Neogit" })
 map("n", "]c", function()
     load_git()
     gitsigns.next_hunk()
@@ -1099,7 +1129,7 @@ vim.api.nvim_create_autocmd("InsertEnter", {
 
 -- AI
 map("n", map_leader .. "aa", function()
-    vim.cmd("tab term gemini --yolo")
+    vim.cmd("tab term agy")
 end, { desc = "AI: open agent (gemini)" })
 
 local load_supermaven = load_once(function()
@@ -1122,10 +1152,18 @@ end, { desc = "AI: toggle Supermaven" })
 
 local _99
 local load_99 = load_once(function()
-    vim.pack.add({ "https://github.com/ThePrimeagen/99" })
+    -- vim.pack.add({ "https://github.com/ThePrimeagen/99" })
+    vim.opt.runtimepath:append("/home/nnofly/.config/nvim/99/")
     _99 = require("99")
-    _99.setup({ provider = _99.Providers.OpenCodeProvider, model = "openai/gpt-5.4" })
+    _99.setup({ provider = _99.Providers.GeminiCLIProvider })
+    -- _99.setup({ provider = _99.Providers.GmnProvider })
+    -- _99.setup({ provider = _99.Providers.AgyCLIProvider })
 end)
+
+map("n", map_leader .. "ao", function()
+    load_99()
+    _99.output()
+end, { desc = "AI(99): open output" })
 
 map("v", map_leader .. "<M-a>", function()
     load_99()
@@ -1231,15 +1269,20 @@ local load_conform = load_once(function()
             python = { "ruff_format" },
             html = { "prettierd", "prettier", stop_after_first = true },
             css = { "prettierd", "prettier", stop_after_first = true },
-            typescript = { "prettierd", "prettier", stop_after_first = true },
-            javascript = { "prettierd", "prettier", stop_after_first = true },
-            typescriptreact = { "prettierd", "prettier", stop_after_first = true },
-            javascriptreact = { "prettierd", "prettier", stop_after_first = true },
+            typescript = { "oxfmt", "biome", "prettierd", "prettier", stop_after_first = true },
+            javascript = { "oxfmt", "biome", "prettierd", "prettier", stop_after_first = true },
+            typescriptreact = { "oxfmt", "biome", "prettierd", "prettier", stop_after_first = true },
+            javascriptreact = { "oxfmt", "biome", "prettierd", "prettier", stop_after_first = true },
+            svelte = { "oxfmt", "biome", "prettierd", "prettier", stop_after_first = true },
         },
-        format_on_save = {
-            timeout_ms = 1000,
+        format_after_save = {
+            async = true,
             lsp_format = "fallback",
         },
+        -- format_on_save = {
+        --     timeout_ms = 5000,
+        --     lsp_format = "fallback",
+        -- },
     })
 end)
 defer(load_conform)
@@ -1279,6 +1322,7 @@ local lsp_servers = {
     -- "tsgo",
     "wc_ls",
     "eslint",
+    "oxlint",
     "biome",
     "cssls",
     "emmet_language_server",
@@ -1457,7 +1501,7 @@ else
     vim.pack.add({ stille_path.url })
 end
 
-require("stille").setup({ transparent = is_transparent })
+require("stille").setup({ transparent = is_transparent, terminal_colors = false })
 if is_transparent then
     vim.cmd.colorscheme("stille-leere")
 else
