@@ -87,7 +87,12 @@ vim.o.number = true
 vim.o.relativenumber = true
 vim.o.statuscolumn = "%s%l %C "
 
-require("tabs").setup()
+vim.api.nvim_create_autocmd("FileType", {
+    pattern = "shell",
+    callback = function()
+        vim.opt_local.statuscolumn = ""
+    end
+})
 
 local startup_group = vim.api.nvim_create_augroup("StartupLazyLoad", { clear = true })
 local has_ui = #vim.api.nvim_list_uis() > 0
@@ -149,6 +154,9 @@ map("n", "n", "nzzzv", vim.tbl_extend("force", opts, { desc = "Next search resul
 map("n", "N", "Nzzzv", vim.tbl_extend("force", opts, { desc = "Previous search result centered" }))
 map("v", "K", ":m '<-2<CR>gv=gv", vim.tbl_extend("force", opts, { desc = "Move selection up" }))
 map("v", "J", ":m '>+1<CR>gv=gv", vim.tbl_extend("force", opts, { desc = "Move selection down" }))
+map("v", ">", ">gv", { noremap = true, silent = true, desc = "Indent selection and keep active" })
+map("v", "<", "<gv", { noremap = true, silent = true, desc = "Unindent selection and keep active" })
+
 map("n", "<leader>o", function()
     local file = vim.fn.expand("%:h")
     local os = vim.loop.os_uname().sysname
@@ -185,6 +193,8 @@ map({ "n", "i" }, "<M-y><M-f>", "<cmd>let @+=expand('%:.')<cr>",
     vim.tbl_extend("force", opts, { desc = "Copy relative path" }))
 map({ "n", "i" }, "<M-y><M-F>", "<cmd>let @+=expand('%:.') . ':' . line('.')<cr>",
     vim.tbl_extend("force", opts, { desc = "Copy relative path with line" }))
+
+map({ "n", "i", "t" }, "<M-l>", "<cmd>wincmd w<cr>", vim.tbl_extend("force", opts, { desc = "Move by windows" }))
 
 map({ "i", "c" }, "<C-r><C-d>", function()
     return os.date("%F")
@@ -236,7 +246,8 @@ map({ "n", "v" }, "<C-y>", "4<C-y>", vim.tbl_extend("force", opts, { desc = "Scr
 map("n", "<C-k>", "<cmd>cprev<CR>zz", vim.tbl_extend("force", opts, { desc = "Previous quickfix item" }))
 map("n", "<C-j>", "<cmd>cnext<CR>zz", vim.tbl_extend("force", opts, { desc = "Next quickfix item" }))
 
-map("t", { "<C-]><C-w>", "<M-w>" }, function()
+map({ "t", "n" }, "<leader>t", "<cmd>tabnew<cr>", vim.tbl_extend("force", opts, { desc = "Open new tab" }))
+map({ "t", "n" }, { "<C-]><C-w>", "<M-w>" }, function()
     vim.cmd("stopinsert")
     local ctrl_w = vim.api.nvim_replace_termcodes("<C-w>", true, false, true)
     vim.api.nvim_feedkeys(ctrl_w, "m", true)
@@ -337,17 +348,12 @@ vim.api.nvim_create_autocmd("TermOpen", {
 vim.api.nvim_create_autocmd("TermClose", {
     pattern = "term://*",
     callback = function(args)
-        if vim.api.nvim_buf_is_valid(args.buf) then
-            vim.api.nvim_buf_delete(args.buf, { force = true })
-        end
-    end,
-})
-
-vim.api.nvim_create_autocmd({ "FocusGained", "BufEnter", "CursorHold", "CursorHoldI" }, {
-    group = main_group,
-    callback = function()
-        if vim.api.nvim_get_mode().mode ~= "c" then
-            vim.cmd.checktime()
+        local buf = args.buf
+        local buftype = vim.api.nvim_get_option_value("buftype", { buf = buf })
+        if buftype == "terminal" then
+            if vim.api.nvim_buf_is_valid(buf) then
+                vim.api.nvim_buf_delete(buf, { force = true })
+            end
         end
     end,
 })
@@ -375,6 +381,18 @@ vim.api.nvim_create_autocmd("BufWritePre", {
     end,
 })
 
+vim.api.nvim_create_autocmd("BufReadPre", {
+    callback = function(args)
+        local max = 200 * 1024
+        local ok, stat = pcall(vim.uv.fs_stat, vim.api.nvim_buf_get_name(args.buf))
+        if not ok or not stat or stat.size < max then
+            return
+        end
+
+        vim.b.large_file = true
+    end,
+})
+
 vim.api.nvim_create_autocmd({ "TermRequest" }, {
     desc = "Handles OSC 7 dir change requests",
     callback = function(ev)
@@ -394,27 +412,12 @@ vim.api.nvim_create_autocmd({ "TermRequest" }, {
 })
 
 -- Plugins
-local load_store = load_once(function()
-    vim.pack.add({ "https://github.com/alex-popov-tech/store.nvim" })
-    require("store").setup({
-        layout = "tab",
-        plugin_manager = "vim.pack",
-        telemetry = false,
-    })
-end)
-
-map({ "n", "t", "i" }, map_leader .. "S", function()
-    load_store()
-    require("store").open()
-end, { desc = "Store: open" })
-
 local load_plenary = load_once(function()
     vim.pack.add({ "https://github.com/nvim-lua/plenary.nvim" })
 end)
 defer(load_plenary)
 
 -- Undotree
-
 local load_undotree = load_once(function()
     vim.cmd.packadd("nvim.undotree")
 end)
@@ -467,11 +470,12 @@ end
 
 local load_markdown = load_once(function()
     vim.pack.add({
-        "https://github.com/OXY2DEV/markview.nvim",
+        -- "https://github.com/OXY2DEV/markview.nvim",
         "https://github.com/tadmccorkle/markdown.nvim",
         "https://github.com/3rd/image.nvim",
         "https://github.com/masukomi/vim-markdown-folding",
         "https://github.com/SCJangra/table-nvim",
+        "https://github.com/iamcco/markdown-preview.nvim",
     })
 
     if has_ui and not vim.g.neovide then
@@ -479,20 +483,23 @@ local load_markdown = load_once(function()
     end
     require("table-nvim").setup({})
     require("markdown").setup()
-    require("markview").setup({})
+    -- require("markview").setup({})
+
+    vim.g.mkdp_filetypes = { "markdown" }
+    vim.g.mkdp_preview_options = {
+        mkit = {},
+        katex = {},
+        uml = {},
+        maid = {},
+        disable_sync_scroll = 0,
+        sync_scroll_type = "middle",
+        hide_yaml_meta = 1,
+        sequence_diagrams = {},
+        flowchart_diagrams = {},
+        content_editable = false,
+        disable_filename = 0,
+    }
 end)
-
-vim.api.nvim_create_autocmd("BufReadPre", {
-    callback = function(args)
-        local max = 200 * 1024
-        local ok, stat = pcall(vim.uv.fs_stat, vim.api.nvim_buf_get_name(args.buf))
-        if not ok or not stat or stat.size < max then
-            return
-        end
-
-        vim.b.large_file = true
-    end,
-})
 
 vim.api.nvim_create_autocmd("BufEnter", {
     callback = function()
@@ -507,6 +514,16 @@ vim.api.nvim_create_autocmd("BufEnter", {
 
         if is_markdown(vim.bo.filetype) then
             pcall(vim.cmd, "Markview disable")
+
+            map("n", "<cr>", function()
+                load_markdown()
+                vim.cmd("Markview")
+            end, { buffer = true, noremap = true, silent = true, desc = "Markview: toggle" })
+
+            map({ "n", "i" }, map_leader .. "mp", function()
+                load_markdown()
+                vim.cmd("MarkdownPreviewToggle")
+            end, { buffer = true, noremap = true, silent = true, desc = "Markdown preview toggle" })
         end
         vim.treesitter.stop()
     end,
@@ -515,7 +532,17 @@ vim.api.nvim_create_autocmd("BufEnter", {
 -- Folds
 local load_origami = load_once(function()
     vim.pack.add({ "https://github.com/chrisgrieser/nvim-origami" })
-    require("origami").setup({})
+    require("origami").setup({
+        autofold = {
+            enable = true,
+            kinds = { "comment", "imports" },
+        },
+        foldKeymaps = {
+            setup = true, -- modifies `h`, `l`, `^`, and `$`
+            closeOnlyOnFirstColumn = true, -- `h` and `^` only fold in the 1st column
+            scrollLeftOnCaret = true, -- `^` should scroll left (basically mapped to `0^`)
+        },
+    })
 
     vim.o.fillchars = "fold: ,eob: ,foldopen:,foldinner:│,foldclose:"
 
@@ -539,11 +566,6 @@ vim.api.nvim_create_autocmd("FileType", {
             vim.opt_local.foldlevelstart = 0
             vim.opt_local.foldnestmax = 9
             vim.opt_local.wrap = false
-
-            map("n", "<cr>", function()
-                load_markdown()
-                vim.cmd("Markview")
-            end, { buffer = true, noremap = true, silent = true, desc = "Markview: toggle" })
         end
     end,
 })
@@ -633,10 +655,10 @@ local function T(picker, telescope_opts)
     end
 end
 
-map({ "n" }, "tp", T("fd"), { desc = "Telescope: project files" })
-map({ "n" }, "tg", T("live_grep"), { desc = "Telescope: live grep" })
-map({ "n" }, "tb", T("buffers", { previewer = false }), { desc = "Telescope: buffers" })
-map({ "n" }, "tt", T("buffers", { default_text = "term://", previewer = false }),
+map({ "n" }, { "tp", "<C-p>" }, T("fd"), { desc = "Telescope: project files" })
+map({ "n" }, { "tg", "<C-g>" }, T("live_grep"), { desc = "Telescope: live grep" })
+map({ "n" }, { "tb", "<C-b>" }, T("buffers", { previewer = false }), { desc = "Telescope: buffers" })
+map({ "n", "t" }, "<M-t>", T("buffers", { default_text = "term://", previewer = true }),
     { desc = "Telescope: terminal buffers" })
 map({ "n" }, "th", T("help_tags"), { desc = "Telescope: help tags" })
 map({ "n" }, "tm", T("man_pages"), { desc = "Telescope: man pages" })
@@ -670,30 +692,30 @@ local gitsigns
 local load_git = load_once(function()
     vim.pack.add({
         "https://github.com/MunifTanjim/nui.nvim",
-        -- "https://github.com/NeogitOrg/neogit",
+        "https://github.com/NeogitOrg/neogit",
         "https://github.com/lewis6991/gitsigns.nvim",
     })
 
-    -- require("neogit").setup({
-    --     graph_style = "kitty",
-    --     process_spinner = true,
-    -- })
+    require("neogit").setup({
+        graph_style = "kitty",
+        process_spinner = true,
+    })
     gitsigns = require("gitsigns")
     gitsigns.setup({ sign_priority = 100 })
 end)
 defer(load_git)
 
-map({ "n", "t" }, { map_leader .. "gg", "<M-S-g>" }, function()
-    vim.cmd("tabnew")
-    local cmd_str = string.format("GITU_SHOW_EDITOR='nvim --server %s --remote-tab' gitu", vim.v.servername)
-    vim.cmd("terminal " .. cmd_str)
-    vim.cmd("startinsert")
-end, { desc = "Git: open gitu" })
+-- map({ "n", "t" }, { map_leader .. "gg", "<M-S-g>" }, function()
+--     vim.cmd("tabnew")
+--     local cmd_str = string.format("GITU_SHOW_EDITOR='nvim --server %s --remote-tab' gitu", vim.v.servername)
+--     vim.cmd("terminal " .. cmd_str)
+--     vim.cmd("startinsert")
+-- end, { desc = "Git: open gitu" })
 
--- map({ "n", "t", "i" }, map_leader .. "gg", function()
---     load_git()
---     vim.cmd("Neogit")
--- end, { desc = "Git: open Neogit" })
+map({ "n", "t", "i" }, {map_leader .. "gg", "<M-S-g>"}, function()
+    load_git()
+    vim.cmd("Neogit")
+end, { desc = "Git: open Neogit" })
 map("n", "]c", function()
     load_git()
     gitsigns.next_hunk()
@@ -751,16 +773,20 @@ end, { desc = "Git: history" })
 local load_fyler = load_once(function()
     vim.pack.add({ "https://github.com/A7Lavinraj/fyler.nvim" })
     require("fyler").setup({
-        views = {
-            finder = {
-                confirm_simple = true,
-                default_explorer = true,
-                mappings = { ["<tab>"] = "Select" },
-                watcher = { enabled = true },
-                win = { kind = "replace" }
-            }
+        default_explorer = true,
+        auto_confirm_simple_mutation = true,
+        -- buf_opts = {
+        --     nu = true,
+        --     rnu = true,
+        --     statuscolumn = "",
+        --     foldcolumn = "0",
+        -- },
+        mappings = {
+            n = {
+                ["<Tab>"] = { action = "select" },
+                ["<C-s>"] = { action = "save" },
+            },
         },
-        integrations = { icon = "none" }
     })
 
     map("n", "-", vim.cmd.Fyler, { desc = "Fyler: open" })
@@ -768,9 +794,12 @@ end)
 load_fyler()
 
 vim.api.nvim_create_autocmd("FileType", {
-    pattern = { "fyler", "Fyler" },
+    pattern = { "fyler", "fyler_finder" },
     callback = function()
-        vim.wo.cursorline = true
+        vim.opt_local.nu = true
+        vim.opt_local.rnu = true
+        vim.opt_local.statuscolumn = ""
+        vim.opt_local.foldcolumn = "0"
     end,
 })
 
@@ -778,13 +807,7 @@ local load_lsp_file_operations = load_once(function()
     vim.pack.add({ "https://github.com/antosha417/nvim-lsp-file-operations" })
     require("lsp-file-operations").setup()
 end)
-
-vim.api.nvim_create_autocmd("LspAttach", {
-    group = vim.api.nvim_create_augroup("LspFileOperations", { clear = true }),
-    callback = function()
-        defer(load_lsp_file_operations)
-    end,
-})
+defer(load_lsp_file_operations)
 
 -- Zen mode
 local zenmode_path = {
@@ -820,7 +843,9 @@ end)
 vim.api.nvim_create_autocmd("VimLeavePre", {
     group = vim.api.nvim_create_augroup("ZenMode", { clear = true }),
     callback = function()
+        ---@diagnostic disable-next-line: param-type-mismatch
         pcall(vim.cmd, "ZenmodeClose")
+        ---@diagnostic disable-next-line: param-type-mismatch
         pcall(vim.cmd, "Sess save")
     end,
 })
@@ -1033,7 +1058,7 @@ local load_grapple = load_once(function()
     require("grapple").setup({ icons = false })
 end)
 
-map("n", "\\a", function()
+map("n", "<leader>a", function()
     load_grapple()
     vim.cmd("Grapple toggle scope=cwd")
 end, { silent = true, noremap = true, desc = "Grapple: tag a file" })
@@ -1043,7 +1068,7 @@ map("n", "<M-e>", function()
 end, { silent = true, noremap = true, desc = "Grapple: toggle tags menu" })
 
 for i = 1, 9 do
-    map("n", "\\" .. i, function()
+    map("n", "<leader>" .. i, function()
         load_grapple()
         vim.cmd("Grapple select index=" .. i .. " scope=cwd")
     end, { silent = true, noremap = true, desc = "Grapple: select " .. i .. " tag" })
@@ -1103,7 +1128,10 @@ vim.api.nvim_create_autocmd("InsertEnter", {
 
 -- AI
 map("n", map_leader .. "aa", function()
-    vim.cmd("tab term agy")
+    vim.ui.select({ "agy", "gemini --approval-mode plan" }, { prompt = "Select AI model:" }, function(choice)
+        if not choice then return end
+        vim.cmd("tab term " .. choice)
+    end)
 end, { desc = "AI: open agent (gemini)" })
 
 local load_supermaven = load_once(function()
@@ -1126,8 +1154,8 @@ end, { desc = "AI: toggle Supermaven" })
 
 local _99
 local load_99 = load_once(function()
-    -- vim.pack.add({ "https://github.com/ThePrimeagen/99" })
-    vim.opt.runtimepath:append("/home/nnofly/.config/nvim/99/")
+    -- vim.pack.add({ "https://github.com/i0i-i0i/99" })
+    vim.opt.runtimepath:append("/home/nnofly/code/personal/99/")
     _99 = require("99")
     _99.setup({ provider = _99.Providers.GeminiCLIProvider })
     -- _99.setup({ provider = _99.Providers.GmnProvider })
@@ -1142,6 +1170,11 @@ end, { desc = "AI(99): open output" })
 map("v", map_leader .. "<M-a>", function()
     load_99()
     _99.visual()
+end, { desc = "AI(99): visual" })
+
+map({ "n", "v" }, map_leader .. "<M-i>", function()
+    load_99()
+    _99.implement()
 end, { desc = "AI(99): visual" })
 
 map({ "n", "t", "i" }, map_leader .. "av", function()
@@ -1236,53 +1269,78 @@ map("x", "A", function()
 end, { desc = "Multicursor: append at ends" })
 
 -- Formatting
-local load_conform = load_once(function()
-    vim.pack.add({ "https://github.com/stevearc/conform.nvim" })
-    require("conform").setup({
-        formatters_by_ft = {
-            python = { "ruff_format" },
-            html = { "prettierd", "prettier", stop_after_first = true },
-            css = { "prettierd", "prettier", stop_after_first = true },
-            typescript = { "oxfmt", "biome", "prettierd", "prettier", stop_after_first = true },
-            javascript = { "oxfmt", "biome", "prettierd", "prettier", stop_after_first = true },
-            typescriptreact = { "oxfmt", "biome", "prettierd", "prettier", stop_after_first = true },
-            javascriptreact = { "oxfmt", "biome", "prettierd", "prettier", stop_after_first = true },
-            svelte = { "oxfmt", "biome", "prettierd", "prettier", stop_after_first = true },
-        },
-        format_after_save = {
-            async = true,
-            lsp_format = "fallback",
-        },
-        -- format_on_save = {
-        --     timeout_ms = 5000,
-        --     lsp_format = "fallback",
-        -- },
-    })
-end)
-defer(load_conform)
+-- local load_conform = load_once(function()
+--     vim.pack.add({ "https://github.com/stevearc/conform.nvim" })
+--     require("conform").setup({
+--         formatters_by_ft = {
+--             python = { "ruff_format" },
+--             html = { "prettierd", "prettier", stop_after_first = true },
+--             css = { "prettierd", "prettier", stop_after_first = true },
+--             typescript = { "oxfmt", "biome", "prettierd", "prettier", stop_after_first = true },
+--             javascript = { "oxfmt", "biome", "prettierd", "prettier", stop_after_first = true },
+--             typescriptreact = { "oxfmt", "biome", "prettierd", "prettier", stop_after_first = true },
+--             javascriptreact = { "oxfmt", "biome", "prettierd", "prettier", stop_after_first = true },
+--             svelte = { "oxfmt", "biome", "prettierd", "prettier", stop_after_first = true },
+--         },
+--         -- format_after_save = {
+--         --     async = true,
+--         --     lsp_format = "fallback",
+--         -- },
+--         format_on_save = {
+--             timeout_ms = 5000,
+--             lsp_format = "fallback",
+--         },
+--     })
+-- end)
+-- defer(load_conform)
 
 -- Locale
 local load_locale = load_once(function()
     vim.pack.add({
-        "https://github.com/yelog/i18n.nvim",
+        -- "https://github.com/yelog/i18n.nvim",
         "https://github.com/Strehk/lazy-watson",
     })
-    require("i18n").setup({
-        auto_detect = true,
-        func_type = {
-            "typescript",
-            "javascript",
-            "svelte",
-            "typescriptreact",
-            "javascriptreact",
-        },
-        func_pattern = {
-            "t",
-            "$t",
-            "m%.([%w_]+)%s*%(",
-        },
-    })
+    -- require("i18n").setup({
+    --     auto_detect = true,
+    --     func_type = {
+    --         "typescript",
+    --         "javascript",
+    --         "svelte",
+    --         "typescriptreact",
+    --         "javascriptreact",
+    --     },
+    --     func_pattern = {
+    --         "t",
+    --         "$t",
+    --         "m%.([%w_]+)%s*%(",
+    --     },
+    -- })
     require("lazy-watson").setup({})
+
+    map("n", map_leader .. "we", function()
+        local key = require("lazy-watson").get_key_at_cursor()
+        if key then
+            vim.cmd("terminal lazyi18n tui --edit " .. key)
+        else
+            vim.notify("No translation key under cursor", vim.log.levels.WARN)
+        end
+    end, { noremap = true, desc = "Lazy Watson: Edit key at cursor" })
+
+    map({ "n", "t", "i" }, map_leader .. "wt", function()
+        require("lazy-watson").toggle()
+    end, { noremap = true, desc = "Lazy Watson: Toggle inline preview" })
+
+    map({ "n", "t", "i" }, map_leader .. "wr", function()
+        require("lazy-watson").refresh()
+    end, { noremap = true, desc = "Lazy Watson: Refresh translations" })
+
+    map({ "n", "t", "i" }, map_leader .. "ws", function()
+        require("lazy-watson").select_locale()
+    end, { noremap = true, desc = "Lazy Watson: Select locale" })
+
+    map("n", map_leader .. "wh", function()
+        require("lazy-watson").show_hover()
+    end, { noremap = true, desc = "Lazy Watson: Show translations under cursor" })
 end)
 defer(load_locale)
 
@@ -1479,7 +1537,7 @@ require("gnome-track").setup(function(scheme)
     local theme, is_transparent
     if scheme == "prefer-dark" then
         is_transparent = true
-        theme = "stille-leere"
+        theme = "stille-dunkel"
     else
         is_transparent = false
         theme = "stille-hell"
